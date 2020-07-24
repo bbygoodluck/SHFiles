@@ -3,6 +3,7 @@
 #include "../EvtHandler.h"
 #include "SHCDView.h"
 #include "ListView.h"
+#include "MyToolTipView.h"
 #include "../engine/LocalFileSystem.h"
 #include "../dialog/DirectoryManagerDlg.h"
 #include "../dialog/DlgDelete.h"
@@ -95,6 +96,11 @@ CSHCDView::CSHCDView(wxWindow* parent, const int nID, const wxSize& sz, const wx
 
 	m_pTxtCtrlForRename->Connect(wxEVT_CHAR_HOOK, wxKeyEventHandler(CSHCDView::OnCharHookFromTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Connect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CSHCDView::OnTextCtrlEnter), NULL, this);
+	
+	m_pMyTooltipView = new CMyTooltipView(this);
+	m_pMyTooltipView->SetSize(60, 20);
+	m_pMyTooltipView->Show(false);
+
 }
 
 CSHCDView::~CSHCDView()
@@ -1473,19 +1479,8 @@ void CSHCDView::AddDir()
 
 void CSHCDView::RenameDir()
 {
-	wxClientDC dc(this);
 	wxString strName = m_pCurrNode->_Name;
-	wxSize szName = dc.GetTextExtent(strName);
-	int iPosX1 = m_pCurrNode->_rect.GetLeft();
-	int iPosY1 = m_pCurrNode->_rect.GetTop() - 1;
-	int iPosX2 = m_pCurrNode->_rect.GetWidth();
-	int iPosY2 = m_pCurrNode->_rect.GetHeight() + 5;
-	
-	m_pTxtCtrlForRename->SetSize(wxRect(iPosX1, iPosY1, iPosX2, iPosY2));
-	m_pTxtCtrlForRename->SetLabelText(strName);
-	m_pTxtCtrlForRename->SetSelection(0, strName.Length());
-	m_pTxtCtrlForRename->Show(true);
-	m_pTxtCtrlForRename->SetFocus();
+	DoRenameOn(strName);
 }
 
 void CSHCDView::OnTextCtrlEnter(wxCommandEvent& event)
@@ -1498,11 +1493,50 @@ void CSHCDView::OnTextCtrlEnter(wxCommandEvent& event)
 		wxMessageBox(strNewName + wxT(" is the same dir exist\nInput different name"), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
 		return;
 	}
-
+	
+	if(!theCommonUtil->IsCreatableDirectory(strNewName))
+	{
+		DoRenameOn(strNewName);
+		return;
+	}
+		
 	theSHCD->RenameDir(m_pCurrNode, strNewName);
 	
 	m_pTxtCtrlForRename->SetLabelText(wxT(""));
 	m_pTxtCtrlForRename->Show(false);
+	
+	event.Skip();
+}
+
+void CSHCDView::DoRenameOn(const wxString& strName)
+{
+	wxClientDC dc(this);
+	wxSize szName = dc.GetTextExtent(strName);
+	
+	int iPosX1 = m_pCurrNode->_rect.GetLeft();
+	int iPosY1 = m_pCurrNode->_rect.GetTop() - 1;
+	int iPosX2 = m_pCurrNode->_rect.GetWidth();
+	int iPosY2 = m_pCurrNode->_rect.GetHeight() + 5;
+	
+	m_pTxtCtrlForRename->SetSize(wxRect(iPosX1, iPosY1, iPosX2, iPosY2));
+	m_pTxtCtrlForRename->SetLabelText(strName);
+	m_pTxtCtrlForRename->SetSelection(0, strName.Length());
+	m_pTxtCtrlForRename->Show(true);
+	m_pTxtCtrlForRename->SetFocus();
+	
+	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")));
+	
+	wxSize sztip = dc.GetTextExtent(strDontUse);
+	wxSize szTooltip;
+	
+	szTooltip.SetWidth(sztip.GetWidth() + 10);
+	szTooltip.SetHeight(sztip.GetHeight() + 5);
+	
+	m_pMyTooltipView->SetTooltipText(strDontUse);
+	m_pMyTooltipView->SetThemeEnabled(true);
+	m_pMyTooltipView->SetPosition(wxPoint(iPosX1 + 30, iPosY1 + iPosY2));
+	m_pMyTooltipView->SetSize(szTooltip);
+	m_pMyTooltipView->Show(true);
 }
 
 void CSHCDView::OnCharHookFromTextCtrl(wxKeyEvent& event)
@@ -1512,6 +1546,7 @@ void CSHCDView::OnCharHookFromTextCtrl(wxKeyEvent& event)
 	{
 		m_pTxtCtrlForRename->SetLabelText(wxT(""));
 		m_pTxtCtrlForRename->Show(false);
+		m_pMyTooltipView->Show(false);
 	}
 	else
 		event.Skip();

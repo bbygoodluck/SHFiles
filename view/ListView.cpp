@@ -1985,8 +1985,6 @@ void CListView::DoRenameFromMenuPrepare()
 
 void CListView::OnEnterTextCtrl(wxCommandEvent& event)
 {
-	event.Skip();
-	
 	wxString strNewRename = m_pTxtCtrlForRename->GetValue();
 	
 	wxString strOldPathName = MakeFullPathName(m_strItemToRename);
@@ -2012,6 +2010,8 @@ void CListView::OnEnterTextCtrl(wxCommandEvent& event)
 	m_pTxtCtrlForRename->SetValue(wxT(""));
 	m_pTxtCtrlForRename->Show(false);
 	m_pMyTooltipView->Show(false);
+	
+	event.Skip();
 }
 
 void CListView::DoRenameOn(const wxString& strRename)
@@ -2066,4 +2066,5 @@ void CListView::OnKillFocusTxtCtrl(wxFocusEvent& event)
 	
 	m_pTxtCtrlForRename->SetLabelText(wxT(""));
 	m_pTxtCtrlForRename->Show(false);
+	m_pMyTooltipView->Show(false);
 }

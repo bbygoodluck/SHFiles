@@ -1,6 +1,7 @@
 #ifndef __SHCD_VIEW_H__
 #define __SHCD_VIEW_H__
 
+class CMyTooltipView;
 class CDirTree;
 class CSHCDView : public wxWindow
 {
@@ -58,7 +59,8 @@ private:
 	void ScrollHorzProcess(wxEventType evtType, int iThumbTrackPos = 0);
 
 	bool FindMouseClickItem(const wxPoint& pt);
-
+	void DoRenameOn(const wxString& strName);
+	
 private:
 	wxRect m_viewRect;
 	bool m_bLoadOK = false;
@@ -113,6 +115,8 @@ private:
 
 	//2019.08.18 ADD
 	wxTextCtrl* m_pTxtCtrlForRename;
+	//tooltip window	
+	CMyTooltipView* m_pMyTooltipView;
 private:
 	void OnPaint(wxPaintEvent& event);
 	void OnErase(wxEraseEvent& event);
