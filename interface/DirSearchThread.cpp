@@ -29,9 +29,8 @@ wxThread::ExitCode CDirSearchThread::Entry()
 	wxMilliSleep(50);
 	m_depth = 0;
 	m_dirCount = 0;
-	wxString strSHCDFilePath = m_strDrive + m_strDir.Left(1) + wxT(".SCD");
-	
-	if (!wxFileName::FileExists(strSHCDFilePath))
+		
+	if (!wxFileName::FileExists(m_strFile))
 	{
 		if (!m_file.Create(m_strFile))
 		{
@@ -43,7 +42,7 @@ wxThread::ExitCode CDirSearchThread::Entry()
 	m_file.Open(m_strFile, wxFile::OpenMode::read_write);
 
 	m_strSave = wxString::Format(wxT("%d^"), m_depth);
-	m_strSave += m_strDrive.Left(m_strDrive.Length() - 1) + SLASH;
+	m_strSave += m_strDrive;
 	m_strSave += wxT("\n");
 
 	m_file.Write(m_strSave);
@@ -60,8 +59,6 @@ wxThread::ExitCode CDirSearchThread::Entry()
 
 void CDirSearchThread::DoSearchDir(const wxString& strPath, int depth)
 {
-	m_pDlg->SetCurrentDir(strPath);
-
 #if defined(__WXMSW__)
 	CLocalFileSystem localSys;
 	bool isDir = false;
@@ -71,12 +68,14 @@ void CDirSearchThread::DoSearchDir(const wxString& strPath, int depth)
 		return;
 
 	int iLen = strPath.Len();
-	wxString strNewPath = strPath.at(iLen - 1) == SLASH ? strPath.Left(iLen - 1) : strPath;
+	wxString strNewPath = strPath.Right(1) == SLASH ? strPath.Left(iLen - 1) : strPath;
 	wxString strName(wxT(""));
 	++depth;
 
-	while (localSys.GetNextFile(strName))//, isDir, lattr))
-	{
+	while (localSys.GetNextFile(strName, &isDir, &lattr))
+	{	
+		m_pDlg->SetCurrentDir(strPath);
+		
 		if (m_pDlg->IsCancel())
 			break;
 
@@ -86,13 +85,14 @@ void CDirSearchThread::DoSearchDir(const wxString& strPath, int depth)
 		m_strSave = wxString::Format(wxT("%d^"), depth) + strName + wxT("\n");
 		m_file.Write(m_strSave);
 
-		wxString strDirCount = wxString::Format(wxT("%d"), m_dirCount++);
+		wxString strDirCount = wxString::Format(wxT("%d"), ++m_dirCount);
 		m_pDlg->SetReadDirectory(m_dirCount, strName);// strFullPath);
 
 		wxString strFullPath(strNewPath);
 		strFullPath += SLASH + strName;
-
-		DoSearchDir(strFullPath, depth);
+		//읽을 수 있는 디렉토리 && 디렉토리 존재
+		if(wxFileName::IsDirReadable(strFullPath) && wxDirExists(strFullPath))
+			DoSearchDir(strFullPath, depth);
 	}
 }
 #else
