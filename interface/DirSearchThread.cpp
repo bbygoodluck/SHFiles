@@ -87,7 +87,7 @@ void CDirSearchThread::DoSearchDir(const wxString& strPath, int depth)
 		m_file.Write(m_strSave);
 
 		wxString strDirCount = wxString::Format(wxT("%d"), m_dirCount++);
-		m_pDlg->SetReadDirectory(m_dirCount++, strName);// strFullPath);
+		m_pDlg->SetReadDirectory(m_dirCount, strName);// strFullPath);
 
 		wxString strFullPath(strNewPath);
 		strFullPath += SLASH + strName;
