@@ -365,7 +365,8 @@ void CMenuOperationHandler::DoRefreshDir()
 
 void CMenuOperationHandler::DoGotoDirDirectly()
 {
-	wxGenericDirDialog dlgTargetPath(_gMainFrame, wxT("Select target directory"), wxGetHomeDir());
+	wxString strCurrPath = theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetCurrentViewPath();
+	wxGenericDirDialog dlgTargetPath(_gMainFrame, wxT("Select target directory"), strCurrPath);
 	dlgTargetPath.SetSize(wxSize(600, 450));
 	dlgTargetPath.CenterOnScreen();
 	
