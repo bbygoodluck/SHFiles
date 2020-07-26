@@ -9,7 +9,6 @@ public:
 	virtual ~CMSWContextMenuHandler();
 
 public:
-	static CMSWContextMenuHandler* Get();
 	void SetObject(wxArrayString& strArray);
 	void ShowContextMenu(wxWindow* pWnd, const wxPoint& pt);
 	void Clear();
@@ -24,11 +23,9 @@ private:
 	IShellFolder* m_psfFolder;
 	PIDLIST_ABSOLUTE* m_pidlArray;
 	LPCONTEXTMENU m_pContextMenu;
-//	LPMALLOC      m_pMalloc;
+
 	int	m_iItem;
 	bool m_bDelete;
-
-	static std::unique_ptr<CMSWContextMenuHandler> m_pInstance;
 
 private:
 	void OnInvokeCommand(wxCommandEvent& event);

@@ -1,6 +1,6 @@
 /**************************************************************************************************
 * Class명 : CMSWContextMenuHandler
-* 설   명 : 파일리스트뷰의 OnContextMenu 이벤트 호출시 화면에 컨텍스트 메뉴를 보여줌
+* 설   명 : 파일리스트뷰의 Mouse R Click Up 이벤트 호출시 화면에 컨텍스트 메뉴를 보여줌
 *		    윈도우의 경우는 System Shell Context메뉴를 보여줌
 *			윈도우가 아닌경우는 자체 ContextMenu를 보여줌
 * 참   고 : http://www.codeproject.com/
@@ -11,8 +11,6 @@
 
 #define CONTEXT_MENU_ID_START 1
 #define CONTEXT_MENU_ID_LAST 0x7FFF
-
-std::unique_ptr<CMSWContextMenuHandler> CMSWContextMenuHandler::m_pInstance = nullptr;
 
 IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;
@@ -77,7 +75,6 @@ CMSWContextMenuHandler::CMSWContextMenuHandler()
     : m_psfFolder(NULL)
 	, m_pidlArray(NULL)
 	, m_pContextMenu(NULL)
-//	, m_pMalloc(NULL)
 	, m_iItem(0)
 	, m_bDelete(false)
 {
@@ -85,20 +82,11 @@ CMSWContextMenuHandler::CMSWContextMenuHandler()
 	m_pidlArray = NULL;
 
 	m_pMenu = NULL;
-//	SHGetMalloc(&m_pMalloc);
 }
 
 CMSWContextMenuHandler::~CMSWContextMenuHandler()
 {
 	Clear();
-}
-
-CMSWContextMenuHandler* CMSWContextMenuHandler::Get()
-{
-	if (m_pInstance.get() == NULL)
-		m_pInstance = std::make_unique<CMSWContextMenuHandler>();//.reset(new CMSWContextMenuHandler());
-
-	return m_pInstance.get();
 }
 
 void CMSWContextMenuHandler::Clear()
@@ -111,22 +99,12 @@ void CMSWContextMenuHandler::Clear()
 	FreePIDLArray();
 	m_pidlArray = NULL;
 
-//	if (m_pContextMenu)
-//		m_pContextMenu->Release();
-
 	if (m_pMenu)
-	{
-	//	::DestroyMenu(m_pMenu->GetHMenu());
 		delete m_pMenu;
-	}
 	
 	m_pContextMenu = NULL;
 	m_pMenu = NULL;
 
-//	if (m_pMalloc)
-//		m_pMalloc->Release();
-
-//	m_pMalloc = NULL;
 	m_iItem = 0;
 }
 
@@ -148,7 +126,7 @@ void CMSWContextMenuHandler::SetObject(wxArrayString& strArray)
 	CoTaskMemFree(pidl);
 	
 	m_iItem = strArray.GetCount();
-	//아이템의 갯수만큼 배열생성
+	//아이템의 갯수만큼 배열생성(어렵게 malloc 함수를 사용하지 않아도 됨
 	m_pidlArray = new PIDLIST_ABSOLUTE[m_iItem];// (LPITEMIDLIST *)malloc(m_iItem * sizeof(LPITEMIDLIST));
 	int iIndex = 0;
 	
@@ -176,15 +154,6 @@ void CMSWContextMenuHandler::SetObject(wxArrayString& strArray)
 
 void CMSWContextMenuHandler::FreePIDLArray()
 {
-/*	if(!pidlArray)
-		return;
-
-	int iSize = _msize(pidlArray) / sizeof(LPITEMIDLIST);
-	for (int i = 0; i < iSize; i++)
-		free (pidlArray[i]);
-	
-	free (pidlArray);
-*/
 	for (int i = 0; i < m_iItem; i++)
 		free(m_pidlArray[i]);
 
@@ -287,7 +256,6 @@ void CMSWContextMenuHandler::ShowContextMenu(wxWindow* pWnd, const wxPoint& pt)
 	else
 		OldWndProc = NULL;
 	
-//	UINT iCommandID = ::TrackPopupMenu(m_pMenu->GetHMenu(), TPM_RETURNCMD | TPM_LEFTALIGN, pt.x, pt.y, 0, pWnd->GetHWND(), NULL);
 	pWnd->PopupMenu(m_pMenu, pt.x, pt.y);
 	
 
