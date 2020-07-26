@@ -10,6 +10,7 @@ wxBEGIN_EVENT_TABLE(CPathView, wxWindow)
 	EVT_ERASE_BACKGROUND(CPathView::OnErase)
 	EVT_LEAVE_WINDOW(CPathView::OnLeaveWindow)
 	EVT_LEFT_DOWN(CPathView::OnMouseLButtonClick)
+	EVT_LEFT_DCLICK(CPathView::OnMouseDBClick)
 	EVT_MOTION(CPathView::OnMouseMove)
 	EVT_MENU_RANGE(wxDRIVE_ID_START, wxDRIVE_ID_END, CPathView::OnDriveMenuClick)
 	EVT_UPDATE_UI_RANGE(wxDRIVE_ID_START, wxDRIVE_ID_END, CPathView::OnDrvieMenuUpdate)
@@ -31,7 +32,7 @@ CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const w
 	m_bitmapNext.SetMask(new wxMask(m_bitmapNext, *wxLIGHT_GREY));
 
 	m_bitmapNextDisable = m_bitmapNext.ConvertToDisabled(230);
-
+	
 	m_pToolTip = new wxToolTip(wxT(""));
 	this->SetToolTip(m_pToolTip);
 
@@ -40,7 +41,17 @@ CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const w
 #else
 	m_font = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
 #endif
-
+	
+	m_pTxtCtrl = std::make_unique<wxTextCtrl>(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxBORDER_THEME);
+	m_pTxtCtrl->SetBackgroundColour(wxColour(220, 220, 220));
+	m_pTxtCtrl->SetBackgroundStyle(wxBG_STYLE_PAINT);
+	m_pTxtCtrl->SetFont(m_font);
+	m_pTxtCtrl->Show(false);
+	
+	m_pTxtCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CPathView::OnKeyDownTextCtrl), NULL, this);
+	m_pTxtCtrl->Connect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CPathView::OnEnterTextCtrl), NULL, this);
+	m_pTxtCtrl->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CPathView::OnKillFocusTxtCtrl), NULL, this);
+	
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	Init();
 }
@@ -55,6 +66,10 @@ CPathView::~CPathView()
 		delete m_pDoubleBuffer;
 		
 	m_pDoubleBuffer = nullptr;
+	
+	m_pTxtCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(CPathView::OnKeyDownTextCtrl), NULL, this);
+	m_pTxtCtrl->Disconnect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CPathView::OnEnterTextCtrl), NULL, this);
+	m_pTxtCtrl->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CPathView::OnKillFocusTxtCtrl), NULL, this);
 }
 
 void CPathView::ClearPathItems()
@@ -427,6 +442,15 @@ void CPathView::OnMouseLButtonClick(wxMouseEvent& event)
 	}
 }
 
+void CPathView::OnMouseDBClick(wxMouseEvent& event)
+{
+	m_pTxtCtrl->SetLabelText(m_strPath);
+	m_pTxtCtrl->SetSize(m_viewRect);
+	m_pTxtCtrl->SetInsertionPointEnd();
+	m_pTxtCtrl->Show(true);
+	m_pTxtCtrl->SetFocus();
+}
+
 void CPathView::OnLeaveWindow(wxMouseEvent& event)
 {
 	m_bMouseOver = false;
@@ -465,4 +489,38 @@ void CPathView::OnDrvieMenuUpdate(wxUpdateUIEvent& event)
 
 	if(m_nDriveSelectedIndex == (nMenuID - wxDRIVE_ID_START))
 		event.Check(true);
+}
+
+
+void CPathView::OnEnterTextCtrl(wxCommandEvent& event)
+{
+	wxString strNewPath = m_pTxtCtrl->GetValue();
+	if(!wxDirExists(strNewPath) || !CLocalFileSystem::IsCanReadDir(strNewPath))
+	{
+		wxMessageBox(theMsgManager->GetMessage(wxT("MSG_READABLE_DIR_FALSE")), PROGRAM_FULL_NAME, wxICON_ERROR | wxOK);
+		return;
+	}
+	
+	m_pViewPanel->TransferInfomation(TRANSFER_PATH_VIEW_TO_LISTVIEW, strNewPath);
+	event.Skip();
+}
+
+void CPathView::OnKeyDownTextCtrl(wxKeyEvent& event)
+{
+	int iKeyCode = event.GetKeyCode();
+	if (iKeyCode == WXK_ESCAPE)
+	{
+		m_pTxtCtrl->SetLabelText(wxT(""));
+		m_pTxtCtrl->Show(false);
+	}
+	
+	event.Skip();
+}
+
+void CPathView::OnKillFocusTxtCtrl(wxFocusEvent& event)
+{
+	m_pTxtCtrl->SetLabelText(wxT(""));
+	m_pTxtCtrl->Show(false);
+	
+	event.Skip();
 }

@@ -93,16 +93,22 @@ int	 m_nDriveSelectedIndex = 0;
 	bool m_bFounded = false;
 	
 	CViewPanel* m_pViewPanel;
+	std::unique_ptr<wxTextCtrl> m_pTxtCtrl = nullptr;
 private:
 	void OnPaint(wxPaintEvent& event);
 	void OnErase(wxEraseEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnMouseMove(wxMouseEvent& event);
 	void OnMouseLButtonClick(wxMouseEvent& event);
+	void OnMouseDBClick(wxMouseEvent& event);
 	void OnLeaveWindow(wxMouseEvent& event);
 	void OnDriveMenuClick(wxCommandEvent& event);
 	void OnDrvieMenuUpdate(wxUpdateUIEvent& event);
 	
+	//디렉토리 이동이벤트
+	void OnEnterTextCtrl(wxCommandEvent& event);
+	void OnKeyDownTextCtrl(wxKeyEvent& event);
+	void OnKillFocusTxtCtrl(wxFocusEvent& event);
 	wxDECLARE_EVENT_TABLE();
 };
 

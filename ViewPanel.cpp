@@ -110,9 +110,9 @@ void CViewPanel::TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxSt
 			
 		case TRANSFER_PATH_VIEW_TO_LISTVIEW:
 		{
-			m_pFileListView->LoadDir(strInfo);
 			theSplitterManager->ChangeTabPagePathName(strInfo);
-			theCommonUtil->RefreshWindow(m_pFileListView.get(), m_pFileListView->m_viewRect);
+			ReloadPathOfView(strInfo);
+			SetActivateView();
 		}
 			break;
 		
