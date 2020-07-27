@@ -15,6 +15,7 @@
 #include "./dialog/DlgFavoriteManager.h"
 #include "./dialog/DlgFind.h"
 #include "./dialog/DirectoryManagerDlg.h"
+#include "./dialog/DlgEnv.h"
 
 CMenuOperationHandler* CMenuOperationHandler::m_pMenuOPHandlerInstance(nullptr);
 CMenuOperationHandler* CMenuOperationHandler::Get()
@@ -88,6 +89,10 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType)
 		//컬럼변경	
 		case _MENU_VIEW_COLUMN_CHANGE:
 			DoChageViewColumn();
+			break;
+			
+		case _MENU_TOOL_ENVIRONMENT:
+			DoSettings();
 			break;
 		//환경설정 저장
 		case _MENU_TOOL_SAVECONFIG:
@@ -424,6 +429,15 @@ void CMenuOperationHandler::SetViewColumnInTabs(CTabManager* pTabManager)
 			iPageIndex++;
 		}
 	}
+}
+
+
+void CMenuOperationHandler::DoSettings()
+{
+	DlgEnv dlg(_gMainFrame);
+	dlg.ShowModal();
+
+	dlg.Destroy();
 }
 
 //환경설정저장

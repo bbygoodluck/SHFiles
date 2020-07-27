@@ -50,6 +50,8 @@ private:
 	void DoFavoriteItemSelected();
 	//전체화면
 	void DoFullScreen();
+	//환경설정
+	void DoSettings();
 	//환경설정저장
 	void DoSaveConfig();
 	//즐겨찾기

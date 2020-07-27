@@ -42,6 +42,7 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 	else if  (_iMenuID == XRCID("m_pMenu_Refresh"))         menu_path_Refresh();
 	else if  (_iMenuID == XRCID("m_pMenu_GotoDirDirectly")) menu_path_GotoDirDirectly(); 
 	else if  (_iMenuID == XRCID("m_pMenu_PathMng"))         menu_path_DirManager();
+	else if  (_iMenuID == XRCID("m_toolMenu_ENV"))	        menu_tool_envsetting();
 	else if  (_iMenuID == XRCID("m_toolMenu_CurSave"))	    menu_tool_cursave();
 	else if  (_iMenuID == XRCID("m_viewMenu_FullScr"))	    menu_view_fullScreen();
 	else if ((_iMenuID == XRCID("m_viewMenu_Window_0")) ||
@@ -56,10 +57,10 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 		     (_iMenuID == XRCID("m_viewMenu_Column_6")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_7")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_8")) ||
-		     (_iMenuID == XRCID("m_viewMenu_Column_9")))     menu_column_operation(_iMenuID, theJsonConfig->GetColumnCount());
-	else if  (_iMenuID == XRCID("m_favoriteMenu_Add"))       menu_favorite(_MENU_FAVORITE_ITEM_ADD);
-	else if  (_iMenuID == XRCID("m_favoriteMenu_Manager"))   menu_favorite(_MENU_FAVORITE_MANAGER);
-	else if  (_iMenuID == XRCID("m_helpMenu_thisProgram"))   menu_help_thispg();
+		     (_iMenuID == XRCID("m_viewMenu_Column_9")))    menu_column_operation(_iMenuID, theJsonConfig->GetColumnCount());
+	else if  (_iMenuID == XRCID("m_favoriteMenu_Add"))      menu_favorite(_MENU_FAVORITE_ITEM_ADD);
+	else if  (_iMenuID == XRCID("m_favoriteMenu_Manager"))  menu_favorite(_MENU_FAVORITE_MANAGER);
+	else if  (_iMenuID == XRCID("m_helpMenu_thisProgram"))  menu_help_thispg();
 }
 
 void CEvtHandler::OnMenuEventUpdate(wxUpdateUIEvent& event)
@@ -256,6 +257,12 @@ void CEvtHandler::menu_favorite(_MENU_EVENT_TYPE menuType)
 }
 
 //도구
+    // 환경설정
+void CEvtHandler::menu_tool_envsetting()
+{
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_TOOL_ENVIRONMENT);
+}
+
 	// 현재설정저장
 void CEvtHandler::menu_tool_cursave()
 {
@@ -358,7 +365,7 @@ void CEvtHandler::OnToolbarBookmark(wxCommandEvent& event)
 
 void CEvtHandler::OnToolbarEnvSetting(wxCommandEvent& event)
 {
-	
+	menu_tool_envsetting();
 }
 
 void CEvtHandler::OnToolbarEnvSave(wxCommandEvent& event)

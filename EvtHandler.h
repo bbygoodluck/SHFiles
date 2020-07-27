@@ -60,6 +60,8 @@ private:
 	void menu_favorite(_MENU_EVENT_TYPE menuType);
 	
 	//도구
+		// 환경설정
+	void menu_tool_envsetting();
 	    // 현재설정저장
 	void menu_tool_cursave();
 	//도움말

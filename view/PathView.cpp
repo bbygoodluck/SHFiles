@@ -43,7 +43,7 @@ CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const w
 #endif
 	
 	m_pTxtCtrl = std::make_unique<wxTextCtrl>(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxBORDER_THEME);
-	m_pTxtCtrl->SetBackgroundColour(wxColour(220, 220, 220));
+	m_pTxtCtrl->SetBackgroundColour(wxColour(240, 240, 220));
 	m_pTxtCtrl->SetBackgroundStyle(wxBG_STYLE_PAINT);
 	m_pTxtCtrl->SetFont(m_font);
 	m_pTxtCtrl->Show(false);

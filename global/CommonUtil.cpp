@@ -634,7 +634,7 @@ wxString CCommonUtil::ChangeName(const wxString& strName)
 
 bool CCommonUtil::IsCreatableDirectory(const wxString& strDir)
 {
-	wxString strRegEx(wxT("([") + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + wxT("])"));
+	wxString strRegEx(wxT("[") + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + wxT("]"));
 	wxRegEx re(strRegEx);
 	if(re.Matches(strDir))
 	{

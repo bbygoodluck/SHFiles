@@ -80,8 +80,10 @@ int CSorting::CmpName(const wxString& strLeft, const wxString& strRight)
 	
 	int cmp = strLName.CmpNoCase(strRName);
 	
-	if ((strLName.CmpNoCase(wxT("..")) == 0))
+	if (strLName.Cmp(wxT("..")) == 0)
 		return -1;
+	else if (strRName.Cmp(wxT("..")) == 0)
+		return 1;
 	else
 		return cmp;
 

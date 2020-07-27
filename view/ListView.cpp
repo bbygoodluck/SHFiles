@@ -1161,6 +1161,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 				return;
 			
 			m_nCurrentItemIndex++;
+			MoveRightAndDownKey();
 			break;
 
 		case wxKEY_DOT:
