@@ -16,4 +16,8 @@ wxDECLARE_EVENT(wxEVT_ITEM_ALL_SELECT, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_ITEM_ALL_RELEASE, wxCommandEvent);
 //디렉토리 관리자 새로고침
 wxDECLARE_EVENT(wxEVT_DIRMANAGER_REFRESH_ALL, wxCommandEvent);
+#ifdef __WXMSW__
+//드라이브 추가 삭제
+wxDECLARE_EVENT(wxEVT_DRIVE_ADD_REMOVE, wxCommandEvent);
+#endif
 #endif

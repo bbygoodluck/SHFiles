@@ -58,7 +58,10 @@ private:
 	void DoFavorite(_MENU_EVENT_TYPE _menuType);
 	//이프로그램은
 	void DoThisProgramIs();
-	
+#ifdef __WXMSW__
+	//드라이브 생성 및 삭제
+	void DoAddDriveAndRemove();
+#endif
 private:
 	wxString m_strFavoriteItem = wxT("");
 	wxString m_strCopyMoveSrcDir = wxT("");

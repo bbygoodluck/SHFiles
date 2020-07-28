@@ -111,7 +111,11 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType)
 		case _MENU_HELP_THIS_PROGRAM:
 			DoThisProgramIs();
 			break;
-			
+#ifdef __WXMSW__
+		case _MENU_ETC_ADD_DRIVE:
+			DoAddDriveAndRemove();
+			break;
+#endif			
 		default:
 			break;
 		
@@ -560,3 +564,17 @@ void CMenuOperationHandler::DoThisProgramIs()
 	// Destroy dialog
 	dlg->Destroy();
 }
+
+#ifdef __WXMSW__
+void CMenuOperationHandler::DoAddDriveAndRemove()
+{
+	CTabManager* pCurrentTabManager = theSplitterManager->GetActiveTab();
+	pCurrentTabManager->GetActiveViewPanel()->DoMyEventExecuteToView(wxEVT_DRIVE_ADD_REMOVE);
+			
+	if(theJsonConfig->GetSplitStyle() != WINDOW_SPLIT_NONE)
+	{
+		CTabManager* pAnotherTabManager = theSplitterManager->GetAnotherTab();
+		pAnotherTabManager->GetActiveViewPanel()->DoMyEventExecuteToView(wxEVT_DRIVE_ADD_REMOVE);
+	}	
+}
+#endif

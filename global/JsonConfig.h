@@ -13,12 +13,7 @@ public:
 
 public:
 	virtual bool Load();
-//	virtual Document& GetJsonDoc() { return _jsonDoc; }
 	bool IsExistMember(const wxString& strGroup, const wxString& strMember);
-
-#ifdef _WXDEBUG
-	void PrintJsonData();
-#endif
 
 	const wxRect& GetDefaultRect()  { return m_rcDefault; }
 	const int GetWidth()            const { return _jsonDoc["globalsettings"]["Width"].GetInt(); } // m_nWidth;}
@@ -64,7 +59,6 @@ public:
 	}
 
 	void SetEditProgram(const wxString& strProgram) { m_strFileEditProgram = strProgram; }
-//	const wxString& GetEditProgram() { return m_strFileEditProgram; }
 
 	const int GetFontSize()			     const { return _jsonDoc["globalsettings"]["fontsize"].GetInt();                                      } // m_nFontSize;}
 	const int GetMinCountInThread()	     const { return _jsonDoc["globalsettings"]["MinThreadRead"].GetInt();                                 } // m_nMinThreadRead; }

@@ -22,9 +22,13 @@ private:
 	CEvtHandler*	m_pSHFEventHandler;
 	std::unique_ptr<wxToolBar> m_pToolBar;
 	std::unique_ptr<CCustomStatusBar> m_pStatusBar;
+#ifdef __WXMSW__
+	HDEVNOTIFY m_hNotifyDev;
+#endif
 private:
 #ifdef __WXMSW__
 	virtual WXLRESULT MSWDefWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
+	void OnDeviceChange(UINT nEventType, DWORD dwData);
 #endif
 	void OnClose(wxCloseEvent& event);
 	void OnSize(wxSizeEvent& event);

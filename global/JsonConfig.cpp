@@ -295,20 +295,8 @@ void CJsonConfig::SaveConfig()
 	_jsonDoc.Accept(writer);
 }
 
-#ifdef _WXDEBUG
-void CJsonConfig::PrintJsonData()
-{
-	assert(_jsonDoc.IsObject());
-	bool isObject = _jsonDoc.IsObject();
-	int xPos = _jsonDoc["globalsettings"]["XPos"].GetInt();
-
-	theCommonUtil->LogDisplayToConsole(wxString::Format(wxT("xPos : %d"), 0));
-}
-#endif
-
 void CJsonConfig::SetExternalEditProgram(wxVector<EXTERNAL_EDIT_PROGRAM>& vecExternal)
 {
-//	m_mapExternalProgram.clear();
 	_gExternalPGList.clear();
 	Document::AllocatorType& allocator = _jsonDoc.GetAllocator();
 	Value valExtPG(kArrayType);
@@ -332,34 +320,8 @@ void CJsonConfig::SetExternalEditProgram(wxVector<EXTERNAL_EDIT_PROGRAM>& vecExt
 		valExtPG.PushBack(item, allocator);
 
 		std::unordered_map<int, EXTERNAL_EDIT_PROGRAM>::value_type value(i, extPG);
-	//	m_mapExternalProgram.insert(value);
 		_gExternalPGList.insert(value);
 	}
 
 	_jsonDoc["globalsettings"]["FileEditProgram"] = valExtPG;
 }
-
-/*
-bool CJsonConfig::GetExternalEditProgram(wxVector<EXTERNAL_EDIT_PROGRAM>& vecExternal)
-{
-	bool bReturn = true;
-	for (size_t iIndex = 0; iIndex < m_mapExternalProgram.size(); iIndex++)
-	{
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) //VS2013
-		stdext::hash_map<int, EXTERNAL_EDIT_PROGRAM>::const_iterator fIter = m_mapExternalProgram.find(iIndex);
-#else
-		std::unordered_map<int, EXTERNAL_EDIT_PROGRAM>::const_iterator fIter = m_mapExternalProgram.find(iIndex);
-#endif
-
-		if (fIter == m_mapExternalProgram.end())
-		{
-			bReturn = false;
-			break;
-		}
-
-		vecExternal.push_back(fIter->second);
-	}
-
-	return bReturn;;
-}
-*/

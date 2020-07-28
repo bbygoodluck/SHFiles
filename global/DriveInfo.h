@@ -64,9 +64,9 @@ public:
 
 public:
 	static CDriveInfo* Get();
-	//µå¶óÀÌºê¿ë·®°¡Á®¿À±â
+	//ë“œë¼ì´ë¸Œìš©ëŸ‰ê°€ì ¸ì˜¤ê¸°
 	static void GetDiskSpace(const wxString& strVolume, double& dblTotalSpace, double& dblFreeSpace);
-	//µå¶óÀÌºê¿ë·®¹®ÀÚ¿­·Î °¡Á®¿À±â
+	//ë“œë¼ì´ë¸Œìš©ëŸ‰ë¬¸ìì—´ë¡œ ê°€ì ¸ì˜¤ê¸°
 	static void GetDiskSpaceToString(const wxString& strVolume, wxString& strTotalSpace, wxString& strFreeSpace);
 
 public:
@@ -94,7 +94,7 @@ private:
 
 private:
 	static std::unique_ptr<CDriveInfo> m_pInstance;
-	//µå¶óÀÌºê Á¸Àç Ã¼Å©¿ë
+	//ÂµÃ¥Â¶Ã³Ã€ÃŒÂºÃª ÃÂ¸Ã€Ã§ ÃƒÂ¼Ã…Â©Â¿Ã«
 	std::unordered_map<wxString, CDriveItem> m_driveItems;
 	std::vector<std::unique_ptr<CDriveItem>> m_drive;
 

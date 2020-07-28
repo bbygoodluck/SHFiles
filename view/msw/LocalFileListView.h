@@ -28,6 +28,8 @@ protected:
 private:
 	bool ReadDirectory();
 	void AddDrive();
+	void DoUpdateDriveSpace();
+	
 	virtual void ExecuteExternalProgramForEdit(int iIndex) override;
 	
 private:
@@ -36,6 +38,8 @@ private:
 private:
 	void OnPaint(wxPaintEvent& event);
 	void OnErase(wxEraseEvent& event);
+	
+	void DoDriveAddOrRemove(wxCommandEvent& event);
 	wxDECLARE_EVENT_TABLE();
 };
 #endif

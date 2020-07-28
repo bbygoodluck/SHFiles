@@ -91,7 +91,8 @@ protected:
 	wxButton* m_btnCancel;
 	wxButton* m_btnApply;
 	wxButton* m_btnClose;
-
+	wxSpinButton* m_spinSort;
+	
 	// Virtual event handlers, overide them in your derived class
 	virtual void OnDlgCloseClick(wxCloseEvent& event);
 	virtual void OnInitDialog(wxInitDialogEvent& event);
@@ -109,7 +110,10 @@ protected:
 	virtual void OnEnvCancelClick(wxCommandEvent& event);
 	virtual void OnApplyClick(wxCommandEvent& event);
 	virtual void OnCloseClick(wxCommandEvent& event);
-
+	
+	virtual void OnSpinDown( wxSpinEvent& event );
+	virtual void OnSpinUp( wxSpinEvent& event );
+		
 public:
 	DlgEnv(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Settings"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(780, 559), long style = wxDEFAULT_DIALOG_STYLE);
 	~DlgEnv();
@@ -120,5 +124,6 @@ private:
 	void DoApplyExtColor(const wxString& strExts, const wxString& strCol);
 	void DoMakeColorInfo(const wxColour& col, const wxString& strExt);
 	void DoSetExtColorInfoToList();
+	void DoExternalPGOrdering(bool bMoveUp);
 };
 #endif

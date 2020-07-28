@@ -157,11 +157,19 @@ DlgEnv::DlgEnv(wxWindow* parent, wxWindowID id, const wxString& title, const wxP
 
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer(wxVERTICAL);
+	
+	wxBoxSizer* bSizer40;
+	bSizer40 = new wxBoxSizer( wxHORIZONTAL );
+
 
 	m_lstExternalPG = new wxListCtrl(sbSizer2->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL | wxBORDER_SIMPLE);
-	bSizer13->Add(m_lstExternalPG, 1, wxALL | wxEXPAND, 5);
+	bSizer40->Add( m_lstExternalPG, 1, wxALL|wxEXPAND, 5 );
+	
+	m_spinSort = new wxSpinButton( sbSizer2->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( 20,50 ), 0 );
+	bSizer40->Add( m_spinSort, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-
+	bSizer13->Add(bSizer40, 1, wxALL | wxEXPAND, 5);
+	
 	sbSizer2->Add(bSizer13, 1, wxEXPAND, 5);
 
 
@@ -492,6 +500,7 @@ DlgEnv::DlgEnv(wxWindow* parent, wxWindowID id, const wxString& title, const wxP
 	// Connect Events
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(DlgEnv::OnDlgCloseClick));
 	this->Connect(wxEVT_INIT_DIALOG, wxInitDialogEventHandler(DlgEnv::OnInitDialog));
+	
 	m_btnFontSelect->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnFontFindClick), NULL, this);
 	m_btnFindExternlPG->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnExternalPG_FindClick), NULL, this);
 	m_btnAddExternalPG->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnExternalPG_AddClick), NULL, this);
@@ -506,6 +515,9 @@ DlgEnv::DlgEnv(wxWindow* parent, wxWindowID id, const wxString& title, const wxP
 	m_btnCancel->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnEnvCancelClick), NULL, this);
 	m_btnApply->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnApplyClick), NULL, this);
 	m_btnClose->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnCloseClick), NULL, this);
+	
+	m_spinSort->Connect( wxEVT_SCROLL_LINEDOWN, wxSpinEventHandler( DlgEnv::OnSpinDown ), NULL, this );
+	m_spinSort->Connect( wxEVT_SCROLL_LINEUP, wxSpinEventHandler( DlgEnv::OnSpinUp ), NULL, this );
 }
 
 DlgEnv::~DlgEnv()
@@ -527,6 +539,9 @@ DlgEnv::~DlgEnv()
 	m_btnCancel->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnEnvCancelClick), NULL, this);
 	m_btnApply->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnApplyClick), NULL, this);
 	m_btnClose->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgEnv::OnCloseClick), NULL, this);
+
+	m_spinSort->Disconnect( wxEVT_SCROLL_LINEDOWN, wxSpinEventHandler( DlgEnv::OnSpinDown ), NULL, this );
+	m_spinSort->Disconnect( wxEVT_SCROLL_LINEUP, wxSpinEventHandler( DlgEnv::OnSpinUp ), NULL, this );
 }
 
 void DlgEnv::OnDlgCloseClick(wxCloseEvent& event)
@@ -707,9 +722,9 @@ void DlgEnv::OnExternalPG_FindClick(wxCommandEvent& event)
 
 void DlgEnv::OnExternalPG_AddClick(wxCommandEvent& event)
 {
-	wxString strPGName = m_txtExternalPGName->GetLineText(1);
+	wxString strPGName = m_txtExternalPGName->GetValue();
 	wxString strPGPath = m_staticExternalPGPath->GetLabelText();
-	wxString strPGArgs = m_txtArgs->GetLineText(1);
+	wxString strPGArgs = m_txtArgs->GetValue();
 
 	if (strPGName.IsEmpty())
 	{
@@ -754,9 +769,9 @@ void DlgEnv::OnExternalPG_AddClick(wxCommandEvent& event)
 
 void DlgEnv::OnExternalPG_ModClick(wxCommandEvent& event)
 {
-	m_lstExternalPG->SetItem(m_iExtPGSelected, 0, m_txtExternalPGName->GetLineText(1));
+	m_lstExternalPG->SetItem(m_iExtPGSelected, 0, m_txtExternalPGName->GetValue());
 	m_lstExternalPG->SetItem(m_iExtPGSelected, 1, m_staticExternalPGPath->GetLabelText());
-	m_lstExternalPG->SetItem(m_iExtPGSelected, 2, m_txtArgs->GetLineText(1));
+	m_lstExternalPG->SetItem(m_iExtPGSelected, 2, m_txtArgs->GetValue());
 
 	m_lstExternalPG->SetItemState(m_iExtPGSelected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
@@ -999,4 +1014,40 @@ void DlgEnv::OnBackColorChanged(wxColourPickerEvent& event)
 
 	m_lstExtColor->Refresh();
 	m_lstExtColor->Update();
+}
+
+void DlgEnv::OnSpinDown( wxSpinEvent& event )
+{
+	DoExternalPGOrdering(false);
+}
+
+void DlgEnv::OnSpinUp( wxSpinEvent& event )
+{
+	DoExternalPGOrdering(true);
+}
+
+void DlgEnv::DoExternalPGOrdering(bool bMoveUp)
+{
+	int iItemCounts = m_lstExternalPG->GetItemCount();
+	if(iItemCounts == 1 || m_iExtPGSelected > iItemCounts)
+		return;
+	
+	if(bMoveUp && m_iExtPGSelected == 0)
+		return;
+		
+	wxString strPGName = m_lstExternalPG->GetItemText(m_iExtPGSelected, 0);
+	wxString strPGPath = m_lstExternalPG->GetItemText(m_iExtPGSelected, 1);
+	wxString strPGArgs = m_lstExternalPG->GetItemText(m_iExtPGSelected, 2);
+	
+	m_lstExternalPG->DeleteItem(m_iExtPGSelected);
+	if(bMoveUp)
+		m_iExtPGSelected--;
+	else
+		m_iExtPGSelected++;
+		
+	m_lstExternalPG->InsertItem(m_iExtPGSelected, strPGName);
+	m_lstExternalPG->SetItem(m_iExtPGSelected, 1, strPGPath);
+	m_lstExternalPG->SetItem(m_iExtPGSelected, 2, strPGArgs);
+	
+	m_lstExternalPG->SetItemState(m_iExtPGSelected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
