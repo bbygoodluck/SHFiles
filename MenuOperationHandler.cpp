@@ -26,7 +26,7 @@ CMenuOperationHandler* CMenuOperationHandler::Get()
 	return m_pMenuOPHandlerInstance;
 }
 
-void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType)
+void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, const wxString& strInfo)
 {
 	switch(_menuType)
 	{	
@@ -114,6 +114,10 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType)
 #ifdef __WXMSW__
 		case _MENU_ETC_ADD_DRIVE:
 			DoAddDriveAndRemove();
+			break;
+			
+		case _MENU_DISK_SPACE_UPDATE:
+			DoDiskspaceUpdate(strInfo);
 			break;
 #endif			
 		default:
@@ -576,5 +580,19 @@ void CMenuOperationHandler::DoAddDriveAndRemove()
 		CTabManager* pAnotherTabManager = theSplitterManager->GetAnotherTab();
 		pAnotherTabManager->GetActiveViewPanel()->DoMyEventExecuteToView(wxEVT_DRIVE_ADD_REMOVE);
 	}	
+}
+
+void CMenuOperationHandler::DoDiskspaceUpdate(const wxString& strDrive)
+{
+	//현재 드라이브의 용량을 갱신한다.
+	theDriveInfo->UpdateSpace(strDrive);
+	CTabManager* pCurrentTabManager = theSplitterManager->GetActiveTab();
+	pCurrentTabManager->GetActiveViewPanel()->DoMyEventExecuteToView(wxEVT_DISK_SPACE_UPDATE, strDrive);
+	
+	if(theJsonConfig->GetSplitStyle() != WINDOW_SPLIT_NONE)
+	{
+		CTabManager* pAnotherTabManager = theSplitterManager->GetAnotherTab();
+		pAnotherTabManager->GetActiveViewPanel()->DoMyEventExecuteToView(wxEVT_DISK_SPACE_UPDATE, strDrive);
+	}
 }
 #endif

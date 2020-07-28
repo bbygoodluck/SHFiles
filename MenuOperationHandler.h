@@ -12,7 +12,7 @@ public:
 	static CMenuOperationHandler *Get();
 	
 public:
-	void ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType);
+	void ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, const wxString& strInfo = wxT(""));
 	void SetFavoriteItem(const wxString& strItem);
 	
 private:
@@ -61,6 +61,8 @@ private:
 #ifdef __WXMSW__
 	//드라이브 생성 및 삭제
 	void DoAddDriveAndRemove();
+	//디스크용량 갱신
+	void DoDiskspaceUpdate(const wxString& strDrive);
 #endif
 private:
 	wxString m_strFavoriteItem = wxT("");

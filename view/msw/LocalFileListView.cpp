@@ -5,7 +5,8 @@
 wxBEGIN_EVENT_TABLE(CLocalFileListView, CListView)
 	EVT_PAINT(CLocalFileListView::OnPaint)
 	EVT_ERASE_BACKGROUND(CLocalFileListView::OnErase)
-	EVT_MY_CUSTOM_COMMAND(wxEVT_DRIVE_ADD_REMOVE, wxID_ANY, CLocalFileListView::DoDriveAddOrRemove)
+	EVT_MY_CUSTOM_COMMAND(wxEVT_DRIVE_ADD_REMOVE, wxID_ANY, CLocalFileListView::OnDriveAddOrRemove)
+	EVT_MY_CUSTOM_COMMAND(wxEVT_DISK_SPACE_UPDATE, wxID_ANY, CLocalFileListView::OnUpdateDriveSpace)
 wxEND_EVENT_TABLE()
 
 CLocalFileListView::CLocalFileListView(wxWindow* parent, const int nID, const wxSize& sz)
@@ -305,8 +306,8 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 		m_bIsDisplayDetailInfo = false;
 		
 		m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-		DoUpdateDriveSpace();
-		theCommonUtil->RefreshWindow(this, m_viewRect);
+		theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+	//	theCommonUtil->RefreshWindow(this, m_viewRect);
 	}
 }
 
@@ -345,8 +346,8 @@ void CLocalFileListView::DoModify(const wxString& strName)
 		m_bIsDisplayDetailInfo = false;
 		
 		m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-		DoUpdateDriveSpace();
-		theCommonUtil->RefreshWindow(this, m_viewRect);
+		theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+	//	theCommonUtil->RefreshWindow(this, m_viewRect);
 	}
 }
 
@@ -391,8 +392,8 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 	m_bIsDisplayDetailInfo = false;
 	
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-	DoUpdateDriveSpace();
-	theCommonUtil->RefreshWindow(this, m_viewRect);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+//	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& strNewName)
@@ -436,43 +437,6 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
-
-void CLocalFileListView::DoUpdateDriveSpace()
-{
-	wxString strDriveName(wxT(""));
-	//현재 드라이브의 용량을 갱신한다.
-	theDriveInfo->UpdateSpace(m_strVolume);
-	
-	wxVector<CDirData>::iterator iter = m_itemList.end() - 1;
-
-	for (iter; iter != m_itemList.begin(); --iter)
-	{
-		CDirData* pData = (CDirData *)&(*iter);
-		strDriveName = pData->GetDriveName();
-
-		if (m_strVolume.CmpNoCase(strDriveName) == 0)
-		{
-			CDriveItem* drvItem;
-			wxString strName;
-			int iDriveType;
-
-			drvItem = theDriveInfo->GetDriveItem(strDriveName);
-			strName = drvItem->GetDisplayName();
-			iDriveType = drvItem->GetDriveType();
-
-			if ((iDriveType != wxFS_VOL_CDROM) &&
-				(iDriveType != wxFS_VOL_DVDROM))
-			{
-				wxString strSpace = drvItem->GetSpace();
-				strName += wxT(" - ") + strSpace;
-
-				pData->SetName(strName);
-			}
-
-			break;
-		}
-	}
-}
 
 void CLocalFileListView::ExecuteExternalProgramForEdit(int iIndex)
 {
@@ -540,7 +504,7 @@ void CLocalFileListView::DoUpdateModificationTimeOfDir()
 	}
 }
 
-void CLocalFileListView::DoDriveAddOrRemove(wxCommandEvent& event)
+void CLocalFileListView::OnDriveAddOrRemove(wxCommandEvent& event)
 {
 	wxVector<CDirData>::iterator iter = m_itemList.end() - 1;
 	for (iter; iter != m_itemList.begin(); --iter)
@@ -556,4 +520,40 @@ void CLocalFileListView::DoDriveAddOrRemove(wxCommandEvent& event)
 
 	ReCalcPage();
 	theCommonUtil->RefreshWindow(this, m_viewRect);
+}
+
+void CLocalFileListView::OnUpdateDriveSpace(wxCommandEvent& event)
+{
+	wxString strDiskName = event.GetString();
+	wxString strDriveName(wxT(""));
+	wxVector<CDirData>::iterator iter = m_itemList.end() - 1;
+
+	for (iter; iter != m_itemList.begin(); --iter)
+	{
+		CDirData* pData = (CDirData *)&(*iter);
+		strDriveName = pData->GetDriveName();
+
+		if (strDiskName.CmpNoCase(strDriveName) == 0)
+		{
+			CDriveItem* drvItem;
+			wxString strName;
+			int iDriveType;
+
+			drvItem = theDriveInfo->GetDriveItem(strDriveName);
+			strName = drvItem->GetDisplayName();
+			iDriveType = drvItem->GetDriveType();
+
+			if ((iDriveType != wxFS_VOL_CDROM) &&
+				(iDriveType != wxFS_VOL_DVDROM))
+			{
+				wxString strSpace = drvItem->GetSpace();
+				strName += wxT(" - ") + strSpace;
+
+				pData->SetName(strName);
+			}
+			
+			theCommonUtil->RefreshWindow(this, m_viewRect);
+			break;
+		}
+	}
 }

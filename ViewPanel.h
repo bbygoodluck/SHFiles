@@ -36,7 +36,7 @@ public:
 		return m_pFileListView.get();
 	}
 	
-	void DoMyEventExecuteToView(wxEventType evtType);
+	void DoMyEventExecuteToView(wxEventType evtType, const wxString& strInfo = wxT(""));
 	void TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxString& strInfo = wxT(""));
 	void ReloadPathOfView(const wxString& strPathInfo = wxT(""));
 	

@@ -19,5 +19,7 @@ wxDECLARE_EVENT(wxEVT_DIRMANAGER_REFRESH_ALL, wxCommandEvent);
 #ifdef __WXMSW__
 //드라이브 추가 삭제
 wxDECLARE_EVENT(wxEVT_DRIVE_ADD_REMOVE, wxCommandEvent);
+//디스크용량 갱신
+wxDECLARE_EVENT(wxEVT_DISK_SPACE_UPDATE, wxCommandEvent);
 #endif
 #endif

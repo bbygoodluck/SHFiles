@@ -94,9 +94,10 @@ bool CViewPanel::GetDeleteItems(std::list<wxString>& lstDatas, bool bTrash)
 	return true;
 }
 
-void CViewPanel::DoMyEventExecuteToView(wxEventType evtType)
+void CViewPanel::DoMyEventExecuteToView(wxEventType evtType, const wxString& strInfo)
 {
 	wxCommandEvent evt(evtType);
+	evt.SetString(strInfo);
 	wxPostEvent(m_pFileListView.get(), evt);
 }
 
