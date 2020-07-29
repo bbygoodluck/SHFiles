@@ -22,32 +22,38 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 {
 	int _iMenuID = event.GetId();
 	
-	if       (_iMenuID == XRCID("m_fMenu_Execute"))		    menu_file_execute();
-	else if  (_iMenuID == XRCID("m_fMenu_Rename"))		    menu_file_rename();
-	else if  (_iMenuID == XRCID("m_fMenu_NewTab"))		    menu_file_add_tab();
-	else if  (_iMenuID == XRCID("m_fMenu_MakeFolder"))	    menu_file_add_dir();
-	else if  (_iMenuID == XRCID("m_fMenu_FileEdit"))		menu_file_edit();
-	else if  (_iMenuID == XRCID("m_fMenu_Copy"))			menu_file_CopyMove(_MENU_FILE_COPY);
-	else if  (_iMenuID == XRCID("m_fMenu_Move"))			menu_file_CopyMove(_MENU_FILE_MOVE);
-	else if  (_iMenuID == XRCID("m_eMenu_Copy"))			menu_file_CopyMove(_MENU_FILE_COPY_CLIPBOARD);
-	else if  (_iMenuID == XRCID("m_eMenu_Cut"))			    menu_file_CopyMove(_MENU_FILE_MOVE_CLIPBOARD);
-	else if  (_iMenuID == XRCID("m_eMenu_Paste"))		    menu_file_CopyMove(_MENU_FILE_PASTE_CLIPBOARD);
-	else if  (_iMenuID == XRCID("m_fMenu_goTrash"))		    menu_file_trashOrDel();
-	else if  (_iMenuID == XRCID("m_fMenu_goDel"))		    menu_file_trashOrDel();
-	else if  (_iMenuID == XRCID("m_fMenu_Exit"))			menu_file_programExit();
-	else if  (_iMenuID == XRCID("m_eMenu_Release"))		    menu_edit_select_release(_MENU_EDIT_ALL_RELEASE);
-	else if  (_iMenuID == XRCID("m_eMenu_SelAll"))		    menu_edit_select_release(_MENU_EDIT_ALL_SELECT);
-	else if  (_iMenuID == XRCID("m_eMenu_ContextMenu"))		menu_edit_ContextMenu();
-	else if  (_iMenuID == XRCID("m_eMenu_Search"))	        menu_edit_find();
-	else if  (_iMenuID == XRCID("m_pMenu_Refresh"))         menu_path_Refresh();
-	else if  (_iMenuID == XRCID("m_pMenu_GotoDirDirectly")) menu_path_GotoDirDirectly(); 
-	else if  (_iMenuID == XRCID("m_pMenu_PathMng"))         menu_path_DirManager();
-	else if  (_iMenuID == XRCID("m_toolMenu_ENV"))	        menu_tool_envsetting();
-	else if  (_iMenuID == XRCID("m_toolMenu_CurSave"))	    menu_tool_cursave();
-	else if  (_iMenuID == XRCID("m_viewMenu_FullScr"))	    menu_view_fullScreen();
+	if       (_iMenuID == XRCID("m_fMenu_Execute"))		             menu_file_execute();
+	else if  (_iMenuID == XRCID("m_fMenu_Rename"))		             menu_file_rename();
+	else if  (_iMenuID == XRCID("m_fMenu_NewTab"))		             menu_file_add_tab();
+	else if  (_iMenuID == XRCID("m_fMenu_MakeFolder"))	             menu_file_add_dir();
+	else if  (_iMenuID == XRCID("m_fMenu_FileEdit"))		         menu_file_edit();
+	else if  (_iMenuID == XRCID("m_fMenu_Copy"))			         menu_file_CopyMove(_MENU_FILE_COPY);
+	else if  (_iMenuID == XRCID("m_fMenu_Move"))			         menu_file_CopyMove(_MENU_FILE_MOVE);
+	else if  (_iMenuID == XRCID("m_eMenu_Copy"))			         menu_file_CopyMove(_MENU_FILE_COPY_CLIPBOARD);
+	else if  (_iMenuID == XRCID("m_eMenu_Cut"))			             menu_file_CopyMove(_MENU_FILE_MOVE_CLIPBOARD);
+	else if  (_iMenuID == XRCID("m_eMenu_Paste"))		             menu_file_CopyMove(_MENU_FILE_PASTE_CLIPBOARD);
+	else if  (_iMenuID == XRCID("m_fMenu_goTrash"))		             menu_file_trashOrDel();
+	else if  (_iMenuID == XRCID("m_fMenu_goDel"))		             menu_file_trashOrDel();
+	else if  (_iMenuID == XRCID("m_fMenu_Exit"))			         menu_file_programExit();
+	else if  (_iMenuID == XRCID("m_eMenu_Release"))		             menu_edit_select_release(_MENU_EDIT_ALL_RELEASE);
+	else if  (_iMenuID == XRCID("m_eMenu_SelAll"))		             menu_edit_select_release(_MENU_EDIT_ALL_SELECT);
+	else if  (_iMenuID == XRCID("m_eMenu_ContextMenu"))		         menu_edit_ContextMenu();
+	else if  (_iMenuID == XRCID("m_eMenu_Search"))	                 menu_edit_find();
+	else if  (_iMenuID == XRCID("m_pMenu_Refresh"))                  menu_path_Refresh();
+	else if  (_iMenuID == XRCID("m_pMenu_GotoDirDirectly"))          menu_path_GotoDirDirectly();
+    else if  (_iMenuID == XRCID("m_menuComp_View"))                  menu_comp_compressView();
+	else if  (_iMenuID == XRCID("m_menuComp_DoCompZip"))             menu_comp_DoCompress(wxT("zip"), false);
+	else if  (_iMenuID == XRCID("m_menuComp_DoComp7Zip"))            menu_comp_DoCompress(wxT("7z"), false);
+	else if  (_iMenuID == XRCID("m_menuComp_CurrentDirCompRelease")) menu_comp_DoDeCompress(false);
+	else if  (_iMenuID == XRCID("m_menuComp_MakeDirCompRelease"))    menu_comp_DoDeCompress(true);
+	else if  (_iMenuID == XRCID("m_menuComp_SelDirCompRelease"))     menu_comp_SelDirCompRelease();
+	else if  (_iMenuID == XRCID("m_pMenu_PathMng"))                  menu_path_DirManager();
+	else if  (_iMenuID == XRCID("m_toolMenu_ENV"))	                 menu_tool_envsetting();
+	else if  (_iMenuID == XRCID("m_toolMenu_CurSave"))	             menu_tool_cursave();
+	else if  (_iMenuID == XRCID("m_viewMenu_FullScr"))	             menu_view_fullScreen();
 	else if ((_iMenuID == XRCID("m_viewMenu_Window_0")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Window_1")) ||
-		     (_iMenuID == XRCID("m_viewMenu_Window_2")))   	menu_window_operation(_iMenuID, theJsonConfig->GetSplitStyle());
+		     (_iMenuID == XRCID("m_viewMenu_Window_2")))   	         menu_window_operation(_iMenuID, theJsonConfig->GetSplitStyle());
 	else if ((_iMenuID == XRCID("m_viewMenu_Column_0")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_1")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_2")) ||
@@ -57,10 +63,10 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 		     (_iMenuID == XRCID("m_viewMenu_Column_6")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_7")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_8")) ||
-		     (_iMenuID == XRCID("m_viewMenu_Column_9")))    menu_column_operation(_iMenuID, theJsonConfig->GetColumnCount());
-	else if  (_iMenuID == XRCID("m_favoriteMenu_Add"))      menu_favorite(_MENU_FAVORITE_ITEM_ADD);
-	else if  (_iMenuID == XRCID("m_favoriteMenu_Manager"))  menu_favorite(_MENU_FAVORITE_MANAGER);
-	else if  (_iMenuID == XRCID("m_helpMenu_thisProgram"))  menu_help_thispg();
+		     (_iMenuID == XRCID("m_viewMenu_Column_9")))             menu_column_operation(_iMenuID, theJsonConfig->GetColumnCount());
+	else if  (_iMenuID == XRCID("m_favoriteMenu_Add"))               menu_favorite(_MENU_FAVORITE_ITEM_ADD);
+	else if  (_iMenuID == XRCID("m_favoriteMenu_Manager"))           menu_favorite(_MENU_FAVORITE_MANAGER);
+	else if  (_iMenuID == XRCID("m_helpMenu_thisProgram"))           menu_help_thispg();
 }
 
 void CEvtHandler::OnMenuEventUpdate(wxUpdateUIEvent& event)
@@ -213,6 +219,27 @@ void CEvtHandler::menu_path_GotoDirDirectly()
 void CEvtHandler::menu_path_DirManager()
 {
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_PATH_DIR_MANAGER);
+}
+
+// 압축 보기
+void CEvtHandler::menu_comp_compressView()
+{
+	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+}
+// 압축하기
+void CEvtHandler::menu_comp_DoCompress(const wxString& strExt, bool bSetPassword)
+{
+	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+}
+// 압축해제
+void CEvtHandler::menu_comp_DoDeCompress(bool isMakeFolder)
+{
+	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+}
+
+void CEvtHandler::menu_comp_SelDirCompRelease()
+{
+	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 }
 
 //보기메뉴

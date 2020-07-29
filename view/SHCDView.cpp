@@ -1524,7 +1524,7 @@ void CSHCDView::DoRenameOn(const wxString& strName)
 	m_pTxtCtrlForRename->Show(true);
 	m_pTxtCtrlForRename->SetFocus();
 	
-	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")));
+	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE_STRING")));
 	
 	wxSize sztip = dc.GetTextExtent(strDontUse);
 	wxSize szTooltip;

@@ -48,6 +48,16 @@ private:
 	void menu_path_GotoDirDirectly();
 	    //디렉토리 관리기
 	void menu_path_DirManager();
+	
+	//압축메뉴
+		// 압축 보기
+	void menu_comp_compressView();
+		// 압축하기
+	void menu_comp_DoCompress(const wxString& strExt, bool bSetPassword);
+		// 압축해제
+	void menu_comp_DoDeCompress(bool isMakeFolder);
+	void menu_comp_SelDirCompRelease();
+	
 	//보기메뉴
 	    //전체화면
 	void menu_view_fullScreen();

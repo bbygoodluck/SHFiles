@@ -671,7 +671,7 @@ void CListView::DisplayItems(wxDC* pDC)
 			pDC->SetPen(pen);
 			pDC->SetBrush(brush);
 
-			pDC->DrawRectangle(rcFillRect);
+			pDC->DrawRoundedRectangle(rcFillRect, -0.08);
 			//포커스가 없는경우
 			if (!m_bSetFocus)
 				dispColor = wxColour(90, 90, 90);
@@ -2033,7 +2033,7 @@ void CListView::DoRenameOn(const wxString& strRename)
 	m_pTxtCtrlForRename->Show(true);
 	m_pTxtCtrlForRename->SetFocus();
 	
-	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")));
+	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE_STRING")));
 	wxClientDC dc(this);
 	wxSize sztip = dc.GetTextExtent(strDontUse);
 	wxSize szTooltip;

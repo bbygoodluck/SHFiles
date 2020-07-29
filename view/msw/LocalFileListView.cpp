@@ -408,10 +408,10 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	
 	bool bOldExist = false;
 	wxVector<CDirData>::iterator iterOld = GetItemExist(strOldName, bOldExist);
-	if(!bOldExist)
-		return;
+
+	if(bOldExist)
+		iterOld->SetName(strNewName);
 		
-	iterOld->SetName(strNewName);
 	bool bAttr = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
 	
 	if(!isDir)
@@ -419,9 +419,33 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 		wxString strExt = theCommonUtil->GetExt(strNewName);
 		wxString strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 		
-		iterOld->SetExt(strExt);
-		iterOld->SetTypeName(strDesc);
-		
+		if(bOldExist)
+		{
+			iterOld->SetExt(strExt);
+			iterOld->SetTypeName(strDesc);
+		}
+		else
+		{
+			CDirData dirItem;
+			dirItem.SetName(strNewName);
+
+			m_iFileCount++;
+			dirItem.SetType(CDirData::item_type::file);
+			
+			m_dblFileSizeInDir += llSize.ToDouble();
+			
+			dirItem.SetAttribute(lattr);
+			dirItem.SetSize(llSize);
+			dirItem.SetDateTime(dt);
+			dirItem.SetPath(m_strCurrentPath);
+			dirItem.SetExt(strExt);
+			dirItem.SetTypeName(strDesc);
+
+			m_itemList.push_back(dirItem);
+			
+			m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+			theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+		}
 		
 		m_strMaxName = FindMaxData(strNewName, m_strMaxName);
 		m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
