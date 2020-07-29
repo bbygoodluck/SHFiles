@@ -1716,6 +1716,10 @@ void CListView::DoSelectedItemsClear()
 	}
 	
 	m_hashSelectedItem.clear();
+	m_pMyTooltipView->Show(false);
+	
+	m_iSelDirCnt = 0;
+	m_iSelFileCnt = 0;
 }
 
 void CListView::DoMyEventExecute(wxCommandEvent& event)
