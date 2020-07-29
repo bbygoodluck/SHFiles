@@ -1494,12 +1494,52 @@ bool CListView::SetSelectedItem(int iKeyCode)
 			
 			std::unordered_map<int, SELITEM_INFO>::value_type valsel(m_nCurrentItemIndex, _Info);
 			m_hashSelectedItem.insert(valsel);
+			
+			if(fIter->IsFile())
+				m_iSelFileCnt++;
+			else
+				m_iSelDirCnt++;
 		}
 		else
 		{
 			std::unordered_map<int, SELITEM_INFO>::const_iterator findKey = m_hashSelectedItem.find(m_nCurrentItemIndex);
 			if (findKey != m_hashSelectedItem.end())
+			{
+				SELITEM_INFO _Info = findKey->second;
+				if(_Info.m_bFile)
+					m_iSelFileCnt--;
+				else
+					m_iSelDirCnt--;
+					
 				m_hashSelectedItem.erase(m_nCurrentItemIndex);
+			}
+		}
+		
+		if(m_hashSelectedItem.size() > 0)
+		{
+			m_pMyTooltipView->Show(false);
+			
+			wxString strSelString(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_SELINFO")));
+			wxString strSelItems = strSelString + wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_ITEM_SELECT")), m_iSelDirCnt, m_iSelFileCnt);
+			
+			wxClientDC dc(this);
+			wxSize sztip = dc.GetTextExtent(strSelItems);
+			wxSize szTooltip;
+	
+			szTooltip.SetWidth(sztip.GetWidth() + 10);
+			szTooltip.SetHeight(sztip.GetHeight() + 5);
+	
+			m_pMyTooltipView->SetTooltipText(strSelItems);
+			m_pMyTooltipView->SetThemeEnabled(true);
+			m_pMyTooltipView->SetPosition(wxPoint(m_viewRect.GetRight() - szTooltip.GetWidth(), m_viewRect.GetBottom() - szTooltip.GetHeight()));
+			m_pMyTooltipView->SetSize(szTooltip);
+			m_pMyTooltipView->Show(true);
+		}
+		else
+		{
+			m_pMyTooltipView->Show(false);
+			m_iSelDirCnt = 0;
+			m_iSelFileCnt = 0;
 		}
 	}
 	

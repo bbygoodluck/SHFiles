@@ -211,6 +211,10 @@ protected:
 	int m_iPathDepth          = 1;
 	//전체 포지션 카운터
 	int m_iTotalPositionCnt   = 0;
+	//선택 파일수
+	int m_iSelFileCnt         = 0;
+	//선택 디렉토리 수
+	int m_iSelDirCnt          = 0;
 	//폴더 사이즈
 	double m_dblFileSizeInDir = 0.0;
 	//디렉토리 Load 플래그
