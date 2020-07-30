@@ -42,8 +42,13 @@ wxString CTabManager::GetTabDispPathName(const wxString& strSourcePath)
 
 CViewPanel* CTabManager::GetActiveViewPanel()
 {
-	int nSel = GetSelection();
-	return (CViewPanel *)GetPage(nSel);
+	if(this)
+	{
+		int nSel = GetSelection();
+		return (CViewPanel *)GetPage(nSel);
+	}
+	
+	return nullptr;
 }
 
 void CTabManager::OnPageClose(wxAuiNotebookEvent& event)

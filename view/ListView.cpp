@@ -114,7 +114,7 @@ void CListView::Initialize()
 	
 	wxVector<CDirData>().swap(m_itemList);
 	m_itemList.reserve(300);
-	
+		
 	//디렉토리 수
 	m_iDirCount = 0;
 	//파일수
@@ -1852,10 +1852,10 @@ void CListView::ExecFileEditProgram()
 	
 	if(iExternalPGCount > 1)
 	{
-		int iItemPosition = m_nCurrentItemIndex % m_nDisplayItemInView;
+		int iItemPosition = m_nCurrentItemIndex - m_nStartIndex;//% m_nDisplayItemInView;
 		CPositionInfo posInfo = m_posList.at(iItemPosition);
 		
-		wxPoint pt(posInfo.m_nameRect.GetRight() / 5, posInfo.m_nameRect.GetTop() + ICON_HEIGHT);
+		wxPoint pt(posInfo.m_nameRect.GetLeft() + 5, posInfo.m_nameRect.GetTop() + ICON_HEIGHT + 5);
 		wxMenu menu;
 		
 		for (int i = 0; i < iExternalPGCount; i++)
@@ -2044,7 +2044,7 @@ void CListView::OnEnterTextCtrl(wxCommandEvent& event)
 		return;
 	}
 	
-	if(!theCommonUtil->IsCreatableDirectory(strNewRename))
+	if(!theCommonUtil->IsCreatableDirOrFileName(strNewRename))
 	{
 		DoRenameOn(strNewRename);
 		return;

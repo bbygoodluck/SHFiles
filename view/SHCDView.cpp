@@ -1494,7 +1494,7 @@ void CSHCDView::OnTextCtrlEnter(wxCommandEvent& event)
 		return;
 	}
 	
-	if(!theCommonUtil->IsCreatableDirectory(strNewName))
+	if(!theCommonUtil->IsCreatableDirOrFileName(strNewName))
 	{
 		DoRenameOn(strNewName);
 		return;

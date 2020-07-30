@@ -434,7 +434,7 @@ void CCommonUtil::LaunchAndExec(const wxString& strExecProgram, const wxString& 
 		return;
 	}	
 	
-	if(Compare(strExt.MakeLower(), wxT("exe")))
+	if(Compare(strExt.MakeLower(), wxT("exe")) == 0)
 	{
 		SHELLEXECUTEINFO execInfo;
 		wxZeroMemory(execInfo);
@@ -632,7 +632,7 @@ wxString CCommonUtil::ChangeName(const wxString& strName)
 	return sResult;
 }
 
-bool CCommonUtil::IsCreatableDirectory(const wxString& strDir)
+bool CCommonUtil::IsCreatableDirOrFileName(const wxString& strDir)
 {
 	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")));
 	strDontUse.Replace(wxT(" "), wxT(""));

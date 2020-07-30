@@ -105,7 +105,7 @@ void DlgAddDir::DoDialogProc(int nRetCode)
 			return;
 		}
 		
-		if(!theCommonUtil->IsCreatableDirectory(m_strNewName))
+		if(!theCommonUtil->IsCreatableDirOrFileName(m_strNewName))
 		{
 			m_txtInput->SetFocus();
 			return;

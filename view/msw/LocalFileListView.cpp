@@ -162,19 +162,17 @@ bool CLocalFileListView::ReadDirectory()
 	{
 		if (!theJsonConfig->IsViewAllFile())
 		{
-			if (!theJsonConfig->IsViewHiddenFile())
+			if (!theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
 			{
-				if (lattr & ATTR_HIDDEN)
-				{
-					if (!theJsonConfig->IsViewSystemFile())
-					{
-						if (lattr & ATTR_SYSTEM)
-							continue;
-					}
-
+				if ((lattr & ATTR_HIDDEN) || (lattr & ATTR_SYSTEM))
 					continue;
-				}
 			}
+		}
+		
+		if (theJsonConfig->IsViewHiddenFile())
+		{
+			if((lattr & ATTR_SYSTEM) && !theJsonConfig->IsViewSystemFile())
+				continue;
 		}
 		
 		CDirData dirItem;
@@ -246,19 +244,17 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 	{
 		if (!theJsonConfig->IsViewAllFile())
 		{
-			if (!theJsonConfig->IsViewHiddenFile())
+			if (!theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
 			{
-				if (lattr & ATTR_HIDDEN)
-				{
-					if (!theJsonConfig->IsViewSystemFile())
-					{
-						if (lattr & ATTR_SYSTEM)
-							return;
-					}
-
+				if ( (lattr & ATTR_HIDDEN) || (lattr & ATTR_SYSTEM) )
 					return;
-				}
 			}
+		}
+		
+		if (theJsonConfig->IsViewHiddenFile())
+		{
+			if((lattr & ATTR_SYSTEM) && !theJsonConfig->IsViewSystemFile())
+				return;
 		}
 		
 		CDirData dirItem;

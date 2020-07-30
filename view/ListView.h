@@ -176,7 +176,7 @@ protected:
 	// 키 입력문자
 	wxString m_strKeyInput = wxT("");
 	// 데이터
-	wxVector<CDirData> m_itemList;        
+	wxVector<CDirData> m_itemList;
 	//디렉토리방문이력
 	_HISTORY m_hashHistory;
 	

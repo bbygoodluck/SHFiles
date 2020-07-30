@@ -94,6 +94,10 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_TOOL_ENVIRONMENT:
 			DoSettings();
 			break;
+			
+		case _MENU_VIEW_FILELIST_CHANGE:
+			DoChangeFileList();
+			break;
 		//환경설정 저장
 		case _MENU_TOOL_SAVECONFIG:
 			DoSaveConfig();
@@ -338,6 +342,8 @@ void CMenuOperationHandler::DoDeleteTrash(_MENU_EVENT_TYPE _menuType)
 		wxMessageBox(wxT("Failed to file delete"), PROGRAM_FULL_NAME, wxICON_ERROR | wxOK);
 		return;
 	}
+	
+	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
 }
 
 void CMenuOperationHandler::DoProgramTerminate()
@@ -373,7 +379,6 @@ void CMenuOperationHandler::DoRefreshDir()
 	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ReloadPathOfView();
 	if(theJsonConfig->GetSplitStyle() != WINDOW_SPLIT_NONE)
 		theSplitterManager->GetAnotherTab()->GetActiveViewPanel()->ReloadPathOfView();
-	
 }
 
 void CMenuOperationHandler::DoGotoDirDirectly()
@@ -424,6 +429,11 @@ void CMenuOperationHandler::DoChageViewColumn()
 	SetViewColumnInTabs(pAnotherTabManager);
 }
 
+void CMenuOperationHandler::DoChangeFileList()
+{
+	DoRefreshDir();
+}
+
 void CMenuOperationHandler::SetViewColumnInTabs(CTabManager* pTabManager)
 {
 	if(pTabManager)
@@ -438,7 +448,6 @@ void CMenuOperationHandler::SetViewColumnInTabs(CTabManager* pTabManager)
 		}
 	}
 }
-
 
 void CMenuOperationHandler::DoSettings()
 {

@@ -176,7 +176,7 @@ WXLRESULT CMainFrame::MSWDefWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lP
 		case WM_DEVICECHANGE:
 			OnDeviceChange(wParam, lParam);
 			break;
-			
+		
 		default:
 			break;
 	}

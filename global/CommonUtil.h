@@ -77,7 +77,7 @@ public:
 	//파일명 변경
 	wxString ChangeName(const wxString& strName);
 	wxString GetFileName(const wxString& strFullPath);
-	bool IsCreatableDirectory(const wxString& strDir);
+	bool IsCreatableDirOrFileName(const wxString& strDir);
 	
 private:
 	static std::unique_ptr<CCommonUtil> m_pInstance;

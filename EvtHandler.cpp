@@ -64,6 +64,10 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 		     (_iMenuID == XRCID("m_viewMenu_Column_7")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_8")) ||
 		     (_iMenuID == XRCID("m_viewMenu_Column_9")))             menu_column_operation(_iMenuID, theJsonConfig->GetColumnCount());
+    else if ((_iMenuID == XRCID("m_viewMenu_DefaultFile")) ||
+	     	 (_iMenuID == XRCID("m_viewMenu_HiddenFile"))  ||
+		     (_iMenuID == XRCID("m_viewMenu_SystemFile"))  ||
+		     (_iMenuID == XRCID("m_viewMenu_AllFile")))              menu_view_filelist(_iMenuID);
 	else if  (_iMenuID == XRCID("m_favoriteMenu_Add"))               menu_favorite(_MENU_FAVORITE_ITEM_ADD);
 	else if  (_iMenuID == XRCID("m_favoriteMenu_Manager"))           menu_favorite(_MENU_FAVORITE_MANAGER);
 	else if  (_iMenuID == XRCID("m_helpMenu_thisProgram"))           menu_help_thispg();
@@ -272,6 +276,15 @@ void CEvtHandler::menu_column_operation(int iMenuID, const int iCurrentDispColum
 		theJsonConfig->SetChangeGlobalVal(wxT("DispColumn"), iDispColumn);
 		theMenuOPHandler->ExecuteMenuOperation(_MENU_VIEW_COLUMN_CHANGE);
 	}
+}
+    //파일리스트 종료
+void CEvtHandler::menu_view_filelist(int iMenuID)
+{
+	int iViewFileListFirst = XRCID("m_viewMenu_DefaultFile");
+	int iViewFileList = iMenuID - iViewFileListFirst;
+
+	theJsonConfig->SetViewFileKind(iViewFileList);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_VIEW_FILELIST_CHANGE);
 }
 
 //즐겨찾기

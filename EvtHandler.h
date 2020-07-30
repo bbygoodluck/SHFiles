@@ -65,7 +65,8 @@ private:
 	void menu_window_operation(int iMenuID, const int iCurrentWindowStyle);
 	    //컬럼 
 	void menu_column_operation(int iMenuID, const int iCurrentDispColumn);
-	
+	    //파일리스트 종료
+	void menu_view_filelist(int iMenuID);
 	//즐겨찾기
 	void menu_favorite(_MENU_EVENT_TYPE menuType);
 	

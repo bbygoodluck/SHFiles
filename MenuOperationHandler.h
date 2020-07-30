@@ -46,6 +46,8 @@ private:
 	//컬럼 변경
 	void DoChageViewColumn();
 	void SetViewColumnInTabs(CTabManager* pTabManager);
+	//파일리스트
+	void DoChangeFileList();
 	//즐겨찾기메뉴 선택
 	void DoFavoriteItemSelected();
 	//전체화면
