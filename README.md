@@ -2,7 +2,7 @@
 
 ###  설명
 
-- SHFiles는 윈도우(MacOS, Linux 개발예정)의 탐색기를 대체용 파일매니저입니다..
+- SHFiles는 윈도우(MacOS, Linux 개발예정)의 탐색기 대체용 파일매니저입니다..
 - 기존 [SHCommanderX](https://github.com/bbygoodluck/SHCommanderX)를 재구성하였으며 UI변화는 없으며 기존 소스코드에서 복잡한 처리를 단순화 하고 중복코드 제거, 알고리즘 변경으로 속도 및 안정성을 향상 시켰습니다.
 - Cross-Platform 개발을 위해 컴파일러를 VisualC++ → gcc 로 변경하였으며 그로 인해 실행파일의 크기가 1M정도 증가하였습니다.
 - SHFiles의 SH는 큰 아들 이름의 이니셜입니다.
