@@ -104,6 +104,10 @@ void CListView::Clear()
 
 void CListView::Initialize()
 {
+	m_strKeyInput = wxT("");
+	m_pMyTooltipView->SetTooltipText(wxT(""));
+	m_pMyTooltipView->Show(false);
+	
 	Clear();
 	
 	wxVector<CPositionInfo>().swap(m_posList);
@@ -951,13 +955,26 @@ void CListView::OnSize(wxSizeEvent& event)
 void CListView::OnChar(wxKeyEvent& event)
 {
 	int iKeyCode = event.GetKeyCode();
+	if(iKeyCode == WXK_ESCAPE && m_pMyTooltipView->IsShown())
+	{
+		m_pMyTooltipView->SetTooltipText(wxT(""));
+		m_pMyTooltipView->Show(false);
+		m_strKeyInput = wxT("");
+		
+		DoMatchClear();
+		theCommonUtil->RefreshWindow(this, m_viewRect);
+		event.Skip();
+		
+		return;
+	}
+	
 	if (theSkipKeyMap->IsExistSkipKey(iKeyCode))
 		return;
 		
 	bool bShift = wxIsShiftDown();
 	bool bControl = wxIsCtrlDown();
 	
-	if(bShift || bControl)
+	if(bControl)
 		return;
 	
 	wxString strKeyName(theCommonUtil->GetKeyName(event));

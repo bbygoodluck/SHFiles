@@ -215,7 +215,7 @@ void CDirTree::MakeTreeOrder()
 	{
 		NODE* pNode = *iter;
 
-		//rootÀÇ °æ¿ì´Â ºÎ¸ğ³ëµå°¡ Á¸ÀçÇÏÁö ¾ÊÀ½
+		//rootÃ€Ã‡ Â°Ã¦Â¿Ã¬Â´Ã‚ ÂºÃÂ¸Ã°Â³Ã«ÂµÃ¥Â°Â¡ ÃÂ¸Ã€Ã§Ã‡ÃÃÃ¶ Â¾ÃŠÃ€Â½
 		if (m_root == nullptr)
 			pNode->_row = m_iLastRow;
 		else
@@ -243,7 +243,7 @@ void CDirTree::MakeTreeOrder()
 		pTmpNode = pNode;
 	}
 
-	//¸¶Áö¸· µ¥ÀÌÅÍ ÀûÀç
+	//Â¸Â¶ÃÃ¶Â¸Â· ÂµÂ¥Ã€ÃŒÃ…Ã Ã€Ã»Ã€Ã§
 	std::unordered_map<int, wxVector<NODE* >>::iterator iterFind = m_mapItems.find(iPrevRow);
 	if (iterFind == m_mapItems.end())
 	{
@@ -257,7 +257,7 @@ void CDirTree::MakeTreeOrder()
 
 void CDirTree::MakeRowMap()
 {
-	//È­¸é¿¡ Ç¥½ÃµÉ Row º°·Î µ¥ÀÌÅÍ¸¦ map¿¡ ÀúÀå
+	//ÃˆÂ­Â¸Ã©Â¿Â¡ Ã‡Â¥Â½ÃƒÂµÃ‰ Row ÂºÂ°Â·Ã ÂµÂ¥Ã€ÃŒÃ…ÃÂ¸Â¦ mapÂ¿Â¡ Ã€ÃºÃ€Ã¥
 	m_mapItems.clear();
 	wxVector<NODE* >::iterator iter = _pOrder.begin();
 	wxVector<NODE* > mapData;
@@ -278,7 +278,7 @@ void CDirTree::MakeRowMap()
 		++iter;
 	}
 
-	//¸¶Áö¸· µ¥ÀÌÅÍ ÀûÀç
+	//Â¸Â¶ÃÃ¶Â¸Â· ÂµÂ¥Ã€ÃŒÃ…Ã Ã€Ã»Ã€Ã§
 	std::unordered_map<int, wxVector<NODE* >>::iterator iterFind = m_mapItems.find(iPrevRow);
 	if (iterFind == m_mapItems.end())
 	{
