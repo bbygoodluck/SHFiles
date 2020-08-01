@@ -118,5 +118,4 @@ typedef struct _EXTERNAL_EDIT_PROGRAM {
 const int EXTERNAL_PROGRAM_START_ID = 31000;
 const int EXTERNAL_PROGRAM_END_ID = 31010;
 
-static int WATCHER_TIMER_ID = 32000;
 #endif

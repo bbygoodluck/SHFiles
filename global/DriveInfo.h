@@ -94,7 +94,7 @@ private:
 
 private:
 	static std::unique_ptr<CDriveInfo> m_pInstance;
-	//µå¶óÀÌºê Á¸Àç Ã¼Å©¿ë
+	
 	std::unordered_map<wxString, CDriveItem> m_driveItems;
 	std::vector<std::unique_ptr<CDriveItem>> m_drive;
 

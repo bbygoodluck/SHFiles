@@ -44,4 +44,5 @@ extern bool _gAppActivated;
 
 //외부편집프로그램 목록
 extern std::unordered_map<int, EXTERNAL_EDIT_PROGRAM> _gExternalPGList;
+
 #endif

@@ -1,21 +1,8 @@
 #include "global.h"
 #include "DriveInfo.h"
-//#include "../engine/LocalFileSystem.h"
 
 std::unique_ptr<CDriveInfo> CDriveInfo::m_pInstance(nullptr);
 
-/*
-CDriveInfo::CDriveInfo()
-	: m_nDriveCount(0)
-	, m_strType(wxT(""))
-{
-
-}
-
-CDriveInfo::~CDriveInfo()
-{
-}
-*/
 CDriveInfo* CDriveInfo::Get()
 {
 	if (m_pInstance.get() == nullptr)

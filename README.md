@@ -16,8 +16,6 @@
 
 ### wxWidgets Build(gcc Dll Version)
 
-* Release	
-
 ```
 Release
 	64bit

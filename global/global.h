@@ -113,5 +113,9 @@ using namespace std;
 //디렉토리 트리관리
 #define theSHCD              (CDirTree::Get())
 //Skip 키
-#define theSkipKeyMap    (CSkipKeyMap::Get())
+#define theSkipKeyMap        (CSkipKeyMap::Get())
+
+//압축관련
+#include "../compress/Compress.h"
+#define theCompress          (CCompress::Get())
 #endif
