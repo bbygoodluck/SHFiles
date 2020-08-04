@@ -12,8 +12,8 @@ public:
 	static CCompress* Get();
 
 public:
-	bool Compress(const wxString& strFullPath, COMPRESS_TYPE comType);
-	bool Compress(std::vector<wxString>& vecDatas, COMPRESS_TYPE comType);
+	bool Compress(const wxString& strFullPath, const wxString& strCompressedFile, COMPRESS_TYPE comType);
+	bool Compress(std::vector<wxString>& vecDatas, const wxString& strCompressedFile, COMPRESS_TYPE comType);
 	bool UnCompress(const wxString& strCompressFile);
 	std::vector<wxString>& GetCompressList() { return m_vCompress; }
 	

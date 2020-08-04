@@ -16,6 +16,7 @@
 #include "./dialog/DlgFind.h"
 #include "./dialog/DirectoryManagerDlg.h"
 #include "./dialog/DlgEnv.h"
+#include "./dialog/DlgCompress.h"
 
 CMenuOperationHandler* CMenuOperationHandler::m_pMenuOPHandlerInstance(nullptr);
 CMenuOperationHandler* CMenuOperationHandler::Get()
@@ -605,3 +606,16 @@ void CMenuOperationHandler::DoDiskspaceUpdate(const wxString& strDrive)
 	}
 }
 #endif
+
+
+void CMenuOperationHandler::ExecuteCompress(const std::vector<wxString>& vCompressDatas, const wxString& strCompressedFile, const wxString& strCompressType)
+{
+	DlgCompress dlg(_gMainFrame);
+	
+	dlg.SetCompressInfo(vCompressDatas, strCompressedFile, strCompressType);
+	dlg.ShowModal();
+	
+	dlg.Destroy();
+	
+	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
+}

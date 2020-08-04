@@ -14,6 +14,7 @@ public:
 public:
 	void ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, const wxString& strInfo = wxT(""));
 	void SetFavoriteItem(const wxString& strItem);
+	void ExecuteCompress(const std::vector<wxString>& vCompressDatas, const wxString& strCompressedFile, const wxString& strCompressType);
 	
 private:
 	wxString GetTargetDirectory();

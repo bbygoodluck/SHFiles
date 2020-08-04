@@ -148,6 +148,7 @@ protected:
 private:
 	void AllClear();
 	void ShowFavoriteMenu();
+	void ShowCompress();
 	
 protected:
 	// 화면 버퍼(더블버퍼링 이용)
@@ -240,6 +241,7 @@ protected:
 	std::unique_ptr<wxTextCtrl> m_pTxtCtrlForRename = nullptr;
 	//tooltip window	
 	CMyTooltipView* m_pMyTooltipView;
+	CMyTooltipView* m_pMyTooltipKeyInput;
 	//Match 아이템 정보
 	wxVector<int> m_matchItems;
 protected:
@@ -256,7 +258,8 @@ protected:
 	
 	//파일편집(외부편집프로그램이 여러개인경우)
 	void OnMenuFileEditProcess(wxCommandEvent& event);
-	
+	//압축 실행
+	void OnCompress(wxCommandEvent& event);
 	//이름변경 이벤트
 	void OnEnterTextCtrl(wxCommandEvent& event);
 	void OnKeyDownTextCtrl(wxKeyEvent& event);

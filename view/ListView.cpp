@@ -24,6 +24,7 @@ wxBEGIN_EVENT_TABLE(CListView, wxWindow)
 	EVT_MY_CUSTOM_COMMAND(wxEVT_ITEM_ALL_SELECT, wxID_ANY, CListView::DoMyEventExecute)
 	EVT_MY_CUSTOM_COMMAND(wxEVT_ITEM_ALL_RELEASE, wxID_ANY, CListView::DoMyEventExecute)
 	EVT_MENU_RANGE(EXTERNAL_PROGRAM_START_ID, EXTERNAL_PROGRAM_END_ID, CListView::OnMenuFileEditProcess)
+	EVT_MENU_RANGE(COMPRESS_START_ID, COMPRESS_END_ID, CListView::OnCompress)
 wxEND_EVENT_TABLE()
 
 CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
@@ -59,6 +60,11 @@ CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 	m_pMyTooltipView = new CMyTooltipView(this);
 	m_pMyTooltipView->SetSize(60, 20);
 	m_pMyTooltipView->Show(false);
+
+	m_pMyTooltipKeyInput = new CMyTooltipView(this);
+	m_pMyTooltipKeyInput->SetSize(60, 20);
+	m_pMyTooltipKeyInput->Show(false);
+
 }
 
 CListView::~CListView()
@@ -74,6 +80,16 @@ CListView::~CListView()
 	m_pTxtCtrlForRename->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(CListView::OnKeyDownTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Disconnect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CListView::OnEnterTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CListView::OnKillFocusTxtCtrl), NULL, this);
+	
+	if(m_pMyTooltipView)
+		delete m_pMyTooltipView;
+		
+	m_pMyTooltipView = nullptr;
+	
+	if(m_pMyTooltipKeyInput)
+		delete m_pMyTooltipKeyInput;
+		
+	m_pMyTooltipKeyInput = nullptr;
 }
 
 void CListView::AllClear()
@@ -107,6 +123,9 @@ void CListView::Initialize()
 	m_strKeyInput = wxT("");
 	m_pMyTooltipView->SetTooltipText(wxT(""));
 	m_pMyTooltipView->Show(false);
+	
+	m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
+	m_pMyTooltipKeyInput->Show(false);
 	
 	Clear();
 	
@@ -957,8 +976,8 @@ void CListView::OnChar(wxKeyEvent& event)
 	int iKeyCode = event.GetKeyCode();
 	if(iKeyCode == WXK_ESCAPE && m_pMyTooltipView->IsShown())
 	{
-		m_pMyTooltipView->SetTooltipText(wxT(""));
-		m_pMyTooltipView->Show(false);
+		m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
+		m_pMyTooltipKeyInput->Show(false);
 		m_strKeyInput = wxT("");
 		
 		DoMatchClear();
@@ -978,6 +997,22 @@ void CListView::OnChar(wxKeyEvent& event)
 		return;
 	
 	wxString strKeyName(theCommonUtil->GetKeyName(event));
+	//드라이브 체크
+	
+	if(bShift)
+	{
+		wxString strTmp(strKeyName);
+		strTmp += wxT(":");
+		strTmp += SLASH;
+		
+		if (theJsonConfig->IsShift_IME_KOR_MoveDrive())
+		{
+			if (theDriveInfo->IsExistDrive(strTmp))
+				return;
+		}
+	}
+	
+	
 	bool bRefresh = false;
 	int iLenKeyInput = 0;
 	if(iKeyCode == WXK_BACK)
@@ -1010,11 +1045,11 @@ void CListView::OnChar(wxKeyEvent& event)
 			szTooltip.SetWidth(sztip.GetWidth() + 10);
 			szTooltip.SetHeight(sztip.GetHeight() + 5);
 			
-			m_pMyTooltipView->SetTooltipText(m_strKeyInput);
-			m_pMyTooltipView->SetThemeEnabled(true);
-			m_pMyTooltipView->SetPosition(ptTooltip);
-			m_pMyTooltipView->SetSize(szTooltip);
-			m_pMyTooltipView->Show(true);
+			m_pMyTooltipKeyInput->SetTooltipText(m_strKeyInput);
+			m_pMyTooltipKeyInput->SetThemeEnabled(true);
+			m_pMyTooltipKeyInput->SetPosition(ptTooltip);
+			m_pMyTooltipKeyInput->SetSize(szTooltip);
+			m_pMyTooltipKeyInput->Show(true);
 			
 			FindMatchItems();
 			bRefresh = true;
@@ -1023,14 +1058,14 @@ void CListView::OnChar(wxKeyEvent& event)
 		{
 			//클리어
 			bRefresh = true;
-			m_pMyTooltipView->Show(false);			
+			m_pMyTooltipKeyInput->Show(false);			
 		}
 	}
 	else
 	{	
 		//클리어
 		DoMatchClear();
-		m_pMyTooltipView->Show(false);
+		m_pMyTooltipKeyInput->Show(false);
 	}
 	
 	if(bRefresh)
@@ -1165,6 +1200,10 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			ShowFavoriteMenu();
 			break;
 		
+		case WXK_F6:
+			ShowCompress();
+			break;
+			
 		case WXK_REVERSE_SLASH:
 			GotoRoot();
 			break;
@@ -1433,10 +1472,10 @@ void CListView::DoMouseProcess(const wxPoint& pt, bool bDblClick)
 	if (FindItemInMousePoint(pt))
 	{
 		if (bDblClick)
-		{
+	//	{
 			PressEnterKey();
-			return;
-		}
+	//		return;
+	//	}
 		
 		m_bMouseClickItemFound = true;
 		theCommonUtil->RefreshWindow(this, m_viewRect);
@@ -2031,6 +2070,71 @@ void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 	}
 	
 	theCommonUtil->RefreshWindow(this, m_viewRect);
+}
+
+void CListView::ShowCompress()
+{
+	std::vector<wxString> vCompress = theCompress->GetCompressList();
+	
+	int iItemPosition = m_nCurrentItemIndex - m_nStartIndex;//% m_nDisplayItemInView;
+	CPositionInfo posInfo = m_posList.at(iItemPosition);
+	
+	wxPoint pt(posInfo.m_nameRect.GetLeft() + 5, posInfo.m_nameRect.GetTop() + ICON_HEIGHT + 5);
+	wxMenu menu;
+	
+	int iID = 0;
+	for (auto item : vCompress)
+	{
+		menu.Append(COMPRESS_START_ID + iID, item);
+		iID++;
+	}
+	
+	this->PopupMenu(&menu, pt);
+}
+
+void CListView::OnCompress(wxCommandEvent& event)
+{
+	int iId = event.GetId();
+	int iCompressID = iId - COMPRESS_START_ID;
+	
+	std::vector<wxString>::const_iterator iter = theCompress->GetCompressList().begin() + iCompressID;
+	
+	wxString strCompressType = *iter;
+	wxString strCompressedFile(wxT(""));
+	std::vector<wxString> vCompressDatas;
+	
+	int iSelCount = m_hashSelectedItem.size();
+	if(iSelCount == 0)
+	{
+		CDirData data = m_itemList.at(m_nCurrentItemIndex);
+		if (data.IsDrive())
+		{
+			wxMessageBox(wxT("The selected item is drive and You cannnot will be compressison"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+			return;
+		}
+		
+		vCompressDatas.emplace_back(data.GetFullPath());
+		wxString strTmp = theCommonUtil->GetPathName(data.GetFullPath());
+		
+		strCompressedFile = m_iPathDepth == 1 ? m_strCurrentPath + strTmp + wxT(".") + strCompressType : m_strCurrentPath + SLASH + strTmp + wxT(".") + strCompressType;
+	}
+	else
+	{
+		std::unordered_map<int, SELITEM_INFO>::const_iterator fIter = m_hashSelectedItem.begin();
+		while(fIter != m_hashSelectedItem.end())
+		{
+			SELITEM_INFO _info = fIter->second;
+			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
+			
+			vCompressDatas.emplace_back(itemSel.GetFullPath());
+			fIter++;
+		}
+		
+		wxString strTmp = theCommonUtil->GetPathName(m_strCurrentPath);
+		strCompressedFile = m_iPathDepth == 1 ? m_strCurrentPath + m_strCurrentPath.Left(1) + wxT(".") + strCompressType : m_strCurrentPath + SLASH + strTmp + wxT(".") + strCompressType;
+	}
+		
+	theMenuOPHandler->ExecuteCompress(vCompressDatas, strCompressedFile, strCompressType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -151,6 +151,12 @@
 				<help></help>
 			</object>
 			<object class="separator" />
+			<object class="wxMenuItem" name="m_menuComp_Progress">
+				<label>Compress</label>
+				<accel>Ctrl+F6</accel>
+				<help></help>
+			</object>
+			<!--
 			<object class="wxMenu" name="m_menuCompSub">
 				<label>Compressor</label>
 				<object class="wxMenuItem" name="m_menuComp_DoCompZip">
@@ -163,7 +169,6 @@
 					<accel>Ctrl+Shift+Z</accel>
 					<help></help>
 				</object>
-				<!--
 				<object class="wxMenuItem" name="m_menuComp_PassCompZip">
 					<label>암호 설정후 Zip으로...</label>
 					<accel>Ctrl+P+Z</accel>
@@ -184,8 +189,8 @@
 					<accel>Alt+Z</accel>
 					<help></help>
 				</object>
-				-->
 			</object>
+			-->
 			<object class="wxMenu" name="m_menuComp_ReleaseSub">
 				<label>Extractor</label>
 				<object class="wxMenuItem" name="m_menuComp_CurrentDirCompRelease">

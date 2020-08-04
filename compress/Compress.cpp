@@ -8,7 +8,7 @@ public:
 	~CCompressImpl() {};
 	
 public:
-	virtual bool DoCompress(const wxString& strFullPath) = 0;
+	virtual bool DoCompress(const std::vector<wxString>& strCompList, const wxString& strCompressedFile) = 0;
 	virtual bool DoUnCompress(const wxString& strCompressFile) = 0;
 };
 
@@ -20,7 +20,7 @@ public:
 	~CZipFileImpl() {};
 	
 public:
-	bool DoCompress(const wxString& strFullPath) override
+	bool DoCompress(const std::vector<wxString>& strCompList, const wxString& strCompressedFile) override
 	{
 		return true;
 	}
@@ -49,20 +49,21 @@ void CCompress::Init()
 	m_vCompress.emplace_back(wxT("gz"));
 }
 
-bool CCompress::Compress(const wxString& strFullPath, COMPRESS_TYPE comType)
+bool CCompress::Compress(const wxString& strFullPath, const wxString& strCompressedFile, COMPRESS_TYPE comType)
 {
 	std::vector<wxString> vecDatas;
 	vecDatas.emplace_back(strFullPath);
 		
-	return Compress(vecDatas, compType);
+	return Compress(vecDatas, strCompressedFile, comType);
 }
 
-bool CCompress::Compress(std::vector<wxString>& vecDatas, COMPRESS_TYPE comType)
+bool CCompress::Compress(std::vector<wxString>& vecDatas, const wxString& strCompressedFile, COMPRESS_TYPE comType)
 {
 	switch(comType)
 	{
 		case COMPTYPE_ZIP:
 			m_pCompressImpl = new CZipFileImpl();
+			m_pCompressImpl->DoCompress(vecDatas, strCompressedFile);
 			break;
 	}
 	
