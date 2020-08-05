@@ -1745,11 +1745,8 @@ wxVector<CDirData>::iterator CListView::GetItemExist(const wxString& strName, bo
 	bExist = false;
 	auto it = std::find_if(m_itemList.begin(), m_itemList.end(), [&strName](const CDirData& data) {
 		int iCmp = -1;
-#ifdef __WXMSW__ //윈도우의 경우는 대소문자를 구분하지 않음
-		iCmp = data.GetName().CmpNoCase(strName);
-#else
 		iCmp = data.GetName().Cmp(strName);
-#endif
+
 		return (iCmp == 0);
 	});
 
