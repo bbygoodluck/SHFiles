@@ -80,3 +80,11 @@ Debug
 ### json lib
 
 * [rapidjson homepage](http://rapidjson.org/)
+
+### Zip Library
+
+- [zlib](https://zlib.net)
+- [폴더압축 참조(Win32 Wrapper class - Visual C++ Version)](https://www.codeproject.com/Articles/4288/Win32-Wrapper-classes-for-Gilles-Volant-s-Zip-Unzi)
+
+
+
