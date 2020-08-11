@@ -1200,7 +1200,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			ShowFavoriteMenu();
 			break;
 		
-		case WXK_F6:
+		case WXK_F8:
 			ShowCompress();
 			break;
 			

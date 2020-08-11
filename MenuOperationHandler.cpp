@@ -607,15 +607,12 @@ void CMenuOperationHandler::DoDiskspaceUpdate(const wxString& strDrive)
 }
 #endif
 
-
 void CMenuOperationHandler::ExecuteCompress(const std::vector<wxString>& vCompressDatas, const wxString& strCompressedFile, const wxString& strCompressType)
 {
-	DlgCompress dlg(_gMainFrame);
+	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
 	
+	DlgCompress dlg(_gMainFrame);
 	dlg.SetCompressInfo(vCompressDatas, strCompressedFile, strCompressType);
 	dlg.ShowModal();
-	
 	dlg.Destroy();
-	
-	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
 }

@@ -54,26 +54,21 @@ wxThread::ExitCode CMakeTreeInfoThread::Entry()
 
 		if (!m_file.Open(m_strSHCDFile))
 		{
-			wxMessageBox(wxT("디렉토리 정보 파일을 읽지 못했습니다."), wxT("디렉토리 정보 읽기"), wxOK | wxICON_ERROR);
+			wxMessageBox(wxT("Fai to read the directory infomation file "), wxT("Read directory information"), wxOK | wxICON_ERROR);
 			SendThreadTerminateMessage();
 			return (wxThread::ExitCode)0;
 		}
-
-	//	m_pDlg->SetProgressRange(m_lineCnt);
 
 		int iCount = 0;
 		wxString strPath(wxT(""));
 
 		strPath = m_file.GetFirstLine();
-		//	int iFind = strPath.find(wxT("^"));
-		//	wxString strDepth = strPath.Left(iFind);
-		//	wxString strName = strPath.Mid(iFind + 1, strPath.Len());
 
 		wxVector<wxString> vecSplit = theCommonUtil->Split(strPath, wxT("^"));
 		if (vecSplit.size() < 2)
 		{
 			wxString strMsg(strPath);
-			strMsg += wxT(" 파일의 형식이 잘못 되어 있습니다.\n 해당 파일을 삭제하고 다시 디렉토리 정보를 생성하십시오!");
+			strMsg += wxT("The file is in the wrong format.\n Delete that file and create directory information again!");
 
 			wxMessageBox(strMsg, PROGRAM_FULL_NAME, wxICON_ERROR | wxOK);
 		}
@@ -92,16 +87,12 @@ wxThread::ExitCode CMakeTreeInfoThread::Entry()
 
 			while (!m_file.Eof())
 			{
-			//	if (IsCancelOrClose())
-			//		break;
-
 				strPath = m_file.GetNextLine();
 				if (strPath.IsEmpty())
 					break;
 
 				iCount++;
-			//	m_pDlg->SetProgressValue(iCount);
-
+			
 				vecSplit.clear();
 				vecSplit = theCommonUtil->Split(strPath, wxT("^"));
 
@@ -114,27 +105,17 @@ wxThread::ExitCode CMakeTreeInfoThread::Entry()
 
 			m_file.Close();
 			theSHCD->SetOrder();
-		//	theSHCD->MakeRowMap();
 			theSHCD->SetCur(m_strCurrentPath);
 		}
 	}
 	else
 	{
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) //VS2013
-		path p(strPath);
-#else
 		path p(CONVSTR_TO_STD(m_strCurrentPath));
-#endif
-	//	size_t lineCount = GetNumberofDirectory(p); //속도가 너무 느림
-	//	m_pDlg->SetProgressRange(5000);
-
-	//	m_iCount = 0;
 		theSHCD->Clear(m_pCurrNode);
 		LoadSubDir(m_strCurrentPath, m_pCurrNode);
 
 		theSHCD->SetOrder();
 		theSHCD->SaveMCDFile();
-	//	theSHCD->MakeRowMap();
 		theSHCD->SetCur(m_strCurrentPath);
 	}
 
@@ -173,8 +154,6 @@ void CMakeTreeInfoThread::LoadSubDir(const wxString& strPath, NODE* pNode)
 
 		if (std::find(_gVecIgnore.begin(), _gVecIgnore.end(), CONVSTR_TO_STD(strName)) != _gVecIgnore.end())
 			continue;
-
-	//	m_iCount++;
 
 		if (!theSHCD->FindChildNodeExist(strName, iLevel, pNode))
 			_pNode = theSHCD->AddNode(strName, iLevel, pNode);

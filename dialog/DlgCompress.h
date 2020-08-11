@@ -27,9 +27,6 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 
-///////////////////////////////////////////////////////////////////////////
-
-
 ///////////////////////////////////////////////////////////////////////////////
 /// Class DlgCompress
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,7 +36,8 @@ class DlgCompress : public wxDialog
 		std::vector<wxString> m_vCompressList;
 		wxString m_strCompressedFile = wxT("");
 		wxString m_strCompressType = wxT("");
-		
+		unsigned long m_ulTotalSize = 0;
+		int m_iTotalItems = 0;
 	protected:
 		wxStaticText* m_staticText4;
 		wxListCtrl* m_lstDatas;
@@ -67,7 +65,13 @@ class DlgCompress : public wxDialog
 		
 public:
 	void SetCompressInfo(const std::vector<wxString>& vCompressList, const wxString& strCompressedFile, const wxString& strCompressType);
-
+	void SetCurrentFile(const wxString& strCurrentFile);
+	void SetCurrentFileSize(unsigned long ulSize);
+	void SetCurrentFileTotalSize(unsigned long ulTotalSize);
+	void SetCompressTotal(int iTotal);
+	
+private:
+	void OnCompressThreadEnd(wxThreadEvent& event);
 };
 
 #endif

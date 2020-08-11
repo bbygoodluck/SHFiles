@@ -11,6 +11,7 @@ class CCustomStatusBar : public wxStatusBar
 		Field_F5,
 	//	Field_F6,
 		Field_F7,
+		Field_F8,
 		Field_F10,
 		Field_Ctrl,
 		Field_Shift,

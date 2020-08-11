@@ -1,35 +1,7 @@
 #include "../ginc.h"
+#include "CompressImpl.h"
 #include "Compress.h"
-
-class CCompressImpl
-{
-public:
-	CCompressImpl() {};
-	~CCompressImpl() {};
-	
-public:
-	virtual bool DoCompress(const std::vector<wxString>& strCompList, const wxString& strCompressedFile) = 0;
-	virtual bool DoUnCompress(const wxString& strCompressFile) = 0;
-};
-
-
-class CZipFileImpl : public CCompressImpl
-{
-public:
-	CZipFileImpl() {};
-	~CZipFileImpl() {};
-	
-public:
-	bool DoCompress(const std::vector<wxString>& strCompList, const wxString& strCompressedFile) override
-	{
-		return true;
-	}
-	
-	bool DoUnCompress(const wxString& strCompressFile) override
-	{
-		return true;
-	}
-};
+#include "ZipFileImpl.h"
 
 std::unique_ptr<CCompress> CCompress::m_pInstance = nullptr;
 CCompress* CCompress::Get()
@@ -49,28 +21,57 @@ void CCompress::Init()
 	m_vCompress.emplace_back(wxT("gz"));
 }
 
-bool CCompress::Compress(const wxString& strFullPath, const wxString& strCompressedFile, COMPRESS_TYPE comType)
+bool CCompress::SetCompressInfo(const wxString& strFullPath, const wxString& strCompressedFile, const wxString& strCompressType)
 {
 	std::vector<wxString> vecDatas;
 	vecDatas.emplace_back(strFullPath);
 		
-	return Compress(vecDatas, strCompressedFile, comType);
+	return SetCompressInfo(vecDatas, strCompressedFile, strCompressType);
 }
 
-bool CCompress::Compress(std::vector<wxString>& vecDatas, const wxString& strCompressedFile, COMPRESS_TYPE comType)
+bool CCompress::SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile, const wxString& strCompressType)
 {
-	switch(comType)
+	m_strCompressedFile = strCompressedFile;
+	if(strCompressType.CmpNoCase(wxT("zip")) == 0)
+		m_pCompressType = COMPTYPE_ZIP;
+
+	switch(m_pCompressType)
 	{
 		case COMPTYPE_ZIP:
-			m_pCompressImpl = new CZipFileImpl();
-			m_pCompressImpl->DoCompress(vecDatas, strCompressedFile);
+		{
+			if(m_pCompressImpl == nullptr)
+				m_pCompressImpl = new CZipFileImpl();
+		}
 			break;
 	}
 	
+	if(!m_pCompressImpl)
+		return false;
+		
+	m_pCompressImpl->SetCompressInfo(vecDatas, strCompressedFile);
 	return true;
+}
+
+CCompressImpl* CCompress::GetCompressImpl()
+{
+	return m_pCompressImpl;
 }
 
 bool CCompress::UnCompress(const wxString& strCompressFile)
 {
 	return true;
+}
+
+void CCompress::ClearCompressInfo()
+{
+	if(m_pCompressImpl->GetCompressCancel())
+		wxRemoveFile(m_strCompressedFile);
+	
+	if(m_pCompressImpl->GetThread() && m_pCompressImpl->GetThread()->IsRunning())
+		m_pCompressImpl->GetThread()->Wait();
+
+	if(m_pCompressImpl)
+		delete m_pCompressImpl;
+		
+	m_pCompressImpl = nullptr;
 }

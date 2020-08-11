@@ -5,10 +5,10 @@
 // PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 #include "../ginc.h"
+#include "../compress/CompressImpl.h"
 #include "DlgCompress.h"
 
 ///////////////////////////////////////////////////////////////////////////
-
 DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	SetIcon(wxIcon("wxwin"));
@@ -81,12 +81,12 @@ DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticPercent = new wxStaticText( this, wxID_ANY, wxT("10%"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticPercent = new wxStaticText( this, wxID_ANY, wxT("100%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticPercent->Wrap( -1 );
-	bSizer4->Add( m_staticPercent, 0, wxALIGN_RIGHT|wxSHAPED, 5 );
+	bSizer4->Add( m_staticPercent, 1, wxRIGHT, 5 );
 
 
-	bSizer2->Add( bSizer4, 1, wxEXPAND|wxRIGHT, 5 );
+	bSizer2->Add( bSizer4, 1, wxALIGN_RIGHT|wxEXPAND|wxSHAPED, 5 );
 
 
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
@@ -103,10 +103,10 @@ DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_staticTotal = new wxStaticText( this, wxID_ANY, wxT("(10 / 30)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticTotal->Wrap( -1 );
-	bSizer6->Add( m_staticTotal, 0, wxALIGN_RIGHT|wxSHAPED, 5 );
+	bSizer6->Add( m_staticTotal, 1, 0, 5 );
 
 
-	bSizer5->Add( bSizer6, 1, wxEXPAND|wxRIGHT, 5 );
+	bSizer5->Add( bSizer6, 1, wxALIGN_RIGHT|wxSHAPED, 5 );
 
 
 	bSizer1->Add( bSizer5, 0, wxEXPAND, 5 );
@@ -114,7 +114,7 @@ DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_btnCancel = new wxButton( this, wxID_ANY, wxT("취소"), wxDefaultPosition, wxSize( -1,30 ), 0 );
+	m_btnCancel = new wxButton( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_CANCEL")), wxDefaultPosition, wxSize( -1,30 ), 0 );
 	bSizer3->Add( m_btnCancel, 0, wxALL, 5 );
 
 
@@ -130,6 +130,8 @@ DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title
 	this->Connect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( DlgCompress::OnInitDialog ) );
 	m_cmbCompressType->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( DlgCompress::OnChoice ), NULL, this );
 	m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgCompress::OnCancelClick ), NULL, this );
+	
+	Bind(wxEVT_THREAD, &DlgCompress::OnCompressThreadEnd, this);
 }
 
 DlgCompress::~DlgCompress()
@@ -142,7 +144,11 @@ DlgCompress::~DlgCompress()
 
 void DlgCompress::OnInitDialog( wxInitDialogEvent& event )
 {
+	m_progressComTotal->SetRange(100);
+	m_progressTotal->SetRange(m_iTotalItems);
 	
+	wxString strCompressTotal = wxString::Format(wxT("(0 / %d)"), m_iTotalItems);
+	m_staticTotal->SetLabelText(strCompressTotal);        
 }
 
 void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, const wxString& strCompressedFile, const wxString& strCompressType)
@@ -152,7 +158,7 @@ void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, co
 	m_strCompressType = strCompressType;
 	
 	m_lstDatas->DeleteAllItems();
-	m_lstDatas->AppendColumn(wxT("Compress Items"), wxLIST_FORMAT_LEFT, 400);
+	m_lstDatas->AppendColumn(wxT("Compress Items"), wxLIST_FORMAT_LEFT, 760);
 	
 	int iIndex = 0;
 	for(auto item : m_vCompressList)
@@ -160,6 +166,8 @@ void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, co
 		m_lstDatas->InsertItem(iIndex, item);
 		iIndex++;
 	}
+	
+	m_iTotalItems = m_vCompressList.size();
 	
 	m_staticCompressedFile->SetLabelText(m_strCompressedFile);
 	
@@ -173,6 +181,10 @@ void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, co
 			break;
 		}
 	}
+	
+	theCompress->SetCompressInfo(m_vCompressList, m_strCompressedFile, m_strCompressType);
+	theCompress->GetCompressImpl()->SetCompressDialog(this);
+	theCompress->GetCompressImpl()->DoCompress();
 }
 
 void DlgCompress::OnChoice( wxCommandEvent& event )
@@ -182,5 +194,36 @@ void DlgCompress::OnChoice( wxCommandEvent& event )
 
 void DlgCompress::OnCancelClick( wxCommandEvent& event )
 {
-	EndModal(wxID_CANCEL);
+}
+
+void DlgCompress::SetCurrentFile(const wxString& strCurrentFile)
+{
+	m_staticCurrentTxt->SetLabelText(strCurrentFile);
+}
+
+void DlgCompress::SetCurrentFileSize(unsigned long ulSize)
+{
+	int iPercent = ((ulSize * 100) / m_ulTotalSize);
+	
+	m_progressComTotal->SetValue(iPercent);
+	
+	wxString strFile = wxString::Format(wxT("%3d%"), iPercent);
+	m_staticPercent->SetLabelText(strFile);//strSize);
+}
+
+void DlgCompress::SetCurrentFileTotalSize(unsigned long ulTotalSize)
+{
+	m_ulTotalSize = ulTotalSize;
+}
+
+void DlgCompress::SetCompressTotal(int iTotal)
+{
+	wxString strCompressTotal = wxString::Format(wxT("(%d / %d)"), iTotal, m_iTotalItems);
+	m_staticTotal->SetLabelText(strCompressTotal);
+}
+
+void DlgCompress::OnCompressThreadEnd(wxThreadEvent& event)
+{
+	theCompress->ClearCompressInfo();
+	EndModal(wxID_OK);
 }

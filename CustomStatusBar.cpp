@@ -48,7 +48,6 @@ void CCustomStatusBar::OnIdle(wxIdleEvent& event)
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_COPY")), Field_F3);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_CUT")), Field_F4);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_PASTE")), Field_F5);
-	//	SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_FILE_FIND")), Field_F6);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_CONTEXT_MENU")), Field_F7);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_OPTION")), Field_F10);
 	}
@@ -59,7 +58,6 @@ void CCustomStatusBar::OnIdle(wxIdleEvent& event)
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_MOVE")), Field_F3);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_ONEVIEW")), Field_F4);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_SPLITVERT")), Field_F5);
-	//	SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_SPLITHORZ")), Field_F6);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_COMPREALEASE")), Field_F7);
 		SetStatusText(wxT(" "), Field_F10);
 	}
@@ -69,8 +67,8 @@ void CCustomStatusBar::OnIdle(wxIdleEvent& event)
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_FILEEDIT")), Field_F3);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_VIEWFAVORITE")), Field_F4);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_REFRESH")), Field_F5);
-	//	SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_VIEW_VISIT_FODER")), Field_F6);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_MAKE_FOLDER")), Field_F7);
+		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_COMPRESS")), Field_F8);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_DEFAULT_DIRMANAGER")), Field_F10);
 	}
 	
@@ -98,8 +96,8 @@ void CCustomStatusBar::Setting()
 	widths[Field_F3]                = iFuncSize;
 	widths[Field_F4]                = iFuncSize;
 	widths[Field_F5]                = iFuncSize;
-//	widths[Field_F6]                = iFuncSize;
 	widths[Field_F7]                = iFuncSize;
+	widths[Field_F8]                = iFuncSize;
 	widths[Field_F10]               = iFuncSize;
 	widths[Field_Ctrl]              = dc.GetTextExtent(ctrlIndicators[1]).x;
 	widths[Field_Shift]             = dc.GetTextExtent(shiftIndicators[1]).x;
