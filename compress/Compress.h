@@ -14,15 +14,18 @@ public:
 public:
 	bool SetCompressInfo(const wxString& strFullPath, const wxString& strCompressedFile, const wxString& strCompressType);
 	bool SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile, const wxString& strCompressType);
-		
-	bool UnCompress(const wxString& strCompressFile);
+	bool SetUnCompressedInfo(const wxString& strCompressedFile, const wxString& strDeCompressDir);
+	
 	void ClearCompressInfo();
 	
 	CCompressImpl* GetCompressImpl();
 	std::vector<wxString>& GetCompressList() { return m_vCompress; }
 	
+	bool IsCompressedFile(const wxString& strExt);
+	
 protected:
 	void Init();
+	bool CreateCompressImpl();
 	
 private:
 	static std::unique_ptr<CCompress> m_pInstance;

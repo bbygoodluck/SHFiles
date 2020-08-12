@@ -14,22 +14,22 @@ public:
 	virtual ~CLocalFileListView();
 	
 public:
-	virtual void LoadDir(const wxString& strPath) override;
-	virtual void DoCreate(const wxString& strName) override;
-	virtual void DoModify(const wxString& strName) override;
-	virtual void DoDelete(const wxString& strName) override;
-	virtual void DoRename(const wxString& strOldName, const wxString& strNewName) override;
+	void LoadDir(const wxString& strPath) override;
+	void DoCreate(const wxString& strName) override;
+	void DoModify(const wxString& strName) override;
+	void DoDelete(const wxString& strName) override;
+	void DoRename(const wxString& strOldName, const wxString& strNewName) override;
 
 protected:
-	virtual void Renderer(wxDC* pDC) override;
-	virtual void DoRenameFromMenu(const wxString& strOldPathName, const wxString& strNewPathName) override;
-	virtual void DoUpdateModificationTimeOfDir() override;
+	void Renderer(wxDC* pDC) override;
+	void DoRenameFromMenu(const wxString& strOldPathName, const wxString& strNewPathName) override;
+	void DoUpdateModificationTimeOfDir() override;
 	
 private:
 	bool ReadDirectory();
 	void AddDrive();
 		
-	virtual void ExecuteExternalProgramForEdit(int iIndex) override;
+	void ExecuteExternalProgramForEdit(int iIndex) override;
 	
 private:
 	std::unique_ptr<CLocalWatcherMonitorHandler> m_pWatcherHandler;

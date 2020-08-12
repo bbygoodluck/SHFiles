@@ -2,6 +2,7 @@
 #define __COMPRESS_IMPL_H_INCLUDED
 
 class DlgCompress;
+class DlgDeCompress;
 class CCompressImpl : public wxThreadHelper
 {
 public:
@@ -10,9 +11,13 @@ public:
 	
 public:
 	void SetCompressDialog(DlgCompress* pDialog);
+	void SetDeCompressDialog(DlgDeCompress* pDialog);
+	
 	void SetCompressInfo(const std::vector<wxString>& strCompList, const wxString& strCompressedFile);
+	void SetDeCompressInfo(const wxString& strCompressedFile, const wxString& strUnCompressDir);
+	
 	virtual bool DoCompress() = 0;
-	virtual bool DoUnCompress(const wxString& strCompressFile) = 0;
+	virtual bool DoDeCompress() = 0;
 	virtual wxThread::ExitCode Entry() = 0;
 	
 	void CompressCancel();
@@ -23,15 +28,21 @@ public:
 protected:
 #ifdef __WXMSW__
 	bool GetLastModified(const wxString& strPathName, SYSTEMTIME& sysTime, bool bLocalTime);
+	bool SetFileModifyTime(const wxString& strFilePathName, DWORD dwDosDate);
 #else
 	time_t GetLastModified(const wxString& strPathName);
 #endif
 	
 	DlgCompress* GetCompressDialog();
+	DlgDeCompress* GetDeCompressDialog();
+	
 protected:
 	DlgCompress* m_pProgressDialog;
+	DlgDeCompress* m_pDeCompressDialog;
+	
 	std::vector<wxString> m_vecCompressList;
-	wxString m_strCompressedFile;
+	wxString m_strCompressedFile = wxT("");
+	wxString m_strUnCompressDir = wxT("");
 	static constexpr unsigned int BUFFERSIZE = 2048;
 	
 	bool m_bCancel = false;

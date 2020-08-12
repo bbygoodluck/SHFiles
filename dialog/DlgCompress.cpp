@@ -12,7 +12,6 @@
 DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	SetIcon(wxIcon("wxwin"));
-	CenterOnScreen();
 	
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
@@ -132,6 +131,7 @@ DlgCompress::DlgCompress( wxWindow* parent, wxWindowID id, const wxString& title
 	m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgCompress::OnCancelClick ), NULL, this );
 	
 	Bind(wxEVT_THREAD, &DlgCompress::OnCompressThreadEnd, this);
+	CenterOnScreen();
 }
 
 DlgCompress::~DlgCompress()
@@ -220,6 +220,8 @@ void DlgCompress::SetCompressTotal(int iTotal)
 {
 	wxString strCompressTotal = wxString::Format(wxT("(%d / %d)"), iTotal, m_iTotalItems);
 	m_staticTotal->SetLabelText(strCompressTotal);
+	
+	m_progressTotal->SetValue(iTotal);
 }
 
 void DlgCompress::OnCompressThreadEnd(wxThreadEvent& event)

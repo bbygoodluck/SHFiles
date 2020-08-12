@@ -66,7 +66,7 @@ void CViewPanel::SetActivateColumnChanged()
 	theCommonUtil->RefreshWindow(m_pFileListView.get(), m_pFileListView->m_viewRect);
 }
 
-bool CViewPanel::GetSelectedItem(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems)
+bool CViewPanel::GetSelectedItemForCopyOrMove(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems)
 {
 	m_pFileListView->MakeCopyOrMoveList(bUseClipboard, bMove, lstItems);
 	if(lstItems.size() == 0)
@@ -92,6 +92,11 @@ bool CViewPanel::GetDeleteItems(std::list<wxString>& lstDatas, bool bTrash)
 		return false;
 		
 	return true;
+}
+
+wxString CViewPanel::GetCurrentItem()
+{
+	return m_pFileListView->GetCurrentItem();
 }
 
 void CViewPanel::DoMyEventExecuteToView(wxEventType evtType, const wxString& strInfo)

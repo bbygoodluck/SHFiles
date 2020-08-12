@@ -76,7 +76,7 @@ public:
 	void ShowErrorMessage(const wxString& strItem, int iRetCode);
 	//파일명 변경
 	wxString ChangeName(const wxString& strName);
-	wxString GetFileName(const wxString& strFullPath);
+	wxString GetFileName(const wxString& strFullPath, bool IsAppendExt = true);
 	bool IsCreatableDirOrFileName(const wxString& strDir);
 	
 private:

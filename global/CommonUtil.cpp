@@ -396,7 +396,7 @@ wxString CCommonUtil::GetPathName(const wxString& strFullPath)
 	return (_strName.IsEmpty() ? strFullPath : _strName);
 }
 
-wxString CCommonUtil::GetFileName(const wxString& strFullPath)
+wxString CCommonUtil::GetFileName(const wxString& strFullPath, bool IsAppendExt)
 {
 	wxString _strpath(wxT(""));
 	wxString _strext(wxT(""));
@@ -406,7 +406,7 @@ wxString CCommonUtil::GetFileName(const wxString& strFullPath)
 	if (_strext.IsEmpty())
 		return _strpathname;
 
-	return _strpathname + wxT(".") + _strext;
+	return _strpathname + (IsAppendExt ? wxT(".") + _strext : wxT(""));
 }
 
 int CCommonUtil::GetPathDepth(const wxString& strFullPath)

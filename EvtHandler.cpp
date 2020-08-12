@@ -238,7 +238,9 @@ void CEvtHandler::menu_comp_DoCompress(const wxString& strExt, bool bSetPassword
 // 압축해제
 void CEvtHandler::menu_comp_DoDeCompress(bool isMakeFolder)
 {
-	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+//	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+	_MENU_EVENT_TYPE menuType = !isMakeFolder ? _MENU_DECOMPRESS : _MENU_DECOMPRESS_MK_FOLDER; 
+	theMenuOPHandler->ExecuteMenuOperation(menuType);
 }
 
 void CEvtHandler::menu_comp_SelDirCompRelease()

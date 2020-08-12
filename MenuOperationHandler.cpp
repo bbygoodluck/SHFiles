@@ -17,6 +17,7 @@
 #include "./dialog/DirectoryManagerDlg.h"
 #include "./dialog/DlgEnv.h"
 #include "./dialog/DlgCompress.h"
+#include "./dialog/DlgDeCompress.h"
 
 CMenuOperationHandler* CMenuOperationHandler::m_pMenuOPHandlerInstance(nullptr);
 CMenuOperationHandler* CMenuOperationHandler::Get()
@@ -98,6 +99,11 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 			
 		case _MENU_VIEW_FILELIST_CHANGE:
 			DoChangeFileList();
+			break;
+			
+		case _MENU_DECOMPRESS:
+		case _MENU_DECOMPRESS_MK_FOLDER:
+			DoDecompress(_menuType);
 			break;
 		//환경설정 저장
 		case _MENU_TOOL_SAVECONFIG:
@@ -215,7 +221,7 @@ void CMenuOperationHandler::DoCopyMove(_MENU_EVENT_TYPE _menuType)
 			
 		}
 			
-		if(!theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetSelectedItem(bUseClipboard, bMove, lstSrcList))
+		if(!theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetSelectedItemForCopyOrMove(bUseClipboard, bMove, lstSrcList))
 			return;
 		
 		if(!bUseClipboard)
@@ -295,6 +301,8 @@ wxString CMenuOperationHandler::GetTargetDirectory()
 			dlgTargetPath.CenterOnScreen();
 			if(dlgTargetPath.ShowModal() == wxID_OK)
 				strTargetPath = dlgTargetPath.GetPath();
+				
+			dlgTargetPath.Destroy();
 		}
 	}
 	else
@@ -394,6 +402,8 @@ void CMenuOperationHandler::DoGotoDirDirectly()
 		wxString strTargetDir(dlgTargetPath.GetPath());
 		theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ReloadPathOfView(strTargetDir);
 	}
+	
+	dlgTargetPath.Destroy();
 }
 
 void CMenuOperationHandler::DoDirectoryManager()
@@ -613,6 +623,37 @@ void CMenuOperationHandler::ExecuteCompress(const std::vector<wxString>& vCompre
 	
 	DlgCompress dlg(_gMainFrame);
 	dlg.SetCompressInfo(vCompressDatas, strCompressedFile, strCompressType);
+	dlg.ShowModal();
+	dlg.Destroy();
+}
+
+void CMenuOperationHandler::DoDecompress(_MENU_EVENT_TYPE _menuType)
+{
+	wxString strSelItem = theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetCurrentItem();
+	wxString strCurrentPath = theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetCurrentViewPath();
+	
+	wxString strExt = theCommonUtil->GetExt(strSelItem);
+	if(!theCompress->IsCompressedFile(strExt))
+	{
+		wxMessageBox(wxT("The selected file is not compressed file"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+		return;
+	}
+	
+	if(_menuType == _MENU_DECOMPRESS_SEL_DIR)
+	{
+		wxGenericDirDialog dlgTargetPath(_gMainFrame, wxT("Select target directory"), strCurrentPath);
+		dlgTargetPath.SetSize(wxSize(600, 450));
+		dlgTargetPath.CenterOnScreen();
+	
+		if(dlgTargetPath.ShowModal() != wxID_OK)
+			return;
+			
+		strCurrentPath = dlgTargetPath.GetPath();
+		dlgTargetPath.Destroy();
+	}
+	
+	DlgDeCompress dlg(_gMainFrame);
+	dlg.SetDecompressInfo(strSelItem, strCurrentPath, _menuType);
 	dlg.ShowModal();
 	dlg.Destroy();
 }

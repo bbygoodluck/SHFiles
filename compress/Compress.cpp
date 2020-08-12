@@ -21,6 +21,22 @@ void CCompress::Init()
 	m_vCompress.emplace_back(wxT("gz"));
 }
 
+bool CCompress::IsCompressedFile(const wxString& strExt)
+{
+	bool bCompressedFile = false;
+	wxString strExtItem(strExt);
+	for(auto item : m_vCompress)
+	{
+		if(theCommonUtil->Compare(item.MakeLower(), strExtItem.MakeLower()) == 0)
+		{
+			bCompressedFile = true;
+			break;
+		}
+	}
+	
+	return bCompressedFile;
+}
+
 bool CCompress::SetCompressInfo(const wxString& strFullPath, const wxString& strCompressedFile, const wxString& strCompressType)
 {
 	std::vector<wxString> vecDatas;
@@ -32,20 +48,7 @@ bool CCompress::SetCompressInfo(const wxString& strFullPath, const wxString& str
 bool CCompress::SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile, const wxString& strCompressType)
 {
 	m_strCompressedFile = strCompressedFile;
-	if(strCompressType.CmpNoCase(wxT("zip")) == 0)
-		m_pCompressType = COMPTYPE_ZIP;
-
-	switch(m_pCompressType)
-	{
-		case COMPTYPE_ZIP:
-		{
-			if(m_pCompressImpl == nullptr)
-				m_pCompressImpl = new CZipFileImpl();
-		}
-			break;
-	}
-	
-	if(!m_pCompressImpl)
+	if(!CreateCompressImpl())
 		return false;
 		
 	m_pCompressImpl->SetCompressInfo(vecDatas, strCompressedFile);
@@ -57,8 +60,38 @@ CCompressImpl* CCompress::GetCompressImpl()
 	return m_pCompressImpl;
 }
 
-bool CCompress::UnCompress(const wxString& strCompressFile)
+bool CCompress::SetUnCompressedInfo(const wxString& strCompressedFile, const wxString& strDeCompressDir)
 {
+	m_strCompressedFile = strCompressedFile;
+	if(!CreateCompressImpl())
+		return false;
+		
+	m_pCompressImpl->SetDeCompressInfo(strCompressedFile, strDeCompressDir);
+}
+
+bool CCompress::CreateCompressImpl()
+{
+	wxString strExt = theCommonUtil->GetExt(m_strCompressedFile);
+	m_pCompressType = COMPTYPE_NONE;
+	if(theCommonUtil->Compare(strExt, wxT("zip")) == 0)
+		m_pCompressType = COMPTYPE_ZIP;
+		
+	switch(m_pCompressType)
+	{
+		case COMPTYPE_ZIP:
+		{
+			if(m_pCompressImpl == nullptr)
+				m_pCompressImpl = new CZipFileImpl();
+		}
+			break;
+			
+		default:
+			break;
+	}
+	
+	if(!m_pCompressImpl)
+		return false;
+		
 	return true;
 }
 

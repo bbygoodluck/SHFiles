@@ -62,9 +62,8 @@ public:
 	explicit CListView(wxWindow* parent, const int nID, const wxSize& sz);
 	virtual ~CListView();
 
-	wxString GetCurrentPath() {
-		return m_strCurrentPath;
-	}
+	wxString GetCurrentPath() {	return m_strCurrentPath; }
+	wxString GetCurrentItem();
 	
 	void DoSelectedItemsClear();
 	//FileSystemWatcher 함수들..

@@ -2231,3 +2231,9 @@ void CListView::OnKillFocusTxtCtrl(wxFocusEvent& event)
 	m_pTxtCtrlForRename->Show(false);
 	m_pMyTooltipView->Show(false);
 }
+
+wxString CListView::GetCurrentItem()
+{
+	auto item = m_itemList.begin() + m_nCurrentItemIndex;
+	return item->GetFullPath();
+}

@@ -18,9 +18,8 @@ public:
 	void SetActivateView();
 	void SetActivateColumnChanged();
 	
-	wxString GetCurrentViewPath() {
-		return m_pFileListView->m_strCurrentPath;
-	}
+	wxString GetCurrentViewPath() { return m_pFileListView->m_strCurrentPath; }
+	wxString GetCurrentItem();
 	
 	void ClearSelectedItems();
 	int GetSelectedItemCount()
@@ -29,12 +28,10 @@ public:
 		return iSelectedCount == 0 ? 1 : iSelectedCount;
 	}
 		
-	bool GetSelectedItem(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems);
+	bool GetSelectedItemForCopyOrMove(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems);
 	bool GetDeleteItems(std::list<wxString>& lstDatas, bool bTrash);
 	
-	CListView* GetListView() {
-		return m_pFileListView.get();
-	}
+	CListView* GetListView() { return m_pFileListView.get(); }
 	
 	void DoMyEventExecuteToView(wxEventType evtType, const wxString& strInfo = wxT(""));
 	void TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxString& strInfo = wxT(""));
