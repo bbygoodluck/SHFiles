@@ -1,7 +1,7 @@
 #include "../ginc.h"
-#include "CompressImpl.h"
 #include "Compress.h"
-#include "ZipFileImpl.h"
+#include "CompressImpl.h"
+#include "CompressInclude.h"
 
 std::unique_ptr<CCompress> CCompress::m_pInstance = nullptr;
 CCompress* CCompress::Get()
@@ -37,21 +37,34 @@ bool CCompress::IsCompressedFile(const wxString& strExt)
 	return bCompressedFile;
 }
 
-bool CCompress::SetCompressInfo(const wxString& strFullPath, const wxString& strCompressedFile, const wxString& strCompressType)
+bool CCompress::SetCompressInfo(const wxString& strFullPath, const wxString& strCompressedFile)
 {
 	std::vector<wxString> vecDatas;
 	vecDatas.emplace_back(strFullPath);
 		
-	return SetCompressInfo(vecDatas, strCompressedFile, strCompressType);
+	return SetCompressInfo(vecDatas, strCompressedFile);
 }
 
-bool CCompress::SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile, const wxString& strCompressType)
+bool CCompress::SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile)
 {
+	m_bDeCompress = false;
 	m_strCompressedFile = strCompressedFile;
+	m_vecCompressingDatas = vecDatas;
+	
 	if(!CreateCompressImpl())
 		return false;
 		
-	m_pCompressImpl->SetCompressInfo(vecDatas, strCompressedFile);
+	return true;
+}
+
+bool CCompress::SetUnCompressedInfo(const wxString& strCompressedFile, const wxString& strDeCompressDir)
+{
+	m_bDeCompress = true;
+	m_strCompressedFile = strCompressedFile;
+	m_strDeCompressDir = strDeCompressDir;
+	if(!CreateCompressImpl())
+		return false;
+	
 	return true;
 }
 
@@ -60,31 +73,25 @@ CCompressImpl* CCompress::GetCompressImpl()
 	return m_pCompressImpl;
 }
 
-bool CCompress::SetUnCompressedInfo(const wxString& strCompressedFile, const wxString& strDeCompressDir)
-{
-	m_strCompressedFile = strCompressedFile;
-	if(!CreateCompressImpl())
-		return false;
-		
-	m_pCompressImpl->SetDeCompressInfo(strCompressedFile, strDeCompressDir);
-}
-
 bool CCompress::CreateCompressImpl()
 {
 	wxString strExt = theCommonUtil->GetExt(m_strCompressedFile);
 	m_pCompressType = COMPTYPE_NONE;
 	if(theCommonUtil->Compare(strExt, wxT("zip")) == 0)
-		m_pCompressType = COMPTYPE_ZIP;
-		
+		m_pCompressType = m_bDeCompress ? COMPTYPE_UNZIP : COMPTYPE_ZIP;
+	
+	if(m_pCompressImpl)
+		return false;
+
 	switch(m_pCompressType)
 	{
 		case COMPTYPE_ZIP:
-		{
-			if(m_pCompressImpl == nullptr)
-				m_pCompressImpl = new CZipFileImpl();
-		}
+			m_pCompressImpl = new CZipFileImpl();
 			break;
 			
+		case COMPTYPE_UNZIP:
+			m_pCompressImpl = new CUnZipFileImpl();
+			break;
 		default:
 			break;
 	}
@@ -95,16 +102,33 @@ bool CCompress::CreateCompressImpl()
 	return true;
 }
 
-void CCompress::ClearCompressInfo()
-{
-	if(m_pCompressImpl->GetCompressCancel())
-		wxRemoveFile(m_strCompressedFile);
+void CCompress::DoStart(wxDialog* pOwnerDlg)
+{	
+	m_pCompressImpl->SetOwnerDialog(pOwnerDlg);
 	
+	if(m_bDeCompress)
+	{
+		m_pCompressImpl->DoDeCompress();
+		return;
+	}
+	//압축하기
+	m_pCompressImpl->DoCompress();
+}
+//메모리 해제
+void CCompress::ClearCompressInfo()
+{	//압축중 취소
+	if(!m_bDeCompress)
+	{	//압축중인 .zip 파일 삭제
+		if(m_bCancel)
+			wxRemoveFile(m_strCompressedFile);
+	}
+	//아직 압축(또는 압축해제) 실행중
 	if(m_pCompressImpl->GetThread() && m_pCompressImpl->GetThread()->IsRunning())
 		m_pCompressImpl->GetThread()->Wait();
-
+	//메모리 해제	
 	if(m_pCompressImpl)
 		delete m_pCompressImpl;
-		
+	//초기화	
 	m_pCompressImpl = nullptr;
+	m_bCancel = false;
 }

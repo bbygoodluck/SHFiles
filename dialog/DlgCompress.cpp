@@ -140,6 +140,7 @@ DlgCompress::~DlgCompress()
 	this->Disconnect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( DlgCompress::OnInitDialog ) );
 	m_cmbCompressType->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( DlgCompress::OnChoice ), NULL, this );
 	m_btnCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgCompress::OnCancelClick ), NULL, this );
+	Unbind(wxEVT_THREAD, &DlgCompress::OnCompressThreadEnd, this);
 }
 
 void DlgCompress::OnInitDialog( wxInitDialogEvent& event )
@@ -182,9 +183,10 @@ void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, co
 		}
 	}
 	
-	theCompress->SetCompressInfo(m_vCompressList, m_strCompressedFile, m_strCompressType);
-	theCompress->GetCompressImpl()->SetCompressDialog(this);
-	theCompress->GetCompressImpl()->DoCompress();
+	theCompress->SetCompressInfo(m_vCompressList, m_strCompressedFile);
+	theCompress->DoStart(this);
+//	theCompress->GetCompressImpl()->SetCompressDialog(this);
+//	theCompress->GetCompressImpl()->DoCompress();
 }
 
 void DlgCompress::OnChoice( wxCommandEvent& event )
@@ -194,6 +196,7 @@ void DlgCompress::OnChoice( wxCommandEvent& event )
 
 void DlgCompress::OnCancelClick( wxCommandEvent& event )
 {
+	theCompress->DoCancel();
 }
 
 void DlgCompress::SetCurrentFile(const wxString& strCurrentFile)

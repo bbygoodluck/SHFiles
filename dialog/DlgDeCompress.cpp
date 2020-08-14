@@ -80,7 +80,7 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( DlgDeCompress::OnInitDialog ) );
 	m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgDeCompress::OnCancel ), NULL, this );
 	
-	Bind(wxEVT_THREAD, &DlgDeCompress::OnCompressThreadEnd, this);
+	Bind(wxEVT_THREAD, &DlgDeCompress::OnDeCompressThreadEnd, this);
 	CenterOnScreen();
 }
 
@@ -89,17 +89,16 @@ DlgDeCompress::~DlgDeCompress()
 	// Disconnect Events
 	this->Disconnect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( DlgDeCompress::OnInitDialog ) );
 	m_btnCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgDeCompress::OnCancel ), NULL, this );
-
+	Unbind(wxEVT_THREAD, &DlgDeCompress::OnDeCompressThreadEnd, this);
 }
 
 void DlgDeCompress::OnInitDialog( wxInitDialogEvent& event )
 {
-	
 }
 
 void DlgDeCompress::OnCancel( wxCommandEvent& event )
 {
-	
+	theCompress->DoCancel();
 }
 
 void DlgDeCompress::SetDecompressInfo(const wxString& strDecompressedFile, const wxString& strDecompressDir, _MENU_EVENT_TYPE _menuType)
@@ -110,9 +109,10 @@ void DlgDeCompress::SetDecompressInfo(const wxString& strDecompressedFile, const
 	m_menyType = _menuType;
 	DoNeedCreateDir();
 	
-	theCompress->SetUnCompressedInfo(m_strDecompressedFile, m_strDecompressDir);
-	theCompress->GetCompressImpl()->SetDeCompressDialog(this);
-	theCompress->GetCompressImpl()->DoDeCompress();
+	theCompress->SetUnCompressedInfo(strDecompressedFile, strDecompressDir);
+	theCompress->DoStart(this);
+//	theCompress->GetCompressImpl()->SetDeCompressDialog(this);
+//	theCompress->GetCompressImpl()->DoDeCompress();
 }
 
 void DlgDeCompress::DoNeedCreateDir()
@@ -131,7 +131,7 @@ void DlgDeCompress::DoNeedCreateDir()
 	}
 }
 
-void DlgDeCompress::OnCompressThreadEnd(wxThreadEvent& event)
+void DlgDeCompress::OnDeCompressThreadEnd(wxThreadEvent& event)
 {
 	theCompress->ClearCompressInfo();
 	EndModal(wxID_OK);

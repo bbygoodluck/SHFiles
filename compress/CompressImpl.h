@@ -10,18 +10,11 @@ public:
 	~CCompressImpl();
 	
 public:
-	void SetCompressDialog(DlgCompress* pDialog);
-	void SetDeCompressDialog(DlgDeCompress* pDialog);
-	
-	void SetCompressInfo(const std::vector<wxString>& strCompList, const wxString& strCompressedFile);
-	void SetDeCompressInfo(const wxString& strCompressedFile, const wxString& strUnCompressDir);
+	void SetOwnerDialog(wxDialog* pOwnerDlg);
 	
 	virtual bool DoCompress() = 0;
 	virtual bool DoDeCompress() = 0;
 	virtual wxThread::ExitCode Entry() = 0;
-	
-	void CompressCancel();
-	bool GetCompressCancel() { return m_bCancel;}
 	
 	wxString GetCompressedFile() { return m_strCompressedFile; }
 	
@@ -37,16 +30,16 @@ protected:
 	DlgDeCompress* GetDeCompressDialog();
 	
 protected:
-	DlgCompress* m_pProgressDialog;
+	DlgCompress* m_pCompressDialog;
 	DlgDeCompress* m_pDeCompressDialog;
 	
 	std::vector<wxString> m_vecCompressList;
+	
 	wxString m_strCompressedFile = wxT("");
 	wxString m_strUnCompressDir = wxT("");
-	static constexpr unsigned int BUFFERSIZE = 2048;
 	
-	bool m_bCancel = false;
-	bool m_bEndCompress = false;
+	bool m_bThreadCreated = true;
+	void* m_uzFile = nullptr;
 };
 
 #endif

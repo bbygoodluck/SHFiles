@@ -1428,8 +1428,6 @@ void CSHCDView::DeleteDir()
 		return;
 	}
 
-//	strSendDir = strFullPath;
-	
 	std::list<wxString> lst;
 	lst.push_back(strFullPath);
 
@@ -1443,16 +1441,8 @@ void CSHCDView::DeleteDir()
 	theSHCD->DeleteDir(m_pCurrNode);
 
 	Initialize();
-//	strFullPath = theSHCD->GetFullPath(m_pCurrNode);
-
-//	strSendDir += wxT("^");
-//	strSendDir += strFullPath;
-
-//	wxCommandEvent evt(wxEVT_DIRMANAGER_MOVE_DIR);
-//	evt.SetString(strSendDir);
-//	wxPostEvent(_gActiveView, evt);
-
 	Thaw();
+	
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 

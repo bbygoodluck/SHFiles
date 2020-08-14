@@ -299,6 +299,7 @@ wxString CMenuOperationHandler::GetTargetDirectory()
 			wxGenericDirDialog dlgTargetPath(_gMainFrame, wxT("Select target directory"), strPath);
 			dlgTargetPath.SetSize(wxSize(800, 600));
 			dlgTargetPath.CenterOnScreen();
+			
 			if(dlgTargetPath.ShowModal() == wxID_OK)
 				strTargetPath = dlgTargetPath.GetPath();
 				

@@ -1,6 +1,7 @@
 #ifndef __COMPRESS_INCLUDE_H__
 #define __COMPRESS_INCLUDE_H__
 
-#include "ZipFileImpl.h"
-
+#include "CompressImpl.h"
+#include "./zip/ZipFileImpl.h"
+#include "./zip/UnZipFileImpl.h"
 #endif

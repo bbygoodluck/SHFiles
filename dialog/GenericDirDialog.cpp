@@ -212,6 +212,7 @@ wxString wxGenericDirDialog::GetPath(void) const
 int wxGenericDirDialog::ShowModal()
 {
     m_input->SetValue( m_path );
+	m_dirCtrl->SetFocus();
     return wxDialog::ShowModal();
 }
 

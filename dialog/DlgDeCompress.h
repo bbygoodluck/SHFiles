@@ -55,7 +55,7 @@ private:
 	_MENU_EVENT_TYPE m_menyType = _MENU_EVENT_NONE;
 	
 private:
-	void OnCompressThreadEnd(wxThreadEvent& event);
+	void OnDeCompressThreadEnd(wxThreadEvent& event);
 
 };
 

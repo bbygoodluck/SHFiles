@@ -143,7 +143,7 @@ protected:
 	void DoSelectAllOrRelease(const wxEventType& evtType);
 	void FindMatchItems();
 	void DoMatchClear();
-	
+
 private:
 	void AllClear();
 	void ShowFavoriteMenu();

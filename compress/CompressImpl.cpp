@@ -4,23 +4,33 @@
 #include "CompressImpl.h"
 
 CCompressImpl::CCompressImpl()
-	: m_pProgressDialog(nullptr)
-	, m_pDeCompressDialog(nullptr)
 {
+	m_pCompressDialog = nullptr;
+	m_pDeCompressDialog = nullptr;
+	
+	m_bThreadCreated = true;
+	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
+		m_bThreadCreated = false;
 }
 
 CCompressImpl::~CCompressImpl()
 {
+	m_pCompressDialog = nullptr;
+	m_pDeCompressDialog = nullptr;
 }
 
-void CCompressImpl::SetCompressDialog(DlgCompress* pDialog)
+void CCompressImpl::SetOwnerDialog(wxDialog* pOwnerDlg)
 {
-	m_pProgressDialog = pDialog;
-}
+	m_pCompressDialog = nullptr;
+	m_pDeCompressDialog = nullptr;
 
-void CCompressImpl::SetDeCompressDialog(DlgDeCompress* pDialog)
-{
-	m_pDeCompressDialog = pDialog;
+	if(theCompress->IsExtract())
+	{	
+		m_pDeCompressDialog = (DlgDeCompress *)pOwnerDlg;
+		return;
+	}
+	
+	m_pCompressDialog = (DlgCompress *)pOwnerDlg;
 }
 
 #ifdef __WXMSW__
@@ -90,28 +100,12 @@ time_t CCompressImpl::GetLastModified(const wxString& strPathName)
 }
 #endif
 
-void CCompressImpl::CompressCancel()
-{
-	m_bCancel = true;
-}
-
 DlgCompress* CCompressImpl::GetCompressDialog()
 {
-	return m_pProgressDialog;
+	return m_pCompressDialog;
 }
 
 DlgDeCompress* CCompressImpl::GetDeCompressDialog()
 {
 	return m_pDeCompressDialog;
-}
-
-void CCompressImpl::SetCompressInfo(const std::vector<wxString>& strCompList, const wxString& strCompressedFile)
-{
-	m_vecCompressList = strCompList;
-	m_strCompressedFile = strCompressedFile;
-}
-void CCompressImpl::SetDeCompressInfo(const wxString& strCompressedFile, const wxString& strUnCompressDir)
-{
-	m_strCompressedFile = strCompressedFile;
-	m_strUnCompressDir = strUnCompressDir;
 }

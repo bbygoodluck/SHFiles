@@ -23,7 +23,7 @@ void CLocalFileSystemWatcher::Clear()
 	{
 		if (m_watchDir.m_hIOCP != INVALID_HANDLE_VALUE)
 		{
-			PostQueuedCompletionStatus(m_watchDir.m_hIOCP, 0, NULL, NULL);
+			PostQueuedCompletionStatus(m_watchDir.m_hIOCP, 0, (ULONG_PTR)NULL, NULL);
 			if (GetThread() && GetThread()->IsRunning())
 				GetThread()->Wait();
 			
@@ -131,7 +131,7 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 		else
 		{
 			WaitForSingleObject(m_watchDir.PollingOverlap.hEvent, INFINITE);
-			BOOL bOverlappedResult = ::GetOverlappedResult(m_watchDir.hFile, &m_watchDir.PollingOverlap, &dwBytesReturned, TRUE);
+			::GetOverlappedResult(m_watchDir.hFile, &m_watchDir.PollingOverlap, &dwBytesReturned, TRUE);
 			if(dwBytesReturned != 0)
 				bResultQ = TRUE;
 		}

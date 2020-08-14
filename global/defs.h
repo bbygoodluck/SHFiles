@@ -119,4 +119,7 @@ const int EXTERNAL_PROGRAM_START_ID = 31000;
 const int EXTERNAL_PROGRAM_END_ID   = 31010;
 constexpr int COMPRESS_START_ID     = 32000;
 constexpr int COMPRESS_END_ID       = 32100;
+
+constexpr unsigned int MAX_COMMENT = 255;
+constexpr unsigned int BUFFERSIZE = 2048;
 #endif

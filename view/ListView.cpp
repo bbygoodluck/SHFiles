@@ -974,7 +974,7 @@ void CListView::OnSize(wxSizeEvent& event)
 void CListView::OnChar(wxKeyEvent& event)
 {
 	int iKeyCode = event.GetKeyCode();
-	if(iKeyCode == WXK_ESCAPE && m_pMyTooltipView->IsShown())
+	if(iKeyCode == WXK_ESCAPE)// && m_pMyTooltipView->IsShown())
 	{
 		m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
 		m_pMyTooltipKeyInput->Show(false);
