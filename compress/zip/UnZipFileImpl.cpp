@@ -141,6 +141,11 @@ bool CUnZipFileImpl::DoExtractFileFromZip(const wxString& strDir)
 		return true;
 	}
 	
+	unsigned long ulTotal = info.ulUncompressedSize;
+	if((ulTotal >> 10) > 0)
+		ulTotal = ulTotal >> 10;
+		
+	m_pDeCompressDialog->SetExtractTotal(ulTotal);
 	wxString strFilePathName(bAddSlash ? strTargetDir + SLASH + strName : strTargetDir + strName);
 	
 	HANDLE hOutputFile = ::CreateFile(strFilePathName, 
@@ -157,9 +162,11 @@ bool CUnZipFileImpl::DoExtractFileFromZip(const wxString& strDir)
 	if (unzOpenCurrentFile(m_uzFile) != UNZ_OK)
 		return false;
 	
+	m_pDeCompressDialog->SetExtractCurrentFile(strFilePathName);
 	int nRet = UNZ_OK;
 	char pBuffer[BUFFERSIZE] = {0x00, };
-
+	
+	unsigned long ulReadSize = 0;
 	do
 	{
 		if(theCompress->IsCancel())
@@ -177,6 +184,9 @@ bool CUnZipFileImpl::DoExtractFileFromZip(const wxString& strDir)
 				nRet = UNZ_ERRNO;
 				break;
 			}
+			
+			ulReadSize += dwBytesWritten;
+			m_pDeCompressDialog->SetExtractCurrent(ulReadSize >> 10);
 #endif
 		}
 	}

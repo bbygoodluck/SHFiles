@@ -81,17 +81,19 @@ void CZipFileImpl::DoZipStart()
 		wxString strAddName(wxT(""));
 		if(wxDirExists(item))
 		{
-			strAddName = theCommonUtil->GetPathName(item);
-			AddFolderToZip(item, strAddName);
 			iCompleted++;
 			m_pCompressDialog->SetCompressTotal(iCompleted);
+			
+			strAddName = theCommonUtil->GetPathName(item);
+			AddFolderToZip(item, strAddName);
 			continue;
 		}
 		
-		strAddName = theCommonUtil->GetFileName(item);
-		AddFileToZip(item, strAddName);
 		iCompleted++;
 		m_pCompressDialog->SetCompressTotal(iCompleted);
+		
+		strAddName = theCommonUtil->GetFileName(item);
+		AddFileToZip(item, strAddName);
 	}
 	
 	CloseZip();

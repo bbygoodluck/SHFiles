@@ -31,14 +31,17 @@ public:
 
 public:
 	void SetDecompressInfo(const wxString& strDecompressedFile, const wxString& strDecompressDir, _MENU_EVENT_TYPE _menuType);
-
+	void SetExtractTotal(unsigned long ulTotal);
+	void SetExtractCurrent(unsigned long ulCurrent);
+	void SetExtractCurrentFile(const wxString& strFileName);
+	
 protected:
 	wxStaticText* m_staticText1;
 	wxStaticText* m_staticSelCompressFile;
 	wxStaticText* m_staticText3;
 	wxStaticText* m_staticCurrentDecompress;
-	wxGauge* m_gauge1;
-	wxStaticText* m_staticText5;
+	wxGauge* m_ExtractProgress;
+	wxStaticText* m_staticPercent;
 	wxButton* m_btnCancel;
 
 	// Virtual event handlers, overide them in your derived class
@@ -54,6 +57,7 @@ private:
 	
 	_MENU_EVENT_TYPE m_menyType = _MENU_EVENT_NONE;
 	
+	unsigned long m_ulTotal = 0;
 private:
 	void OnDeCompressThreadEnd(wxThreadEvent& event);
 

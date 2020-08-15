@@ -42,9 +42,9 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-	m_gauge1 = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
-	m_gauge1->SetValue( 0 );
-	bSizer4->Add( m_gauge1, 0, wxBOTTOM|wxEXPAND, 5 );
+	m_ExtractProgress = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
+	m_ExtractProgress->SetValue( 0 );
+	bSizer4->Add( m_ExtractProgress, 0, wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT, 5 );
 
 
 	bSizer1->Add( bSizer4, 0, wxEXPAND, 5 );
@@ -52,12 +52,12 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText5 = new wxStaticText( this, wxID_ANY, wxT("100%"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText5->Wrap( -1 );
-	bSizer5->Add( m_staticText5, 0, wxALIGN_RIGHT|wxSHAPED, 5 );
+	m_staticPercent = new wxStaticText( this, wxID_ANY, wxT("100%"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticPercent->Wrap( -1 );
+	bSizer5->Add( m_staticPercent, 0, wxALIGN_RIGHT|wxSHAPED, 5 );
 
 
-	bSizer1->Add( bSizer5, 0, wxEXPAND, 5 );
+	bSizer1->Add( bSizer5, 0, wxEXPAND|wxRIGHT, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -94,6 +94,8 @@ DlgDeCompress::~DlgDeCompress()
 
 void DlgDeCompress::OnInitDialog( wxInitDialogEvent& event )
 {
+	m_ExtractProgress->SetRange(100);
+	m_staticSelCompressFile->SetLabelText(m_strDecompressedFile);
 }
 
 void DlgDeCompress::OnCancel( wxCommandEvent& event )
@@ -111,8 +113,6 @@ void DlgDeCompress::SetDecompressInfo(const wxString& strDecompressedFile, const
 	
 	theCompress->SetUnCompressedInfo(strDecompressedFile, strDecompressDir);
 	theCompress->DoStart(this);
-//	theCompress->GetCompressImpl()->SetDeCompressDialog(this);
-//	theCompress->GetCompressImpl()->DoDeCompress();
 }
 
 void DlgDeCompress::DoNeedCreateDir()
@@ -135,4 +135,21 @@ void DlgDeCompress::OnDeCompressThreadEnd(wxThreadEvent& event)
 {
 	theCompress->ClearCompressInfo();
 	EndModal(wxID_OK);
+}
+
+void DlgDeCompress::SetExtractTotal(unsigned long ulTotal)
+{
+	m_ulTotal = ulTotal;
+}
+
+void DlgDeCompress::SetExtractCurrent(unsigned long ulCurrent)
+{
+	int iPercent = (ulCurrent * 100) / m_ulTotal;
+	m_ExtractProgress->SetValue(iPercent);
+	m_staticPercent->SetLabelText(wxString::Format(wxT("%d%"), iPercent));
+}
+
+void DlgDeCompress::SetExtractCurrentFile(const wxString& strFileName)
+{
+	m_staticCurrentDecompress->SetLabelText(strFileName);
 }
