@@ -42,8 +42,7 @@ void CEvtHandler::OnMenuEvent(wxCommandEvent& event)
 	else if  (_iMenuID == XRCID("m_pMenu_Refresh"))                  menu_path_Refresh();
 	else if  (_iMenuID == XRCID("m_pMenu_GotoDirDirectly"))          menu_path_GotoDirDirectly();
     else if  (_iMenuID == XRCID("m_menuComp_View"))                  menu_comp_compressView();
-	else if  (_iMenuID == XRCID("m_menuComp_DoCompZip"))             menu_comp_DoCompress(wxT("zip"), false);
-	else if  (_iMenuID == XRCID("m_menuComp_DoComp7Zip"))            menu_comp_DoCompress(wxT("7z"), false);
+	else if  (_iMenuID == XRCID("m_menuComp_Progress"))              menu_comp_DoCompress(false);
 	else if  (_iMenuID == XRCID("m_menuComp_CurrentDirCompRelease")) menu_comp_DoDeCompress(false);
 	else if  (_iMenuID == XRCID("m_menuComp_MakeDirCompRelease"))    menu_comp_DoDeCompress(true);
 	else if  (_iMenuID == XRCID("m_menuComp_SelDirCompRelease"))     menu_comp_SelDirCompRelease();
@@ -231,9 +230,9 @@ void CEvtHandler::menu_comp_compressView()
 	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 }
 // 압축하기
-void CEvtHandler::menu_comp_DoCompress(const wxString& strExt, bool bSetPassword)
+void CEvtHandler::menu_comp_DoCompress(bool bSetPassword)
 {
-	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_COMPRESS);
 }
 // 압축해제
 void CEvtHandler::menu_comp_DoDeCompress(bool isMakeFolder)

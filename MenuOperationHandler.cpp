@@ -100,6 +100,10 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_VIEW_FILELIST_CHANGE:
 			DoChangeFileList();
 			break;
+		
+		case _MENU_COMPRESS:
+			DoCompress();
+			break;
 			
 		case _MENU_DECOMPRESS:
 		case _MENU_DECOMPRESS_MK_FOLDER:
@@ -626,6 +630,11 @@ void CMenuOperationHandler::ExecuteCompress(const std::vector<wxString>& vCompre
 	dlg.SetCompressInfo(vCompressDatas, strCompressedFile, strCompressType);
 	dlg.ShowModal();
 	dlg.Destroy();
+}
+
+void CMenuOperationHandler::DoCompress()
+{
+	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ShowCompressMenu();
 }
 
 void CMenuOperationHandler::DoDecompress(_MENU_EVENT_TYPE _menuType)

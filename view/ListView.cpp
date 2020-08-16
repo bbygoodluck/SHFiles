@@ -1163,30 +1163,15 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 	}
 	else if (bControlDown)
 	{
-	//	if (iKeyCode != WXK_DOWN && iKeyCode != WXK_UP)
-	//	{
-	//		if (iKeyCode >= WXK_F1 && iKeyCode <= WXK_F12)
-	//			ShowVisitDir(true, iKeyCode);
-	//	}
+		//Something to do
 	}
 	else if (bAltDown)
 	{
-		//	if (iKeyCode >= 48 && iKeyCode <= 57)  //48(0) ~ 57(9)
-		//	{
-		//		int iColumnCount = iKeyCode - 48;
-				//	theConfig->setColumnCount(iColumnCount);
-				//	theJsonConfig->SetColumnCount(iColumnCount);
-		//		theJsonConfig->SetChangeGlobalVal(wxT("DispColumn"), iColumnCount);
-		//		theCommonUtil->ExecPostCommandEvent2EventHandler(wxEVT_CHANGE_VIEW_COLUMN, wxT(""), iColumnCount);
-		//	}
+		//Something to do
 	}
 	else
 	{
-	//	if (theSkipKeyMap->IsExistSkipKey(iKeyCode))
-	//	{
-			ProcessKeyEvent(iKeyCode);
-		//	return;
-	//	}
+		ProcessKeyEvent(iKeyCode);
 	}
 	
 	event.Skip();
@@ -1198,10 +1183,6 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 	{
 		case WXK_F4:
 			ShowFavoriteMenu();
-			break;
-		
-		case WXK_F8:
-			ShowCompress();
 			break;
 			
 		case WXK_REVERSE_SLASH:

@@ -149,3 +149,8 @@ void CViewPanel::ReloadPathOfView(const wxString& strPathInfo)
 	
 	theCommonUtil->RefreshWindow(m_pFileListView.get(), m_pFileListView->m_viewRect);
 }
+
+void CViewPanel::ShowCompressMenu()
+{
+	m_pFileListView->ShowCompress();
+}

@@ -78,6 +78,7 @@ public:
 	
 	//생성/수정/삭제시 디렉토리 정보 변경
 	void UpdateModificationTimeOfDir();
+	void ShowCompress();
 //공용함수
 protected:
 	void Clear();
@@ -147,7 +148,6 @@ protected:
 private:
 	void AllClear();
 	void ShowFavoriteMenu();
-	void ShowCompress();
 	
 protected:
 	// 화면 버퍼(더블버퍼링 이용)

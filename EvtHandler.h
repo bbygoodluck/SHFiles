@@ -53,7 +53,7 @@ private:
 		// 압축 보기
 	void menu_comp_compressView();
 		// 압축하기
-	void menu_comp_DoCompress(const wxString& strExt, bool bSetPassword);
+	void menu_comp_DoCompress(bool bSetPassword);
 		// 압축해제
 	void menu_comp_DoDeCompress(bool isMakeFolder);
 	void menu_comp_SelDirCompRelease();

@@ -153,7 +153,7 @@
 			<object class="separator" />
 			<object class="wxMenuItem" name="m_menuComp_Progress">
 				<label>압축하기</label>
-				<accel>Ctrl+F6</accel>
+				<accel>F8</accel>
 				<help></help>
 			</object>
 			<!--
