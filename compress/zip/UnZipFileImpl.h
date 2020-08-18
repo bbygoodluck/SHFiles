@@ -44,6 +44,9 @@ protected:
 	bool DoExtractFileFromZip(const wxString& strDir);
 	bool GotoFirstFile();
 	bool GotoNextFile();
+	
+private:
+	wxString GetRename(const wxString& strFullPathName, const wxString& strOldName);
 
 };
 #endif

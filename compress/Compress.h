@@ -16,6 +16,11 @@ public:
 	bool SetCompressInfo(const std::vector<wxString>& vecDatas, const wxString& strCompressedFile);
 	bool SetUnCompressedInfo(const wxString& strCompressedFile, const wxString& strDeCompressDir);
 	
+	void SetAllDeCompressSame(bool bAllSame) { m_bAllDeCompressSame = bAllSame; }
+	bool IsAllDeCompressSame() { return m_bAllDeCompressSame; }
+	void SetDeCompressType(COMPRESS_TYPE _compType) { m_DeCompressType = _compType; }
+	COMPRESS_TYPE GetDeCompressType() { return m_DeCompressType; }
+	
 	void DoCancel() { m_bCancel = true; }
 	bool IsCancel() { return m_bCancel; }
 	bool IsExtract() { return m_bDeCompress; }
@@ -31,6 +36,8 @@ public:
 	wxString GetDeCompressDir() { return m_strDeCompressDir; }
 	
 	void DoStart(wxDialog* pOwnerDlg);
+	void SetLock();
+	void SetRelease();
 	
 protected:
 	void Init();
@@ -44,10 +51,13 @@ private:
 	wxString m_strCompressedFile = wxT("");
 	wxString m_strDeCompressDir = wxT("");
 	
-	COMPRESS_TYPE m_pCompressType;
+	COMPRESS_TYPE m_pCompressType = COMPTYPE_NONE;
+	COMPRESS_TYPE m_DeCompressType = COMPTYPE_NONE;
 	
 	std::vector<wxString> m_vCompress;
 	bool m_bDeCompress = false;
 	bool m_bCancel = false;
+	bool m_bAllDeCompressSame = false;
+	CLock lock;
 };
 #endif

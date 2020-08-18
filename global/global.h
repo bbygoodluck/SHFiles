@@ -117,5 +117,8 @@ using namespace std;
 
 //압축관련
 #include "../compress/Compress.h"
+#include "../compress/DeCompressDupCheck.h"
+
 #define theCompress          (CCompress::Get())
+#define theDeCompressDupChk  (CDeCompressDupCheck::Get())
 #endif

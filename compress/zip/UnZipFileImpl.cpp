@@ -69,7 +69,8 @@ bool CUnZipFileImpl::CloseUnZip()
 
 wxThread::ExitCode CUnZipFileImpl::Entry()
 {
-	DoExtractZip();
+	if(!DoExtractZip())
+		CloseUnZip();
 	
 	wxQueueEvent(m_pDeCompressDialog, new wxThreadEvent());
 	return (wxThread::ExitCode)0;
@@ -148,6 +149,33 @@ bool CUnZipFileImpl::DoExtractFileFromZip(const wxString& strDir)
 	m_pDeCompressDialog->SetExtractTotal(ulTotal);
 	wxString strFilePathName(bAddSlash ? strTargetDir + SLASH + strName : strTargetDir + strName);
 	
+	COMPRESS_TYPE compType = COMPTYPE_NONE;
+	if(!theCompress->IsAllDeCompressSame())
+	{
+		if(wxFileExists(strFilePathName))
+		{
+			theDeCompressDupChk->SetDuplicateFile(strFilePathName, strName, info.ulDosDate, info.ulUncompressedSize);
+			wxCommandEvent evt(wxEVT_DECOMPRESS_DUP_CHECK);
+			wxPostEvent(theDeCompressDupChk, evt);
+			
+			theCompress->SetLock();
+			if(theCompress->IsCancel())
+				return true;
+			
+			compType = theCompress->GetDeCompressType();
+		}
+	}
+	else
+		compType = theCompress->GetDeCompressType();
+	
+	if(compType == COMPTYPE_UNZIP_SKIP)
+		return true;
+	if(compType == COMPTYPE_UNZIP_RENAME)
+	{
+		wxString strNewName = GetRename(strFilePathName, strName);
+		strFilePathName = bAddSlash ? strTargetDir + SLASH + strNewName : strTargetDir + strNewName;
+	}
+	 
 	HANDLE hOutputFile = ::CreateFile(strFilePathName, 
 										GENERIC_WRITE,
 										0,
@@ -259,4 +287,15 @@ int CUnZipFileImpl::GetUnzipFileCount()
 		return (int)info.number_entry;
 
 	return 0;
+}
+
+wxString CUnZipFileImpl::GetRename(const wxString& strFullPathName, const wxString& strOldName)
+{
+	wxString strName = theCommonUtil->GetFileName(strFullPathName, false);
+	wxString strExt = theCommonUtil->GetExt(strOldName);
+	strName += wxT("(2)");
+	strName += wxT(".");
+	strName += strExt;
+	
+	return strName;
 }

@@ -21,5 +21,7 @@ wxDECLARE_EVENT(wxEVT_DIRMANAGER_REFRESH_ALL, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_DRIVE_ADD_REMOVE, wxCommandEvent);
 //디스크용량 갱신
 wxDECLARE_EVENT(wxEVT_DISK_SPACE_UPDATE, wxCommandEvent);
+//
+wxDECLARE_EVENT(wxEVT_DECOMPRESS_DUP_CHECK, wxCommandEvent);
 #endif
 #endif

@@ -131,4 +131,16 @@ void CCompress::ClearCompressInfo()
 	//초기화	
 	m_pCompressImpl = nullptr;
 	m_bCancel = false;
+	m_bAllDeCompressSame = false;
+	m_DeCompressType = COMPTYPE_NONE;
+}
+
+void CCompress::SetLock()
+{
+	lock.getCondition()->Wait();
+}
+
+void CCompress::SetRelease()
+{
+	lock.getCondition()->Signal();
 }

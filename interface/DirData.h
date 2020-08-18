@@ -86,9 +86,9 @@ public:
 		int iMonth = m_dt.GetMonth() + 1;
 		int iDay = m_dt.GetDay();
 		int iHour = m_dt.GetHour();
-		int iSec = m_dt.GetMinute();
+		int iMin = m_dt.GetMinute();
 
-		return (wxString::Format(TIME_FORMAT_DEFAULT, iYear, iMonth, iDay, iHour, iSec));
+		return (wxString::Format(TIME_FORMAT_DEFAULT, iYear, iMonth, iDay, iHour, iMin));
 	}
 
 	bool IsDir() const {
