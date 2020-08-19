@@ -306,5 +306,21 @@
     "MSG_DLG_ENV_EXTERNAL_EDIT_PG_ARGS_LIST"   : "실행인수",
     "MSG_DLG_ENV_EXT_EDIT_DLG"                 : "확장자 편집",
 	"MSG_INFO_RENAME_DONTUSE"                  : "\\ / : ? \" < > |",
-	"MSG_INFO_RENAME_DONTUSE_STRING"           : " 사용불가"
+	"MSG_INFO_RENAME_DONTUSE_STRING"           : " 사용불가",
+	"MSG_DECOMPRESS_DLG_TITLE"                 : "중복확인",
+	"MSG_DECOMPRESS_DLG_MAIN"                  : "이미 같은 이름이 존재합니다.",
+	"MSG_DECOMPRESS_DLG_EXIST_FILE_TITLE"      : "기존 파일",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_TITLE"      : "압축 풀 파일",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK"            : "어떤 작업을 하시겠습니까?",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_SKIP"       : "건너뛰기",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_OVERWRITE"  : "덮어쓰기",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_RENAME"     : "이름변경",
+	"MSG_DECOMPRESS_DLG_ALL_FILE_SAME"         : "모든 파일에 적용",
+	"MSG_DECOMPRESS_DLG_CONFIRM"               : "확 인",
+	"MSG_DECOMPRESS_DLG_CANCEL"                : "취 소",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_STOP"       : "압축해제를 중지하시겠습니까?",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_MSG"        : "압축파일     : ",
+	"MSG_DECOMPRESS_DLG_DECOMPRESSING"         : "압축해제 중 : ",
+	"MSG_DLG_FAVORITE_MOVE_GROUP"              : "항목이동시 타겟은 그룹만 가능합니다.!",
+	"MSG_DIRECTORY_MOVE_SAME_DRIVE"            : "같은 드라이브 입니다."
 }

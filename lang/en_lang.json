@@ -307,5 +307,20 @@
     "MSG_DLG_ENV_EXTERNAL_EDIT_PG_ARGS_LIST"   : "Args",
 	"MSG_DLG_ENV_EXT_EDIT_DLG"                 : "Ext Edit",
 	"MSG_INFO_RENAME_DONTUSE"                  : "\\ / : ? \" < > |",
-	"MSG_INFO_RENAME_DONTUSE_STRING"           : "  cannot be used"
+	"MSG_INFO_RENAME_DONTUSE_STRING"           : "  cannot be used",
+	"MSG_DECOMPRESS_DLG_MAIN"                  : "The same file already exists",
+	"MSG_DECOMPRESS_DLG_EXIST_FILE_TITLE"      : "Existing file",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_TITLE"      : "Uncompressing File",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK"            : "What would you like to do?",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_SKIP"       : "Skip",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_OVERWRITE"  : "Overwrite",
+	"MSG_DECOMPRESS_DLG_TO_DO_WORK_RENAME"     : "Rename",
+	"MSG_DECOMPRESS_DLG_ALL_FILE_SAME"         : "Apply to all files",
+	"MSG_DECOMPRESS_DLG_CONFIRM"               : "Ok",
+	"MSG_DECOMPRESS_DLG_CANCEL"                : "Cancel",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_STOP"       : "Do you want to stop decompression?",
+	"MSG_DECOMPRESS_DLG_DECOMPRESS_MSG"        : "CompressedFile   : ",
+	"MSG_DECOMPRESS_DLG_DECOMPRESSING"         : "Decompressing : ",
+	"MSG_DLG_FAVORITE_MOVE_GROUP"              : "When moving an item, the target can only be group!",
+	"MSG_DIRECTORY_MOVE_SAME_DRIVE"            : "It is the same drive"
 }

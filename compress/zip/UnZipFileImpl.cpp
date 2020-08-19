@@ -153,7 +153,12 @@ bool CUnZipFileImpl::DoExtractFileFromZip(const wxString& strDir)
 	if(!theCompress->IsAllDeCompressSame())
 	{
 		if(wxFileExists(strFilePathName))
-		{
+		{	/*
+				압축해제시 중복체크를 위해서 subThread 내에서 직접 중복체크 Dialog를 호출 하였으나
+				subThread 내에서 Dialog를 호출 할 경우 MainThread에서만 호출이 가능하다고 에러가 발생함
+				    - Dialog 의 ShowModal은 MainThread(메인윈도우의 쓰레드)에서만 가능함
+                    - 해결방법은 별도의 이벤트 호출을 통해서 처리해야 함
+		    */
 			theDeCompressDupChk->SetDuplicateFile(strFilePathName, strName, info.ulDosDate, info.ulUncompressedSize);
 			wxCommandEvent evt(wxEVT_DECOMPRESS_DUP_CHECK);
 			wxPostEvent(theDeCompressDupChk, evt);

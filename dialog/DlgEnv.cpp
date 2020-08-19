@@ -577,8 +577,6 @@ void DlgEnv::OnInitDialog(wxInitDialogEvent& event)
 	m_lstExternalPG->AppendColumn(theMsgManager->GetMessage(wxT("MSG_DLG_ENV_EXTERNAL_EDIT_PG_PATH_LIST")), wxLIST_FORMAT_LEFT, 330);
 	m_lstExternalPG->AppendColumn(theMsgManager->GetMessage(wxT("MSG_DLG_ENV_EXTERNAL_EDIT_PG_ARGS_LIST")), wxLIST_FORMAT_LEFT, 150);
 	
-//	wxVector<EXTERNAL_EDIT_PROGRAM> vecExternalPG;
-//	theJsonConfig->GetExternalEditProgram(vecExternalPG);
 	int iExtPGCount = _gExternalPGList.size();
 
 	for (int i = 0; i < iExtPGCount; i++)
@@ -790,12 +788,7 @@ void DlgEnv::OnApplyClick(wxCommandEvent& event)
 {
 	DoApply();
 	DoApplyColorInfo();
-/*
-#ifdef __WXMSW__
-	HWND hWnd = _gMainFrame->GetHWND();
-	::SendMessage(hWnd, WM_ENVIRONMENT_CHANGE, 0, 0);
-#endif
-*/
+
 	theJsonConfig->SaveConfig();
 }
 

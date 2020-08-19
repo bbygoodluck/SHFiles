@@ -45,7 +45,7 @@
             <property name="minimum_size"></property>
             <property name="name">DlgDuplicateCheck</property>
             <property name="pos"></property>
-            <property name="size">667,361</property>
+            <property name="size">549,361</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">중복확인</property>

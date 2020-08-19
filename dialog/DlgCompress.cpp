@@ -185,8 +185,6 @@ void DlgCompress::SetCompressInfo(const std::vector<wxString>& vCompressList, co
 	
 	theCompress->SetCompressInfo(m_vCompressList, m_strCompressedFile);
 	theCompress->DoStart(this);
-//	theCompress->GetCompressImpl()->SetCompressDialog(this);
-//	theCompress->GetCompressImpl()->DoCompress();
 }
 
 void DlgCompress::OnChoice( wxCommandEvent& event )

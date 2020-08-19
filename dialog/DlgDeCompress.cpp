@@ -14,7 +14,7 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("압축파일     : "), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_staticText1 = new wxStaticText( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_DECOMPRESS_MSG")), wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	m_staticText1->Wrap( -1 );
 	bSizer2->Add( m_staticText1, 0, wxALL, 5 );
 
@@ -28,7 +28,7 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("압축해제 중 : "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3 = new wxStaticText( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_DECOMPRESSING")), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText3->Wrap( -1 );
 	bSizer3->Add( m_staticText3, 0, wxALL, 5 );
 
@@ -62,7 +62,7 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 
-	m_btnCancel = new wxButton( this, wxID_ANY, wxT("취소"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_btnCancel = new wxButton( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_CANCEL")), wxDefaultPosition, wxDefaultSize, 0 );
 
 	m_btnCancel->SetBitmap( wxArtProvider::GetBitmap( wxART_CLOSE, wxART_BUTTON ) );
 	bSizer6->Add( m_btnCancel, 0, wxALIGN_RIGHT|wxALL, 5 );

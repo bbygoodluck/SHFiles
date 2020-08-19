@@ -108,7 +108,7 @@ private:
 	void SaveProc();
 	void DoSave(wxTreeItemId& treeNodeId, Value& valParent, Document::AllocatorType& allocator);
 public:
-	DlgFavoriteManager(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("즐겨찾기 관리"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(803, 534), long style = wxDEFAULT_DIALOG_STYLE);
+	DlgFavoriteManager(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Favorite Manager"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(803, 534), long style = wxDEFAULT_DIALOG_STYLE);
 	~DlgFavoriteManager();
 
 };

@@ -60,7 +60,7 @@ protected:
 	virtual void OnCancel( wxCommandEvent& event );
 
 public:
-	DlgDuplicateCheck( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("중복확인"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 667,361 ), long style = wxDEFAULT_DIALOG_STYLE );
+	DlgDuplicateCheck( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_TITLE")), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 650,361 ), long style = wxDEFAULT_DIALOG_STYLE );
 	~DlgDuplicateCheck();
 
 public:

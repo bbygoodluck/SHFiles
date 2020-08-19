@@ -358,13 +358,7 @@ bool CCommonUtil::IsSameDrive(const wxString& strNewPath, const wxString strOldP
 	//신 드라이브 == 기존 드라이브
 	if(!Compare(strNewDrive, strOldDrive))
 	{
-		wxString strMsg(wxT(""));
-		strMsg = strNewDrive + wxT(":") + SLASH;
-		strMsg += wxT(" and ");
-		strMsg += strOldDrive + wxT(":") + SLASH;
-		strMsg += wxT(" is the same drive");
-		
-		wxMessageBox(strMsg, PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+		wxMessageBox(theMsgManager->GetMessage(wxT("MSG_DIRECTORY_MOVE_SAME_DRIVE")), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 		return true;
 	}
 	

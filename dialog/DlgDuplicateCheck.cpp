@@ -12,7 +12,7 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("이미 같은 이름이 존재합니다."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_MAIN")), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	bSizer2->Add( m_staticText1, 0, wxALL|wxEXPAND, 5 );
 
@@ -38,7 +38,7 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("기존 파일") ), wxVERTICAL );
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_EXIST_FILE_TITLE")) ), wxVERTICAL );
 
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
@@ -61,7 +61,7 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	bSizer4->Add( 10, 0, 0, wxEXPAND, 5 );
 
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("압축 풀 파일") ), wxVERTICAL );
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_DECOMPRESS_TITLE")) ), wxVERTICAL );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -86,18 +86,18 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("어떤 작업을 하시겠습니까?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_TO_DO_WORK")), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	bSizer7->Add( m_staticText7, 0, wxALL, 5 );
 
-	m_radioBtnSkip = new wxRadioButton( this, wxID_SKIP, wxT("건너뛰기"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtnSkip = new wxRadioButton( this, wxID_SKIP, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_TO_DO_WORK_SKIP")), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( m_radioBtnSkip, 0, wxALL, 5 );
 
-	m_radioBtnOverwrite = new wxRadioButton( this, wxID_OVERWIRTE, wxT("덮어쓰기"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtnOverwrite = new wxRadioButton( this, wxID_OVERWIRTE, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_TO_DO_WORK_OVERWRITE")), wxDefaultPosition, wxDefaultSize, 0 );
 	m_radioBtnOverwrite->SetValue( true );
 	bSizer7->Add( m_radioBtnOverwrite, 0, wxALL, 5 );
 
-	m_radioBtnRename = new wxRadioButton( this, wxID_RENAME, wxT("이름변경"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtnRename = new wxRadioButton( this, wxID_RENAME, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_TO_DO_WORK_RENAME")), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( m_radioBtnRename, 0, wxALL, 5 );
 
 
@@ -118,7 +118,7 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 
-	m_checkBoxAll = new wxCheckBox( this, wxID_ANY, wxT("모든 파일에 적용"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBoxAll = new wxCheckBox( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_ALL_FILE_SAME")), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer10->Add( m_checkBoxAll, 0, wxALL, 5 );
 
 
@@ -127,12 +127,12 @@ DlgDuplicateCheck::DlgDuplicateCheck( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_btnConfirm = new wxButton( this, wxID_ANY, wxT("확 인"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_btnConfirm = new wxButton( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_CONFIRM")), wxDefaultPosition, wxDefaultSize, 0 );
 
 	m_btnConfirm->SetBitmap( wxArtProvider::GetBitmap( wxART_GO_FORWARD, wxART_TOOLBAR ) );
 	bSizer11->Add( m_btnConfirm, 0, wxALL, 5 );
 
-	m_btnCancel = new wxButton( this, wxID_ANY, wxT("취 소"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_btnCancel = new wxButton( this, wxID_ANY, theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_CANCEL")), wxDefaultPosition, wxDefaultSize, 0 );
 
 	m_btnCancel->SetBitmap( wxArtProvider::GetBitmap( wxART_CLOSE, wxART_TOOLBAR ) );
 	bSizer11->Add( m_btnCancel, 0, wxALL, 5 );
@@ -213,7 +213,7 @@ void DlgDuplicateCheck::OnConfirmClick( wxCommandEvent& event )
 
 void DlgDuplicateCheck::OnCancel( wxCommandEvent& event )
 {
-	int iRetID = wxMessageBox(wxT("압축해제를 중지하시겠습니까?"), PROGRAM_FULL_NAME, wxICON_QUESTION | wxYES_NO);
+	int iRetID = wxMessageBox(theMsgManager->GetMessage(wxT("MSG_DECOMPRESS_DLG_DECOMPRESS_STOP")), PROGRAM_FULL_NAME, wxICON_QUESTION | wxYES_NO);
 	if(iRetID != wxYES)
 		return;
 		
@@ -229,7 +229,7 @@ void DlgDuplicateCheck::SetDuplicateFile(const wxString& strFullPathName, const 
 	wxString strName = theCommonUtil->GetFileName(strFullPathName, false);
 	
 	strName = strName + wxT("(2).") + strExt;
-	m_radioBtnRename->SetLabelText(m_radioBtnRename->GetLabelText() + wxT(":") + strName);
+	m_radioBtnRename->SetLabelText(m_radioBtnRename->GetLabelText() + wxT(" : ") + strName);
 	
 	unsigned long ulExistedFileSize = fn.GetSize().ToULong();
 	wxString strExistedFile(wxT(""));

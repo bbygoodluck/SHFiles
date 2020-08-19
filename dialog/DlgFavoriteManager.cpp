@@ -475,7 +475,7 @@ bool DlgFavoriteManager::DoTreeItemDrop(wxTreeItemId& treeNodeSrc, wxTreeItemId&
 
 	if (pTreeItemDst->_strType.Cmp(wxT("item")) == 0)
 	{
-		wxMessageBox(wxT("항목이동시 타겟은 그룹만 가능합니다.!"), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
+		wxMessageBox(theMsgManager->GetMessage(wxT("MSG_DLG_FAVORITE_MOVE_GROUP")), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
 		return false;
 	}
 

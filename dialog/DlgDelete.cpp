@@ -101,14 +101,9 @@ void DlgDelete::OnInitialog(wxInitDialogEvent& event)
 	m_bCancelOK = false;
 	m_bStopping = false;
 
-//	int iDelItemTotal = wx_static_cast(int, m_lstDelList.size());
-	m_staticDelCnt->SetLabelText(wxT("(0 / 0)"));// wxString::Format(wxT("(0/%d)"), iDelItemTotal));
-//	m_staticDelTotal->SetLabelText(wxT("0"));
+	m_staticDelCnt->SetLabelText(wxT("(0 / 0)"));
 	
 	m_staticText1->SetLabelText(theMsgManager->GetMessage(wxT("MSG_DLG_DELETE_COLLECT_DEL_INFO")));
-//	m_progressDel->SetRange(iDelItemTotal);
-	
-
 	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
 	{
 		wxLogError("Could not create the worker thread!");
@@ -126,7 +121,6 @@ void DlgDelete::OnInitialog(wxInitDialogEvent& event)
 
 void DlgDelete::OnDlgClose(wxCommandEvent& event) 
 { 
-//	Destroy();
 	EndDialog(wxID_CLOSE);
 }
 
@@ -166,9 +160,6 @@ wxThread::ExitCode DlgDelete::Entry()
 	if (m_lstDelList.size() > 0)
 	{
 		std::list<wxString>::iterator iter = m_lstDelList.begin();
-	//	int iDelTtoal = wx_static_cast(int, m_lstDelList.size());
-
-	//	for (iter; iter != m_lstDelList.end(); ++iter)
 		for(auto item : m_lstDelList)
 		{
 			if (m_bStopping)
@@ -176,8 +167,6 @@ wxThread::ExitCode DlgDelete::Entry()
 
 			if (m_bCancelOK)
 				break;
-
-		//	wxString strDelItem = item;// iter->GetData();
 
 			if (wxDirExists(item))
 			{
