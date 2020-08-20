@@ -574,37 +574,26 @@ wxString CCommonUtil::ChangeName(const wxString& strName)
 	_splitpath(strName, drive, dir, name, ext);
 	sName = name;
 
-	int pos = sName.Find("_");
+	int pos = sName.rfind(wxT("_Copy"));//.Find("_");
 	if (pos == -1)
 		sNewName = sName + wxT("_Copy") + wxString(ext);
 	else
 	{
-		int pos1 = sName.Find(wxT("_Copy"));
-		if (pos1 == -1)
+		if(theCommonUtil->Compare(sName.Right(1), wxT(")")) != 0)
 		{
 			sNewName = sName;
 			sNewName.Replace(wxT("_Copy"), wxT(""));
 			sNewName = sNewName + wxT("_Copy(01)") + wxString(ext);
-
 		}
 		else
 		{
+			int pos2 = sName.rfind(wxT(")"));//.Find(wxT(")"));
 			wxString sCount;
-			int pos2 = sName.Find(wxT(")"));
-			if (pos2 == -1)
-			{
-				sNewName = sName;
-				sNewName.Replace(wxT("_Copy"), wxT(""));
-				sNewName = sNewName + wxT("_Copy(01)") + wxString(ext);
-			}
-			else
-			{
-				wxString strFileName = sName.Mid(0, pos2 - 3);// , sName.Len());
-				sCount = sName.Mid(strFileName.Len() + 1, 2);
-				int iCount = atoi(sCount);
-				iCount++;
-				sNewName = wxString::Format(wxT("%s%s%02d%s%s"), strFileName, wxT("("), iCount, wxT(")"), ext);
-			}
+			wxString strFileName = sName.Mid(0, pos2 - 3);// , sName.Len());
+			sCount = sName.Mid(strFileName.Len() + 1, 2);
+			int iCount = atoi(sCount);
+			iCount++;
+			sNewName = wxString::Format(wxT("%s%s%02d%s%s"), strFileName, wxT("("), iCount, wxT(")"), ext);
 		}
 	}
 	

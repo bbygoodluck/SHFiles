@@ -2078,6 +2078,12 @@ void CListView::OnCompress(wxCommandEvent& event)
 	std::vector<wxString>::const_iterator iter = theCompress->GetCompressList().begin() + iCompressID;
 	
 	wxString strCompressType = *iter;
+	if(theCommonUtil->Compare(strCompressType, wxT("gz")) == 0)
+	{
+		wxMessageBox(strCompressType + wxT(" is not supported!\nPlease wait....for days or months or years?"));
+		return;
+	}
+		
 	wxString strCompressedFile(wxT(""));
 	std::vector<wxString> vCompressDatas;
 	
