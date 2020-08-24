@@ -50,6 +50,7 @@ void CCustomStatusBar::OnIdle(wxIdleEvent& event)
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_PASTE")), Field_F5);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_CONTEXT_MENU")), Field_F7);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_BAR_OPTION")), Field_F10);
+		SetStatusText(wxT(" "), Field_F8);
 	}
 	else if (wxGetKeyState(WXK_ALT))
 	{
@@ -60,6 +61,7 @@ void CCustomStatusBar::OnIdle(wxIdleEvent& event)
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_SPLITVERT")), Field_F5);
 		SetStatusText(theMsgManager->GetMessage(wxT("MSG_STATUS_ALT_ANOTHER_COMPREALEASE")), Field_F7);
 		SetStatusText(wxT(" "), Field_F10);
+		SetStatusText(wxT(" "), Field_F8);
 	}
 	else
 	{

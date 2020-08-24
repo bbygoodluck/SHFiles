@@ -107,6 +107,8 @@ void CListView::AllClear()
 	
 	wxVector<int>().swap(m_matchItems);
 	m_matchItems.reserve(0);
+	
+	m_mapLastDir.clear();
 }
 
 void CListView::Clear()
@@ -1143,6 +1145,7 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 	
 	if (bShiftDown)
 	{
+#ifdef __WXMSW__		
 		if (theJsonConfig->IsShift_IME_KOR_MoveDrive())
 			theCommonUtil->SetImeModeToEnglish(this);
 		
@@ -1153,13 +1156,20 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 			{
 				if(!theCommonUtil->IsSameDrive(strDriveName, m_strCurrentPath))
 				{	
-					LoadDir(strDriveName);
-					theSplitterManager->ChangeTabPagePathName(strDriveName);
+					wxString strLastVisitDirectory = GetLastVisitDirectory(strDriveName.Left(1));
+					if(strLastVisitDirectory.IsEmpty())
+						strLastVisitDirectory = strDriveName;
+					
+					SetLastVisitDirectory(m_strCurrentPath);
+					
+					LoadDir(strLastVisitDirectory);
+					theSplitterManager->ChangeTabPagePathName(strLastVisitDirectory);
 			
 					theCommonUtil->RefreshWindow(this, m_viewRect);
 				}
 			}
 		}
+#endif
 	}
 	else if (bControlDown)
 	{
@@ -2224,3 +2234,16 @@ wxString CListView::GetCurrentItem()
 	auto item = m_itemList.begin() + m_nCurrentItemIndex;
 	return item->GetFullPath();
 }
+
+#ifdef __WXMSW__
+void CListView::SetLastVisitDirectory(const wxString& strPath)
+{
+	wxString strDrv = strPath.Left(1);
+	m_mapLastDir[strDrv] = strPath;
+}
+
+wxString CListView::GetLastVisitDirectory(const wxString& strDrive)
+{
+	return m_mapLastDir[strDrive];
+}
+#endif

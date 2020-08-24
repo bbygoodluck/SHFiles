@@ -145,6 +145,10 @@ protected:
 	void FindMatchItems();
 	void DoMatchClear();
 
+#ifdef __WXMSW__
+	void SetLastVisitDirectory(const wxString& strPath);
+	wxString GetLastVisitDirectory(const wxString& strDrive);
+#endif
 private:
 	void AllClear();
 	void ShowFavoriteMenu();
@@ -162,7 +166,8 @@ protected:
 	wxVector<CPositionInfo>	m_posList;
 	// 화면표시이름
 	std::unordered_map<wxString, wxString> m_dispNameInfoMap;
-	
+	//이동전 드라이브의 마지막 접근 디렉토리
+	std::unordered_map<wxString, wxString> m_mapLastDir;
 	// 현재 디렉토리
 	wxString m_strCurrentPath = wxT("");
 	// 가장긴 이름
