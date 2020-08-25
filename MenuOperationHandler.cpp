@@ -107,6 +107,7 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 			
 		case _MENU_DECOMPRESS:
 		case _MENU_DECOMPRESS_MK_FOLDER:
+		case _MENU_DECOMPRESS_SEL_DIR:
 			DoDecompress(_menuType);
 			break;
 		//환경설정 저장

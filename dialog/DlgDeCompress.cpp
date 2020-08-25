@@ -111,7 +111,7 @@ void DlgDeCompress::SetDecompressInfo(const wxString& strDecompressedFile, const
 	m_menyType = _menuType;
 	DoNeedCreateDir();
 	
-	theCompress->SetUnCompressedInfo(strDecompressedFile, strDecompressDir);
+	theCompress->SetUnCompressedInfo(m_strDecompressedFile, m_strDecompressDir);
 	theCompress->DoStart(this);
 }
 

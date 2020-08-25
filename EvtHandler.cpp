@@ -244,7 +244,8 @@ void CEvtHandler::menu_comp_DoDeCompress(bool isMakeFolder)
 
 void CEvtHandler::menu_comp_SelDirCompRelease()
 {
-	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+//	wxMessageBox(wxT("Not yet!"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DECOMPRESS_SEL_DIR);
 }
 
 //보기메뉴
