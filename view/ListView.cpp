@@ -1161,7 +1161,10 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 						strLastVisitDirectory = strDriveName;
 					
 					SetLastVisitDirectory(m_strCurrentPath);
-					
+					if(!wxDirExists(strLastVisitDirectory))
+						strLastVisitDirectory = strDriveName;
+						
+						
 					LoadDir(strLastVisitDirectory);
 					theSplitterManager->ChangeTabPagePathName(strLastVisitDirectory);
 			

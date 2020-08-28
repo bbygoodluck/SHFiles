@@ -32,7 +32,7 @@ DlgDeCompress::DlgDeCompress( wxWindow* parent, wxWindowID id, const wxString& t
 	m_staticText3->Wrap( -1 );
 	bSizer3->Add( m_staticText3, 0, wxALL, 5 );
 
-	m_staticCurrentDecompress = new wxStaticText( this, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticCurrentDecompress = new wxStaticText( this, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, wxST_ELLIPSIZE_MIDDLE );
 	m_staticCurrentDecompress->Wrap( -1 );
 	bSizer3->Add( m_staticCurrentDecompress, 1, wxALL, 5 );
 
