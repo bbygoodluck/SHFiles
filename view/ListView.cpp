@@ -2060,6 +2060,7 @@ void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 		fIter++;
 	}
 	
+	m_hashSelectedItem.clear();
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -2188,7 +2189,14 @@ void CListView::DoRenameOn(const wxString& strRename)
 	int iPosY2 = posInfo.m_mainRect.GetHeight() + 1;
 
 	int iLength = strRename.Len();
-
+	wxString strExt = theCommonUtil->GetExt(strRename);
+	int iExtLen = strExt.Len();
+	if(iExtLen != 0)
+	{
+		iExtLen += 1;
+		iLength -= iExtLen;
+	}	
+	
 	m_pTxtCtrlForRename->SetSize(wxRect(iPosX1, iPosY1, iPosX2, iPosY2));
 	m_pTxtCtrlForRename->SetLabelText(strRename);
 	m_pTxtCtrlForRename->SetSelection(0, iLength);
