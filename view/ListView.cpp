@@ -1567,23 +1567,10 @@ bool CListView::SetSelectedItem(int iKeyCode)
 		
 		if(m_hashSelectedItem.size() > 0)
 		{
-			m_pMyTooltipView->Show(false);
-			
 			wxString strSelString(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_SELINFO")));
 			wxString strSelItems = strSelString + wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_ITEM_SELECT")), m_iSelDirCnt, m_iSelFileCnt);
 			
-			wxClientDC dc(this);
-			wxSize sztip = dc.GetTextExtent(strSelItems);
-			wxSize szTooltip;
-	
-			szTooltip.SetWidth(sztip.GetWidth() + 10);
-			szTooltip.SetHeight(sztip.GetHeight() + 5);
-	
-			m_pMyTooltipView->SetTooltipText(strSelItems);
-			m_pMyTooltipView->SetThemeEnabled(true);
-			m_pMyTooltipView->SetPosition(wxPoint(m_viewRect.GetRight() - szTooltip.GetWidth(), m_viewRect.GetBottom() - szTooltip.GetHeight()));
-			m_pMyTooltipView->SetSize(szTooltip);
-			m_pMyTooltipView->Show(true);
+			DisplaySelectedItemInfo(strSelItems, 0, 0);
 		}
 		else
 		{
@@ -2049,18 +2036,49 @@ void CListView::DoSortStart()
 
 void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 {
+	m_hashSelectedItem.clear();
+	m_iSelDirCnt = 0;
+	m_iSelFileCnt = 0;
+			
 	bool bAllSelect = evtType == wxEVT_ITEM_ALL_SELECT ? true : false;
 	wxVector<CDirData>::iterator fIter = m_itemList.begin();
-	
+	int iIndex = 0;
 	while(fIter != m_itemList.end())
 	{
-		if(!fIter->IsDrive())
+		if(!fIter->IsDrive() && (fIter->GetName().Cmp(wxT("..")) != 0))
+		{
 			fIter->SetItemSelected(bAllSelect);
+			
+			if(bAllSelect)
+			{
+				if(fIter->IsDir())
+					m_iSelDirCnt++;
+				else
+					m_iSelFileCnt++;
+					
+				SELITEM_INFO _Info;
+				_Info.m_iSelIndex = iIndex;
+				_Info.m_bFile = fIter->IsFile();
+				
+				std::unordered_map<int, SELITEM_INFO>::value_type valsel(iIndex, _Info);
+				m_hashSelectedItem.insert(valsel);
+			}
+		}
 		
 		fIter++;
+		iIndex++;
 	}
 	
-	m_hashSelectedItem.clear();
+	if(bAllSelect) 
+	{
+		wxString strSelString(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_SELINFO")));
+		wxString strSelItems = strSelString + wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_ITEM_SELECT")), m_iSelDirCnt, m_iSelFileCnt);
+		
+		DisplaySelectedItemInfo(strSelItems, 0, 0);
+	}
+	else
+		m_pMyTooltipView->Show(false);
+		
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -2204,18 +2222,7 @@ void CListView::DoRenameOn(const wxString& strRename)
 	m_pTxtCtrlForRename->SetFocus();
 	
 	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE_STRING")));
-	wxClientDC dc(this);
-	wxSize sztip = dc.GetTextExtent(strDontUse);
-	wxSize szTooltip;
-	
-	szTooltip.SetWidth(sztip.GetWidth() + 10);
-	szTooltip.SetHeight(sztip.GetHeight() + 5);
-	
-	m_pMyTooltipView->SetTooltipText(strDontUse);
-	m_pMyTooltipView->SetThemeEnabled(true);
-	m_pMyTooltipView->SetPosition(wxPoint(iPosX1 + 30, iPosY1 + iPosY2));
-	m_pMyTooltipView->SetSize(szTooltip);
-	m_pMyTooltipView->Show(true);
+	DisplaySelectedItemInfo(strDontUse, iPosX1 + 30, iPosY1 + iPosY2, true);
 }
 
 void CListView::OnKeyDownTextCtrl(wxKeyEvent& event)
@@ -2258,3 +2265,27 @@ wxString CListView::GetLastVisitDirectory(const wxString& strDrive)
 	return m_mapLastDir[strDrive];
 }
 #endif
+
+void CListView::DisplaySelectedItemInfo(const wxString& strMsg, int xPos, int yPos, bool bDispRenameInfo)
+{
+	m_pMyTooltipView->Show(false);
+			
+	wxClientDC dc(this);
+	wxSize sztip = dc.GetTextExtent(strMsg);
+	wxSize szTooltip;
+
+	szTooltip.SetWidth(sztip.GetWidth() + 10);
+	szTooltip.SetHeight(sztip.GetHeight() + 5);
+	
+	if(!bDispRenameInfo)
+	{
+		xPos = m_viewRect.GetRight() - szTooltip.GetWidth();
+		yPos = m_viewRect.GetBottom() - szTooltip.GetHeight();
+	}
+	
+	m_pMyTooltipView->SetTooltipText(strMsg);
+	m_pMyTooltipView->SetThemeEnabled(true);
+	m_pMyTooltipView->SetPosition(wxPoint(xPos, yPos));
+	m_pMyTooltipView->SetSize(szTooltip);
+	m_pMyTooltipView->Show(true);
+}

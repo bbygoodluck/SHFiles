@@ -152,6 +152,7 @@ protected:
 private:
 	void AllClear();
 	void ShowFavoriteMenu();
+	void DisplaySelectedItemInfo(const wxString& strMsg, int xPos, int yPos, bool bDispRenameInfo = false);
 	
 protected:
 	// 화면 버퍼(더블버퍼링 이용)
