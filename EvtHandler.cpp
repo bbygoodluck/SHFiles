@@ -92,13 +92,13 @@ void CEvtHandler::OnMenuEventUpdate(wxUpdateUIEvent& event)
 	{
 		event.Check(false);
 		//윈도우 스타일
-		int iViewStyle = theJsonConfig->GetSplitStyle(); //theConfig->getSplitStyle();
+		int iViewStyle = theJsonConfig->GetSplitStyle();
 		wxString strMenuID = "m_viewMenu_Window_" + wxString::Format("%d", iViewStyle);
 		if (_iupdateID == XRCID(strMenuID))
 			event.Check(true);
 
 		//컬럼
-		int iColumnCnt = theJsonConfig->GetColumnCount(); //theConfig->getColumnCount();
+		int iColumnCnt = theJsonConfig->GetColumnCount();
 		strMenuID = "m_viewMenu_Column_" + wxString::Format("%d", iColumnCnt);
 
 		if (_iupdateID == XRCID(strMenuID))
@@ -110,7 +110,7 @@ void CEvtHandler::OnMenuEventUpdate(wxUpdateUIEvent& event)
 		(_iupdateID == XRCID("m_viewMenu_AllFile")))
 
 	{
-		//	if (theConfig->isViewAllFile())
+		event.Check(false);
 		if (theJsonConfig->IsViewAllFile())
 		{
 			if (_iupdateID == XRCID("m_viewMenu_AllFile"))

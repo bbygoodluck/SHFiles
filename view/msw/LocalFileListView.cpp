@@ -164,15 +164,25 @@ bool CLocalFileListView::ReadDirectory()
 		{
 			if (!theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
 			{
-				if ((lattr & ATTR_HIDDEN) || (lattr & ATTR_SYSTEM))
+				if (lattr & ATTR_HIDDEN)
+					continue;
+					
+				if (lattr & ATTR_SYSTEM)
 					continue;
 			}
-		}
-		
-		if (theJsonConfig->IsViewHiddenFile())
-		{
-			if((lattr & ATTR_SYSTEM) && !theJsonConfig->IsViewSystemFile())
-				continue;
+			else if(theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
+			{
+				if (lattr & ATTR_SYSTEM)
+					continue;
+			}
+			else if(!theJsonConfig->IsViewHiddenFile() && theJsonConfig->IsViewSystemFile())
+			{
+				if (lattr & ATTR_HIDDEN)
+				{
+					if(!(lattr & ATTR_SYSTEM))
+						continue;
+				}
+			}
 		}
 		
 		CDirData dirItem;

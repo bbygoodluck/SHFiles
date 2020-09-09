@@ -1128,7 +1128,7 @@ void CListView::FindMatchItems()
 
 	if (m_matchItems.size() > 0)
 	{
-		m_nCurrentItemIndex = m_matchItems.at(m_matchItems.size() - 1) + 1;
+		m_nCurrentItemIndex = m_matchItems.at(0);
 		ReCalcPage();
 	}
 }
@@ -1227,9 +1227,14 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 		break;
 
 		case WXK_RETURN:
+		{
+			DoMatchClear();
+			m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
+			m_pMyTooltipKeyInput->Show(false);
+		
 			if (!PressEnterKey())
 				return;
-			
+		}	
 			break;
 
 		case WXK_LEFT:
