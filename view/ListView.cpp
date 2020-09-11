@@ -1085,7 +1085,9 @@ void CListView::DoMatchClear()
 		pData->SetMatch(false);
 		
 		fIter++;
-	}		
+	}
+
+	m_matchItems.clear();		
 }
 
 void CListView::FindMatchItems()
