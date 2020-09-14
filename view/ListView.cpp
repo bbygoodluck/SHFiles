@@ -1757,10 +1757,13 @@ void CListView::DoSelectedItemsClear()
 	}
 	
 	m_hashSelectedItem.clear();
+	m_pMyTooltipView->SetTooltipText(wxT(""));
 	m_pMyTooltipView->Show(false);
 	
 	m_iSelDirCnt = 0;
 	m_iSelFileCnt = 0;
+	
+	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CListView::DoMyEventExecute(wxCommandEvent& event)
