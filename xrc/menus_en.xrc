@@ -333,11 +333,13 @@
 					<checkable>1</checkable>
 					<help></help>
 				</object>
+				<!--
 				<object class="wxMenuItem" name="m_viewMenu_SystemFile">
 					<label>System Files</label>
 					<checkable>1</checkable>
 					<help></help>
 				</object>
+				-->
 				<object class="separator" />
 				<object class="wxMenuItem" name="m_viewMenu_AllFile">
 					<label>All Files</label>
