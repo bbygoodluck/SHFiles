@@ -14,7 +14,7 @@ CFileSystemWatcherBase::~CFileSystemWatcherBase()
 void CFileSystemWatcherBase::DoWatchDirectory()
 {
 	
-	if (CreateThread() != wxTHREAD_NO_ERROR)
+	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
 	{
 		wxMessageBox(wxT("Could not create the worker thread!"), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
 		return;
