@@ -144,7 +144,8 @@ protected:
 	void DoSelectAllOrRelease(const wxEventType& evtType);
 	void FindMatchItems();
 	void DoMatchClear();
-
+	void InitKeyInputTooltip();
+	
 #ifdef __WXMSW__
 	void SetLastVisitDirectory(const wxString& strPath);
 	wxString GetLastVisitDirectory(const wxString& strDrive);

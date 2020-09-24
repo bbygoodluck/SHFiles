@@ -978,11 +978,7 @@ void CListView::OnChar(wxKeyEvent& event)
 	int iKeyCode = event.GetKeyCode();
 	if(iKeyCode == WXK_ESCAPE)// && m_pMyTooltipView->IsShown())
 	{
-		m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
-		m_pMyTooltipKeyInput->Show(false);
-		m_strKeyInput = wxT("");
-		
-		DoMatchClear();
+		InitKeyInputTooltip();
 		theCommonUtil->RefreshWindow(this, m_viewRect);
 		event.Skip();
 		
@@ -991,7 +987,7 @@ void CListView::OnChar(wxKeyEvent& event)
 	
 	if (theSkipKeyMap->IsExistSkipKey(iKeyCode))
 		return;
-		
+	
 	bool bShift = wxIsShiftDown();
 	bool bControl = wxIsCtrlDown();
 	
@@ -1058,16 +1054,18 @@ void CListView::OnChar(wxKeyEvent& event)
 		}
 		else
 		{
+			InitKeyInputTooltip();
 			//클리어
 			bRefresh = true;
-			m_pMyTooltipKeyInput->Show(false);			
+		//	m_pMyTooltipKeyInput->Show(false);			
 		}
 	}
 	else
 	{	
+		InitKeyInputTooltip();
 		//클리어
-		DoMatchClear();
-		m_pMyTooltipKeyInput->Show(false);
+	//	DoMatchClear();
+	//	m_pMyTooltipKeyInput->Show(false);
 	}
 	
 	if(bRefresh)
@@ -1088,6 +1086,15 @@ void CListView::DoMatchClear()
 	}
 
 	m_matchItems.clear();		
+}
+
+void CListView::InitKeyInputTooltip()
+{
+	DoMatchClear();
+	
+	m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
+	m_pMyTooltipKeyInput->Show(false);
+	m_strKeyInput = wxT("");
 }
 
 void CListView::FindMatchItems()
@@ -1201,8 +1208,10 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			break;
 			
 		case WXK_REVERSE_SLASH:
+			InitKeyInputTooltip();
 			GotoRoot();
 			break;
+		
 
 		case WXK_TAB:
 			theSplitterManager->ChangeActiveTab();
@@ -1230,10 +1239,8 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 
 		case WXK_RETURN:
 		{
-			DoMatchClear();
-			m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
-			m_pMyTooltipKeyInput->Show(false);
-		
+			InitKeyInputTooltip();
+		//	DoMatchClear();
 			if (!PressEnterKey())
 				return;
 		}	
