@@ -1230,7 +1230,8 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			//최상위 Path
 			if(m_iPathDepth == 1)
 				return;
-				
+			
+			InitKeyInputTooltip();	
 			m_nCurrentItemIndex = 0;
 			if (!PressEnterKey())
 				return;
