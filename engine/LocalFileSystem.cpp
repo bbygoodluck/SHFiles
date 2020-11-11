@@ -165,64 +165,58 @@ bool CLocalFileSystem::IsCanReadDir(const wxString& strPath)
 bool CLocalFileSystem::RecursiveCopyOrMove(std::list<wxString>& dirsToVisit, const wxString& strDest, wxWindow* parent, bool bMove)
 {
 #ifdef __WXMSW__
-	/*
-	// 윈도우7 이하 버전은 지원하지 않음
-	int iOSVersion = theCommonUtil->GetWindowsVersion();
-	if (iOSVersion <= WIN_OS_XP)
+	//윈도우 시스템에서는 SHFileOperation을 이용함
+	size_t len = 1;
+	for (auto const& item : dirsToVisit)
+		len += item.size() + 1;
+
+	wxChar* pBuffer = new wxChar[len];
+	wxChar* p = pBuffer;
+
+	for (auto& visitItem : dirsToVisit)
 	{
-		//윈도우 시스템에서는 SHFileOperation을 이용함
-		size_t len = 1;
-		for (auto const& item : dirsToVisit)
-			len += item.size() + 1;
+		if (visitItem.Last() == wxFileName::GetPathSeparator())
+			visitItem.RemoveLast();
 
-		wxChar* pBuffer = new wxChar[len];
-		wxChar* p = pBuffer;
+		if (GetFileType(visitItem) == unknown)
+			continue;
 
-		for (auto& visitItem : dirsToVisit)
-		{
-			if (visitItem.Last() == wxFileName::GetPathSeparator())
-				visitItem.RemoveLast();
-
-			if (GetFileType(visitItem) == unknown)
-				continue;
-
-			_tcscpy(p, visitItem);
-			p += visitItem.size() + 1;
-		}
-
-		int iDestLen = 1;
-		iDestLen += strDest.size() + 1;
-
-		wxChar* pBuffTo = new wxChar[iDestLen];
-		wxChar* pTo = pBuffTo;
-		_tcscpy(pTo, strDest);
-
-		if (p != pBuffer)
-		{
-			*p = 0;
-
-			SHFILEOPSTRUCT op;
-			memset(&op, 0, sizeof(op));
-
-			op.wFunc = bMove ? FO_MOVE : FO_COPY;
-			op.pFrom = pBuffer;
-			op.fFlags = FOF_NOCONFIRMMKDIR;
-			op.pTo = pTo;
-
-			int iRet = SHFileOperation(&op);
-			if (iRet != 0)
-			{
-				// SHFileOperation may return non-Win32 error codes, so the error
-				// message can be incorrect
-				wxLogApiError(wxT("SHFileOperation"), iRet);
-				return false;
-			}
-
-			delete[] pBuffer;
-			delete[] pTo;
-		}
+		_tcscpy(p, visitItem);
+		p += visitItem.size() + 1;
 	}
-	*/
+
+	int iDestLen = 1;
+	iDestLen += strDest.size() + 1;
+
+	wxChar* pBuffTo = new wxChar[iDestLen];
+	wxChar* pTo = pBuffTo;
+	_tcscpy(pTo, strDest);
+
+	if (p != pBuffer)
+	{
+		*p = 0;
+
+		SHFILEOPSTRUCT op;
+		memset(&op, 0, sizeof(op));
+
+		op.wFunc = bMove ? FO_MOVE : FO_COPY;
+		op.pFrom = pBuffer;
+		op.fFlags = FOF_NOCONFIRMMKDIR;
+		op.pTo = pTo;
+
+		int iRet = SHFileOperation(&op);
+		if (iRet != 0)
+		{
+			// SHFileOperation may return non-Win32 error codes, so the error
+			// message can be incorrect
+			wxLogApiError(wxT("SHFileOperation"), iRet);
+			return false;
+		}
+
+		delete[] pBuffer;
+		delete[] pTo;
+	}
+	/*
 	HRESULT hr;
 	IFileOperation* pfo;
 	//복사(잘라내기) 대상자 PIDL
@@ -286,6 +280,7 @@ bool CLocalFileSystem::RecursiveCopyOrMove(std::list<wxString>& dirsToVisit, con
 	}
 
 	CoUninitialize();
+	 */
 	return true;
 #else
 	
@@ -304,7 +299,7 @@ bool CLocalFileSystem::RecursiveCopyOrMoveSameTarget(std::list<wxString>& dirsTo
 	if (FAILED(hr))
 		return false;
 
-	hr = ::CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pfo));//__uuidof(FileOperation), NULL, CLSCTX_ALL, IID_PPV_ARGS(&pfo));
+	hr = ::CoCreateInstance(__uuidof(FileOperation), NULL, CLSCTX_ALL, IID_PPV_ARGS(&pfo));
 	if (FAILED(hr))
 		return false;
 	
@@ -344,6 +339,7 @@ bool CLocalFileSystem::RecursiveCopyOrMoveSameTarget(std::list<wxString>& dirsTo
 	}
 	
 	psiTo->Release();
+	CoUninitialize();
 	return bReturn;
 }
 #endif
@@ -419,65 +415,61 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 {
 	bool bRet = true;
 #ifdef __WXMSW__
-	/*
-	//윈도우 XP버전은 지원하지 않음
-	int iOSVersion = theCommonUtil->GetWindowsVersion();
-	if (iOSVersion <= WIN_OS_XP)
+	
+	size_t len = 1; // String list terminated by empty string
+
+	for (auto const& dirItem : dirsToVisit) 
+		len += dirItem.size() + 1;
+
+	// Allocate memory
+	wxChar* pBuffer = new wxChar[len];
+	wxChar* p = pBuffer;
+
+	for (auto dir : dirsToVisit)
 	{
-		size_t len = 1; // String list terminated by empty string
+		if (dir.Last() == wxFileName::GetPathSeparator())
+			dir.RemoveLast();
 
-		for (auto const& dir : dirsToVisit) 
-			len += dir.size() + 1;
+		if (GetFileType(dir) == unknown)
+			continue;
 
-		// Allocate memory
-		wxChar* pBuffer = new wxChar[len];
-		wxChar* p = pBuffer;
-
-		for (auto& dir : dirsToVisit)
-		{
-			if (dir.Last() == wxFileName::GetPathSeparator())
-				dir.RemoveLast();
-
-			if (GetFileType(dir) == unknown)
-				continue;
-
-			_tcscpy(p, dir);
-			p += dir.size() + 1;
-		}
-
-		if (p != pBuffer)
-		{
-			*p = 0;
-
-			FILEOP_FLAGS flag = FOF_NOCONFIRMATION;
-		//	if (theJsonConfig->GetCopyMoveUseWindowShell() != 1)
-		//		flag = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI;
-
-			SHFILEOPSTRUCT fileop;
-			wxZeroMemory(fileop);
-			fileop.wFunc = FO_DELETE;
-			fileop.pFrom = pBuffer;
-			fileop.pTo = NULL;
-			fileop.fAnyOperationsAborted = false;
-			fileop.hNameMappings = NULL;
-			fileop.lpszProgressTitle = NULL;
-			fileop.fFlags = flag;
-			if (bGoTrash)
-				fileop.fFlags |= FOF_ALLOWUNDO;
-
-			int ret = SHFileOperation(&fileop);
-			if (ret != 0)
-			{
-				// SHFileOperation may return non-Win32 error codes, so the error
-				// message can be incorrect
-				wxLogApiError(wxT("SHFileOperation"), ret);
-				return false;
-			}
-		}
-
-		delete[] pBuffer;
+		_tcscpy(p, dir);
+		p += dir.size() + 1;
 	}
-	*/
+
+	if (p != pBuffer)
+	{
+		*p = 0;
+		
+		FILEOP_FLAGS flag = FOF_NOCONFIRMATION;
+	//	if (theJsonConfig->GetCopyMoveUseWindowShell() != 1)
+	//		flag = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI;
+
+		SHFILEOPSTRUCT fileop;
+		wxZeroMemory(fileop);
+		fileop.wFunc = FO_DELETE;
+		fileop.pFrom = pBuffer;
+		fileop.pTo = NULL;
+		fileop.fAnyOperationsAborted = false;
+		fileop.hNameMappings = NULL;
+		fileop.lpszProgressTitle = NULL;
+		fileop.fFlags = flag;
+		if (bGoTrash)
+			fileop.fFlags |= FOF_ALLOWUNDO;
+
+		int ret = SHFileOperation(&fileop);
+		if (ret != 0)
+		{
+			// SHFileOperation may return non-Win32 error codes, so the error
+			// message can be incorrect
+			wxLogApiError(wxT("SHFileOperation"), ret);
+			return false;
+		}
+	}
+
+	delete[] pBuffer;
+	
+	/*
 	HRESULT hr;
 	IFileOperation* pfo;
 
@@ -546,8 +538,47 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 		delete[] paIDs;
 		CoUninitialize();
 	}
-
+	*/
 	return true;
 #else
+#endif
+}
+
+enum CLocalFileSystem::local_filetype CLocalFileSystem::GetFileType(const wxString& path)
+{
+#ifdef __WXMSW__
+	DWORD result = GetFileAttributes(path);
+	if (result == INVALID_FILE_ATTRIBUTES)
+		return unknown;
+
+	if (result & FILE_ATTRIBUTE_REPARSE_POINT)
+		return link;
+
+	if (result & FILE_ATTRIBUTE_DIRECTORY)
+		return dir;
+
+	return file;
+#else
+	if (path.Last() == '/' && path != _T("/"))
+	{
+		wxString tmp = path;
+		tmp.RemoveLast();
+		return GetFileType(tmp);
+	}
+
+	wxStructStat buf;
+	int result = wxLstat(path, &buf);
+	if (result)
+		return unknown;
+
+#ifdef S_ISLNK
+	if (S_ISLNK(buf.st_mode))
+		return link;
+#endif
+
+	if (S_ISDIR(buf.st_mode))
+		return dir;
+
+	return file;
 #endif
 }

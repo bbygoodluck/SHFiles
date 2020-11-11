@@ -4,21 +4,21 @@
 CLocalFileSystemWatcher::CLocalFileSystemWatcher()
 	: CFileSystemWatcherBase()
 {
-	
+
 }
 
 CLocalFileSystemWatcher::~CLocalFileSystemWatcher()
 {
-	
+
 }
 
 void CLocalFileSystemWatcher::Clear()
 {
 	m_bRemove = true;
-	
+
 	while (!m_queue.empty())
 		m_queue.pop();
-		
+
 	if (theJsonConfig->IsDirectoryWatcherAsync())
 	{
 		if (m_watchDir.m_hIOCP != INVALID_HANDLE_VALUE)
@@ -26,7 +26,7 @@ void CLocalFileSystemWatcher::Clear()
 			PostQueuedCompletionStatus(m_watchDir.m_hIOCP, 0, (ULONG_PTR)NULL, NULL);
 			if (GetThread() && GetThread()->IsRunning())
 				GetThread()->Wait();
-			
+
 			CloseHandle(m_watchDir.m_hIOCP);
 			m_watchDir.m_hIOCP = NULL;
 		}
@@ -49,7 +49,7 @@ void CLocalFileSystemWatcher::Clear()
 int CLocalFileSystemWatcher::AddPath(const wxString& strPath, unsigned long ulNotifyFilter, bool bSubTree)
 {
 	Clear();
-	
+
 	if (theJsonConfig->IsDirectoryWatcherAsync())
 	{
 		if (!(m_watchDir.m_hIOCP = CreateIoCompletionPort((HANDLE)INVALID_HANDLE_VALUE, NULL, 0, 0)))
@@ -58,11 +58,11 @@ int CLocalFileSystemWatcher::AddPath(const wxString& strPath, unsigned long ulNo
 			return E_FILESYSMON_ERRORADDTOIOCP;
 		}
 	}
-	
+
 	m_ulNotifyFilters = ulNotifyFilter;
 	m_watchDir.m_strDir = strPath;
 	m_watchDir.bSubTree = bSubTree;
-	
+
 	m_bRemove = false;
 	m_watchDir.hFile = CreateFile(m_watchDir.m_strDir
 		, GENERIC_READ | FILE_LIST_DIRECTORY
@@ -71,12 +71,12 @@ int CLocalFileSystemWatcher::AddPath(const wxString& strPath, unsigned long ulNo
 		, OPEN_EXISTING
 		, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED
 		, NULL);
-		
+
 	if (m_watchDir.hFile == INVALID_HANDLE_VALUE)
 		return E_FILESYSMON_ERROROPENFILE;
 
 	m_watchDir.PollingOverlap.OffsetHigh = 0;
-	
+
 	if (theJsonConfig->IsDirectoryWatcherAsync())
 	{
 		m_watchDir.CompletionKey = (ULONG_PTR)m_watchDir.hFile;
@@ -88,12 +88,12 @@ int CLocalFileSystemWatcher::AddPath(const wxString& strPath, unsigned long ulNo
 	}
 	else
 		m_watchDir.PollingOverlap.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	
+
 	DoWatchDirectory();
-	
+
 	return E_FILESYSMON_SUCCESS;
 }
-	
+
 wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 {
 	DWORD dwBytesReturned;
@@ -138,7 +138,7 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 
 		if (m_bRemove)
 			break;
-		
+
 		if (bResultR && bResultQ)
 		{
 			wxString strOldName(wxT(""));
@@ -158,14 +158,14 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 			{
 				dwOffset = pNotify->NextEntryOffset;
 				SecureZeroMemory(buf, bufferSize * sizeof(TCHAR));
-				errno_t err = wcsncat_s(buf, bufferSize, pNotify->FileName, min(bufferSize, int(pNotify->FileNameLength / sizeof(TCHAR))));
+				errno_t err = wcsncat_s(buf, bufferSize, pNotify->FileName, std::min(bufferSize, int(pNotify->FileNameLength / sizeof(TCHAR))));
 				if (err == STRUNCATE)
 				{
 					pNotify = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pNotify + dwOffset);
 					continue;
 				}
 
-				buf[min((decltype((pNotify->FileNameLength / sizeof(WCHAR))))bufferSize - 1, (pNotify->FileNameLength / sizeof(WCHAR)))] = L'\0';
+				buf[std::min((decltype((pNotify->FileNameLength / sizeof(WCHAR))))bufferSize - 1, (pNotify->FileNameLength / sizeof(WCHAR)))] = L'\0';
 				wxString strFileName(buf);
 				wxString strFullPath = m_watchDir.m_strDir[m_watchDir.m_strDir.Len() - 1] == SLASH[0] ? m_watchDir.m_strDir + strFileName : m_watchDir.m_strDir + SLASH + strFileName;
 
@@ -192,7 +192,7 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 				ResetEvent(m_watchDir.PollingOverlap.hEvent);
 		}
 	}
-	
+
 	return (wxThread::ExitCode)0;
 }
 

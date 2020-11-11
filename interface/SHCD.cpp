@@ -53,12 +53,12 @@ NODE* CDirTree::AddNode(const wxString& strNodeName, int iLevel, NODE* pParentNo
 		else
 		{
 			NODE* _parentNode = FindParentNode(iLevel, pParentNode);
-			
+
 			pNode->_parent = _parentNode;
 			_parentNode->_childNode.push_back(pNode);
 		}
 	}
-	
+
 	return pNode;
 }
 
@@ -81,7 +81,7 @@ bool CDirTree::FindChildNodeExist(const wxString& strNodeName, int iLevel, NODE*
 #else
 		_cmpName = strNodeName.Cmp(strName);
 #endif
-		
+
 		if (_cmpName == 0 && bCmpLevel)
 		{
 			bReturn = true;
@@ -185,7 +185,7 @@ void CDirTree::SetOrder()
 		_pOrder.push_back(pNode);
 
 		index++;
-		std::reverse_copy(begin(pNode->_childNode), end(pNode->_childNode), back_inserter(vNode));
+		std::reverse_copy(std::begin(pNode->_childNode), std::end(pNode->_childNode), std::back_inserter(vNode));
 	}
 
 	_pBegin = _pOrder.begin();

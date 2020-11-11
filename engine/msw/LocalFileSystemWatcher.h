@@ -22,20 +22,21 @@ class CLocalFileSystemWatcher : public CFileSystemWatcherBase
 public:
 	CLocalFileSystemWatcher();
 	virtual ~CLocalFileSystemWatcher();
-	
+
 protected:
 	virtual wxThread::ExitCode Entry() override;
 	virtual void Clear() override;
-	
+
 public:
-	virtual int AddPath(const wxString& strPath, 
-						unsigned long ulNotifyFilter = FILE_NOTIFY_CHANGE_CREATION | 
+	virtual int AddPath(const wxString& strPath,
+						unsigned long ulNotifyFilter = FILE_NOTIFY_CHANGE_CREATION |
 						                             FILE_NOTIFY_CHANGE_SIZE       |
-									                 FILE_NOTIFY_CHANGE_LAST_WRITE | 
-													 FILE_NOTIFY_CHANGE_DIR_NAME   | 
-													 FILE_NOTIFY_CHANGE_FILE_NAME, 
+									                 FILE_NOTIFY_CHANGE_LAST_WRITE |
+													 FILE_NOTIFY_CHANGE_DIR_NAME   |
+													 FILE_NOTIFY_CHANGE_ATTRIBUTES |
+													 FILE_NOTIFY_CHANGE_FILE_NAME,
 						bool bSubTree = false) override;
-		
+
 private:
 	CLocalWatcherDir  m_watchDir;
 	unsigned long	  m_ulNotifyFilters;

@@ -21,14 +21,14 @@ CExtInfo* CExtInfo::Get()
 		m_pInstance->Load();
 
 	}
-	
+
 	return m_pInstance.get();
 }
 
 bool CExtInfo::Load()
 {
 	wxString strJson(theCommonUtil->GetWorkDir() + SLASH + wxT("settings") + SLASH + wxT("extinfo.json"));
-	
+
 	if (!wxFileName::FileExists(strJson))
 		return false;
 
@@ -39,17 +39,17 @@ bool CExtInfo::Load()
 wxString CExtInfo::GetExtInfo(const wxString& strExt, const wxString& strFullPathName)
 {
 	assert(_jsonDoc.IsObject());
-	
+
 	wxString _strFullPath(strFullPathName);
-	
+
 	wxString _strExt(strExt);
 	wxString strExtInfo(wxT(""));
 
 	if (_strExt.IsEmpty())
 		_strExt = theCommonUtil->GetPathName(strFullPathName);
-	
+
 	_strExt = _strExt.MakeUpper();
-	
+
 	Value::ConstMemberIterator Iter = _jsonDoc.FindMember(_strExt.c_str());
 	if (Iter == _jsonDoc.MemberEnd())
 	{
@@ -57,12 +57,12 @@ wxString CExtInfo::GetExtInfo(const wxString& strExt, const wxString& strFullPat
 		int flags = SHGFI_TYPENAME | SHGFI_USEFILEATTRIBUTES;
 		SHFILEINFO shfinfo;
 		wxZeroMemory(shfinfo);
-		
+
 		HRESULT hr = SHGetFileInfo(_strFullPath, FILE_ATTRIBUTE_NORMAL, &shfinfo, sizeof(shfinfo), flags);
 		if(SUCCEEDED(hr))
 		{
 			strExtInfo = shfinfo.szTypeName;
-		
+
 			if (strExtInfo.IsEmpty())
 			{
 				if (!_strExt.IsEmpty())
@@ -88,10 +88,10 @@ wxString CExtInfo::GetExtInfo(const wxString& strExt, const wxString& strFullPat
 void CExtInfo::SaveExtInfo()
 {
 	wxString strOutJson(m_strJsonPath);
-	ofstream ofs;
+	std::ofstream ofs;
 
 	ofs.open(strOutJson.char_str());
-/*	
+/*
 #ifdef _UNICODE
 	ofs.open(strOutJson.wchar_str());
 //	ofs.open(strOutJson.ToStdWstring());

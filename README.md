@@ -10,49 +10,49 @@
 
 ### 개발환경
 
-- GUI : wxWidgets 3.1.3 Unicode Build
-- IDE : CodeLite 14.0.0
-- Compiler : gcc 10.1.0
+- GUI : wxWidgets 3.1.4 Unicode Build
+- IDE : CodeLite 14.0.0 >> CodeBlocks 20.03
+- Compiler : gcc 10.1.0 >> gcc 10.2.0 
 
 ### wxWidgets Build(gcc Dll Version)
 
 ```
 Release
 	64bit
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=release clean
-		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=release
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=release clean
+		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=release
 
 		Next, open the file: \path\to\wxwidgets\lib\gcc_dllx64\mswu\wx\setup.h and ensure that wxUSE_GRAPHICS_CONTEXT is set to 1:
 
 		#define wxUSE_GRAPHICS_CONTEXT 1
 
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=release
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=release
 
 	32bit
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++17" BUILD=release clean
-		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CXXFLAGS="-std=c++17" BUILD=release
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++20" BUILD=release clean
+		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CXXFLAGS="-std=c++20" BUILD=release
 
 		Next, open the file: \path\to\wxwidgets\lib\gcc_dll\mswu\wx\setup.h and ensure that wxUSE_GRAPHICS_CONTEXT is set to 1:
 
 		#define wxUSE_GRAPHICS_CONTEXT 1
 
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++17" BUILD=release
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++20" BUILD=release
 
 ============================================================================================================
 Debug
 	64bit
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=debug clean
-		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=debug
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=debug clean
+		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=debug
 
 		Next, open the file: \path\to\wxwidgets\lib\gcc_dll\mswu\wx\setup.h and ensure that wxUSE_GRAPHICS_CONTEXT is set to 1:
 
 		#define wxUSE_GRAPHICS_CONTEXT 1
 
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++17" BUILD=debug
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CFG=x64 CXXFLAGS="-std=c++20" BUILD=debug
 
 	32bit
-		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++17" BUILD=debug clean
-		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CXXFLAGS="-std=c++17" BUILD=debug
+		mingw32-make -j8 -f makefile.gcc SHARED=1 UNICODE=1 CXXFLAGS="-std=c++20" BUILD=debug clean
+		mingw32-make -j8 -f makefile.gcc setup_h SHARED=1 UNICODE=1 CXXFLAGS="-std=c++20" BUILD=debug
 
 		Next, open the file: \path\to\wxwidgets\lib\gcc_dll\mswu\wx\setup.h and ensure that wxUSE_GRAPHICS_CONTEXT is set to 1:
 

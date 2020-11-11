@@ -9,7 +9,7 @@
 
 std::unique_ptr<CJsonBookmark> CJsonBookmark::m_pInstance(nullptr);
 
-CJsonBookmark::CJsonBookmark() 
+CJsonBookmark::CJsonBookmark()
 	: m_iMenuID(wxFAVIROTE_ID_START)
 	, m_iAccel(1)
 {
@@ -81,7 +81,7 @@ void CJsonBookmark::DoCreateBookmark(wxMenu* pMenu, const Value& items)
 		if (strType.Cmp(wxT("item")) == 0)
 		{
 			wxMenuItem* pMenuItem = pMenu->Append(m_iMenuID, strName, strPath);
-			
+
 			if (m_iAddFavoriteCount < 19)
 			{	//즐겨찾기 메뉴 추가시 메뉴 단축키는 Ctrl+Shift+1 ~ 9 / Alt+Shift+1 ~ 9 까지만 설정
 				wxAcceleratorEntry* pAccel = new wxAcceleratorEntry();
@@ -92,15 +92,15 @@ void CJsonBookmark::DoCreateBookmark(wxMenu* pMenu, const Value& items)
 				pMenuItem->SetAccel(pAccel);
 				delete pAccel;
 			}
-			
+
 			pMenuItem->SetBitmap(m_bmpBookmark);
 
 			std::unordered_map<int, wxString>::value_type value(m_iMenuID, strPath);
 			m_mapFavorite.insert(value);
-			
+
 			CEvtHandler* pEvtHandler = (CEvtHandler *)_gMainFrame->GetEventHandler();
 			pEvtHandler->Bind(wxEVT_COMMAND_MENU_SELECTED, &CEvtHandler::OnBookmarkSelected, pEvtHandler, m_iMenuID);
-			
+
 			m_iAccel++;
 			m_iMenuID++;
 			m_iAddFavoriteCount++;
@@ -142,7 +142,7 @@ void CJsonBookmark::Save()
 {
 	wxString strOutJson(m_strJsonPath);
 
-	ofstream ofs;
+	std::ofstream ofs;
 	ofs.open(strOutJson.char_str());
 
 	OStreamWrapper osw(ofs);

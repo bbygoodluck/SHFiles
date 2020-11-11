@@ -4,10 +4,10 @@
 bool CJsonBase::DoLoad(const wxString& strPath)
 {
 	m_strJsonPath = strPath;
-	ifstream ifs;
-	
+	std::ifstream ifs;
+
 	ifs.open(strPath.char_str());//.ToStdstring());
-/*	
+/*
 #ifdef _UNICODE
 	ifs.open(strPath.wchar_str());
 //	ifs.open(strPath.ToStdWstring());

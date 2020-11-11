@@ -62,7 +62,7 @@ LRESULT CALLBACK HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	default:
 		break;
 	}
-	
+
 	// call original WndProc of window to prevent undefined bevhaviour of window
 	return ::CallWindowProc(OldWndProc, hWnd, message, wParam, lParam);
 }
@@ -101,7 +101,7 @@ void CMSWContextMenuHandler::Clear()
 
 	if (m_pMenu)
 		delete m_pMenu;
-	
+
 	m_pContextMenu = NULL;
 	m_pMenu = NULL;
 
@@ -119,23 +119,25 @@ void CMSWContextMenuHandler::SetObject(wxArrayString& strArray)
 
 	IShellFolder * psfDesktop = NULL;
 	SHGetDesktopFolder(&psfDesktop);	// needed to obtain full qualified pidl
-	
+
 	hr = SHParseDisplayName(strArray.Item(0), NULL, &pidl, 0, &sfgao);
-	SHBindToParent(pidl, IID_IShellFolder, (void **)&m_psfFolder, NULL);
-	
+//	SHBindToParent(pidl, IID_IShellFolder, (void **)&m_psfFolder, NULL);
+	SHBindToParent(pidl, __uuidof(IShellFolder), (void **)&m_psfFolder, NULL);
+
 	CoTaskMemFree(pidl);
-	
+
 	m_iItem = strArray.GetCount();
 	//아이템의 갯수만큼 배열생성(어렵게 malloc 함수를 사용하지 않아도 됨
 	m_pidlArray = new PIDLIST_ABSOLUTE[m_iItem];// (LPITEMIDLIST *)malloc(m_iItem * sizeof(LPITEMIDLIST));
 	int iIndex = 0;
-	
+
 	for(auto const& item : strArray)
 	{
 		hr = SHParseDisplayName(item, NULL, &pidl, 0, &sfgao);
 		if (SUCCEEDED(hr))
 		{
-			hr = SHBindToParent(pidl, IID_IShellFolder, (void **)&psfFolder, &pidlItem);
+		//	hr = SHBindToParent(pidl, IID_IShellFolder, (void **)&psfFolder, &pidlItem);
+			hr = SHBindToParent(pidl, __uuidof(IShellFolder), (void **)&psfFolder, &pidlItem);
 			if (SUCCEEDED(hr))
 			{
 				m_pidlArray[iIndex] = CopyPIDL(pidlItem);
@@ -192,23 +194,26 @@ bool CMSWContextMenuHandler::GetContextMenu(void ** ppContextMenu, int& iMenuTyp
 {
 	*ppContextMenu = NULL;
 	LPCONTEXTMENU icm1 = NULL;
-	
-	m_psfFolder->GetUIObjectOf(NULL, m_iItem, wx_const_cast(LPCITEMIDLIST *, m_pidlArray), IID_IContextMenu, NULL, (void**)&icm1);
-	
+
+//	m_psfFolder->GetUIObjectOf(NULL, m_iItem, wx_const_cast(LPCITEMIDLIST *, m_pidlArray), IID_IContextMenu, NULL, (void**)&icm1);
+	m_psfFolder->GetUIObjectOf(NULL, m_iItem, wx_const_cast(LPCITEMIDLIST *, m_pidlArray), __uuidof(IContextMenu), NULL, (void**)&icm1);
+
 	if (icm1)
 	{	// IContextMenu 인터페이스보다 높은 버전에 대한 ContextMenu 핸들을 가져옴
-		if (icm1->QueryInterface(IID_IContextMenu3, ppContextMenu) == NOERROR)
-			iMenuType = 3; 
-		else if (icm1->QueryInterface(IID_IContextMenu2, ppContextMenu) == NOERROR)
+	//	if (icm1->QueryInterface(IID_IContextMenu3, ppContextMenu) == NOERROR)
+		if (icm1->QueryInterface(__uuidof(IContextMenu3), ppContextMenu) == NOERROR)
+			iMenuType = 3;
+	//	else if (icm1->QueryInterface(IID_IContextMenu2, ppContextMenu) == NOERROR)
+		else if (icm1->QueryInterface(__uuidof(IContextMenu2), ppContextMenu) == NOERROR)
 			iMenuType = 2;
 
-		if (*ppContextMenu) 
+		if (*ppContextMenu)
 			icm1->Release();
-		else 
-		{	
+		else
+		{
 			iMenuType = 1;
 			*ppContextMenu = icm1;	//IContextMenu 인터페이스보다 높은버전의 IContextMenu 인터페이스가 없을경우
-		}							
+		}
 	}
 	else
 		return false;
@@ -238,7 +243,7 @@ void CMSWContextMenuHandler::ShowContextMenu(wxWindow* pWnd, const wxPoint& pt)
 		CONTEXT_MENU_ID_START,
 		CONTEXT_MENU_ID_LAST,
 		CMF_NORMAL | CMF_EXPLORE);
-	
+
 	if (iMenuType > 1)	// only subclass if its version 2 or 3
 	{
 		if (iMenuType == 2)
@@ -255,9 +260,9 @@ void CMSWContextMenuHandler::ShowContextMenu(wxWindow* pWnd, const wxPoint& pt)
 	}
 	else
 		OldWndProc = NULL;
-	
+
 	pWnd->PopupMenu(m_pMenu, pt.x, pt.y);
-	
+
 
 	if (OldWndProc)
 #if defined(_WIN64)
@@ -275,7 +280,7 @@ void CMSWContextMenuHandler::ShowContextMenu(wxWindow* pWnd, const wxPoint& pt)
 	g_IContext3 = NULL;
 
 }
-//컨택스트 메뉴선택시 실제 윈도우에서는 OnInvokeCommand를 쉘이 처리하나 wxWidgets에서는 메뉴에 대한 처리를 OnInvokeCommand에서 처리하도록 
+//컨택스트 메뉴선택시 실제 윈도우에서는 OnInvokeCommand를 쉘이 처리하나 wxWidgets에서는 메뉴에 대한 처리를 OnInvokeCommand에서 처리하도록
 //이벤트 핸들러를 등록해서 처리
 void CMSWContextMenuHandler::OnInvokeCommand(wxCommandEvent& event)
 {
@@ -289,7 +294,7 @@ void CMSWContextMenuHandler::OnInvokeCommand(wxCommandEvent& event)
 		info.lpVerb = wx_reinterpret_cast(LPSTR, iCommand);// (LPSTR)(iCommand);
 		info.nShow = SW_SHOWNORMAL;
 		m_pContextMenu->InvokeCommand(&info);
-		
+
 		theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetListView()->DoSelectedItemsClear();
 	}
 }

@@ -7,7 +7,7 @@
 
 std::unique_ptr<CJsonConfig> CJsonConfig::m_pInstance(nullptr);
 
-CJsonConfig::CJsonConfig() 
+CJsonConfig::CJsonConfig()
 	: m_nWidth(1480)
 	, m_nHeight(800)
 	, m_nXPos(0)
@@ -49,7 +49,7 @@ CJsonConfig::CJsonConfig()
 	m_tabStyle |= wxAUI_NB_SCROLL_BUTTONS;
 //	m_tabStyle |= wxAUI_NB_TAB_FIXED_WIDTH;
 };
-	
+
 CJsonConfig::~CJsonConfig()
 {
 	_jsonDoc.RemoveAllMembers();
@@ -115,7 +115,7 @@ void CJsonConfig::SetGlobalConfig()
 	m_iDirectoryWatcherAsync                 = _jsonDoc["globalsettings"]["DirectoryWatcherAsync"].GetInt();
 	//************************************************************************************************
 	m_iUseSHBrowseForFolder                  = _jsonDoc["globalsettings"]["UseWindowSHBrowseFolder"].GetInt();
-	
+
 	m_strLeftPath        = _jsonDoc["globalsettings"]["LeftPath"].GetString();
 	m_strRightPath       = _jsonDoc["globalsettings"]["RightPath"].GetString();
 
@@ -179,7 +179,7 @@ void CJsonConfig::SetDefaultColor()
 void CJsonConfig::SetChangeGlobalVal(const wxString& strMember, int iVal)
 {
 	wxString _strMember(strMember);
-	
+
 	Value _Key(_strMember.c_str(), _jsonDoc.GetAllocator());
 	_jsonDoc["globalsettings"][_Key] = iVal;
 }
@@ -213,11 +213,11 @@ void CJsonConfig::SetChangeColorVal(const wxString& strKey, const wxString& strM
 const wxColour CJsonConfig::GetExtColor(const wxString& strExt)
 {
 	wxString _strExt(strExt);
-	
+
 	Value::ConstMemberIterator Iter = _jsonDoc["extcolor"].FindMember(_strExt.c_str());
 	if (Iter == _jsonDoc["extcolor"].MemberEnd())
 		return m_defaultColor;
-	
+
 	wxString strColorValue(Iter->value.GetString());
 
 	unsigned long lColorValue = ConvertStringToColor(strColorValue);
@@ -286,7 +286,7 @@ void CJsonConfig::SetColumnCount(const int iColumnCnt)
 void CJsonConfig::SaveConfig()
 {
 	wxString strOutJson(m_strJsonPath);
-	ofstream ofs;
+	std::ofstream ofs;
 
 	ofs.open(strOutJson.char_str());
 

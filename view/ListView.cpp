@@ -33,7 +33,7 @@ CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 {
 	//상위폴더 이동 이미지
 	m_icoUpDir = wxArtProvider::GetIcon(wxART_GO_DIR_UP, wxART_OTHER, wxSize(16, 16));
-	
+
 	m_colDefault = theJsonConfig->GetDefaultColor();
 	m_colDrive   = theJsonConfig->GetDriveColor();
 	m_colDir     = theJsonConfig->GetDirColor();
@@ -42,21 +42,21 @@ CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 	m_colAttr    = theJsonConfig->GetAttributeColor();
 	m_colType    = theJsonConfig->GetDescriptionColor();
 	m_colMatch   = theJsonConfig->GetMatchColor();
-	
+
 	m_pImageMap = new CImageMap(this);
-	
+
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
-	
+
 	m_pTxtCtrlForRename = std::make_unique<wxTextCtrl>(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxBORDER_THEME);
 	m_pTxtCtrlForRename->SetBackgroundColour(wxColour(220, 220, 220));
 	m_pTxtCtrlForRename->SetBackgroundStyle(wxBG_STYLE_PAINT);
 	m_pTxtCtrlForRename->SetFont(*_gFont);
 	m_pTxtCtrlForRename->Show(false);
-	
+
 	m_pTxtCtrlForRename->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CListView::OnKeyDownTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Connect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CListView::OnEnterTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CListView::OnKillFocusTxtCtrl), NULL, this);
-	
+
 	m_pMyTooltipView = new CMyTooltipView(this);
 	m_pMyTooltipView->SetSize(60, 20);
 	m_pMyTooltipView->Show(false);
@@ -70,44 +70,44 @@ CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 CListView::~CListView()
 {
 	ReadIconThreadTerminate();
-	
+
 	if (m_pDoubleBuffer)
 		delete m_pDoubleBuffer;
-	
+
 	m_pDoubleBuffer = nullptr;
 	AllClear();
-	
+
 	m_pTxtCtrlForRename->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(CListView::OnKeyDownTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Disconnect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CListView::OnEnterTextCtrl), NULL, this);
 	m_pTxtCtrlForRename->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CListView::OnKillFocusTxtCtrl), NULL, this);
-	
+
 	if(m_pMyTooltipView)
 		delete m_pMyTooltipView;
-		
+
 	m_pMyTooltipView = nullptr;
-	
+
 	if(m_pMyTooltipKeyInput)
 		delete m_pMyTooltipKeyInput;
-		
+
 	m_pMyTooltipKeyInput = nullptr;
 }
 
 void CListView::AllClear()
 {
 	Clear();
-	
+
 	wxVector<CDirData>().swap(m_itemList);
 	m_itemList.reserve(0);
-	
+
 	wxVector<CColumnPoint>().swap(m_ptList);
 	m_ptList.reserve(0);
-	
+
 	wxVector<CPositionInfo>().swap(m_posList);
 	m_posList.reserve(0);
-	
+
 	wxVector<int>().swap(m_matchItems);
 	m_matchItems.reserve(0);
-	
+
 	m_mapLastDir.clear();
 }
 
@@ -125,21 +125,21 @@ void CListView::Initialize()
 	m_strKeyInput = wxT("");
 	m_pMyTooltipView->SetTooltipText(wxT(""));
 	m_pMyTooltipView->Show(false);
-	
+
 	m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
 	m_pMyTooltipKeyInput->Show(false);
-	
+
 	Clear();
-	
+
 	wxVector<CPositionInfo>().swap(m_posList);
 	m_posList.reserve(450);
-	
+
 	wxVector<CColumnPoint>().swap(m_ptList);
 	m_ptList.reserve(250);
-	
+
 	wxVector<CDirData>().swap(m_itemList);
 	m_itemList.reserve(300);
-		
+
 	//디렉토리 수
 	m_iDirCount = 0;
 	//파일수
@@ -158,7 +158,7 @@ void CListView::Initialize()
 	m_strMaxName     = wxT("");
 	//Max Type Name
 	m_strMaxTypeName = wxT("");
-	
+
 	//디렉토리 Load 플래그
 	m_bDirLoaded = false;
 	//화면 변경 플래그
@@ -180,7 +180,7 @@ bool CListView::ReadIconThreadStop()
 	}
 	else
 		bReturn = false;
-		
+
 	return bReturn;
 }
 
@@ -205,12 +205,12 @@ void CListView::CalcColumn(wxDC* pDC)
 {
 	if (m_nTotalItems <= 0)
 		return;
-		
+
 	if(!m_bSizeOrColumnChanged && !m_bDirLoaded)
 		return;
-	
+
 	m_dispNameInfoMap.clear();
-	
+
 	int nRight = m_viewRect.GetRight();
 	int nBottom = m_viewRect.GetBottom();
 
@@ -219,10 +219,10 @@ void CListView::CalcColumn(wxDC* pDC)
 	m_nItemCountInColumn = (m_viewRect.GetHeight() / m_iCharHeight);
 	if (m_nItemCountInColumn == 0)
 		return;
-	
+
 	if(m_bSizeOrColumnChanged)
 		m_ptList.clear();
-		
+
 	m_nDispColumn = theJsonConfig->GetColumnCount();
 	if (m_nDispColumn == 0)
 	{
@@ -256,7 +256,7 @@ void CListView::CalcColumn(wxDC* pDC)
 	m_nDispColumnEndPoint = nDispWidth;
 	if(m_bDirLoaded)
 		ReadIconThreadStart();
-		
+
 	//아이템 표시좌표 계산
 	CalcPosition(pDC);
 }
@@ -309,7 +309,7 @@ bool CListView::CalcAutoColumn(wxDC* pDC, const wxRect& viewRect)
 
 	if (m_nDispColumn <= 0)
 		m_nDispColumn = 1;
-		
+
 	return true;
 }
 
@@ -432,7 +432,7 @@ void CListView::CalcPosition(wxDC* pDC)
 			wxRect rcType(iDisp_x1, iDisp_y1, iDisp_x2, iDisp_y2);
 			posInfo.m_typeNameRect = rcType;
 		}
-	
+
 		//속성
 		if (m_bDispFlag[3])
 		{
@@ -489,7 +489,7 @@ void CListView::CalcPosition(wxDC* pDC)
 			wxRect rcFileSizeType(iDisp_x1, iDisp_y1, iDisp_x2, iDisp_y2);
 			posInfo.m_sizeRectType = rcFileSizeType;
 		}
-		/*	
+		/*
 		}
 		else
 		{
@@ -615,17 +615,17 @@ void CListView::DisplayItems(wxDC* pDC)
 
 	if (nDisplayItemCount <= 0)
 		return;
-		
+
 	int nPosIndex = 0;
 	m_iTotalPositionCnt = m_posList.size();
-	
+
 	wxColour dispColor;
 
 	wxString strName(wxT(""));
 	wxString strSrcName(wxT(""));
 	wxString strFullPathName(wxT(""));
 	wxString strSpace(wxT(""));
-	
+
 	for (int nIndex = m_nStartIndex; nIndex < nDisplayItemCount; nIndex++)
 	{
 		if (nIndex >= m_nTotalItems)
@@ -633,7 +633,7 @@ void CListView::DisplayItems(wxDC* pDC)
 
 		if (nPosIndex >= m_iTotalPositionCnt)
 			nPosIndex = m_iTotalPositionCnt - 1;
-			
+
 		CDirData itemData = m_itemList.at(nIndex);
 		CPositionInfo posInfo = m_posList.at(nPosIndex);
 
@@ -665,7 +665,7 @@ void CListView::DisplayItems(wxDC* pDC)
 
 		if (bSelected)
 			dispColor = wxColour(255, 255, 80);// wxColour(172, 89, 255);
-			
+
 		//아이템이 선택되었을경우
 		if (m_nCurrentItemIndex == nIndex)
 		{
@@ -722,7 +722,7 @@ void CListView::DisplayItems(wxDC* pDC)
 				pDC->SetBrush(wxNullBrush);
 			}
 		}
-		
+
 		wxColour colSelected = (m_nCurrentItemIndex == nIndex) ? dispColor : m_colDefault;
 		wxString strDisp(wxT(""));
 #ifdef __WXMSW__
@@ -732,7 +732,7 @@ void CListView::DisplayItems(wxDC* pDC)
 		strDisp = CalcDispStr(pDC, strSrcName, strName, isDrive);
 		pDC->SetTextForeground(dispColor);
 		pDC->DrawLabel(strDisp, posInfo.m_nameRect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-		
+
 		if(!isDrive)
 		{
 			if (m_bDispFlag[1])
@@ -766,7 +766,7 @@ void CListView::DisplayItems(wxDC* pDC)
 					}
 				}
 			}
-			
+
 			//시간정보
 			if (m_bDispFlag[2])
 			{
@@ -781,7 +781,7 @@ void CListView::DisplayItems(wxDC* pDC)
 				pDC->SetTextForeground(colSelected);
 				pDC->DrawLabel(strAttr, posInfo.m_attrRect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 			}
-			
+
 			//type정보
 			if (m_bDispFlag[4])
 			{
@@ -790,7 +790,7 @@ void CListView::DisplayItems(wxDC* pDC)
 				pDC->DrawLabel(strDesc, posInfo.m_typeNameRect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 			}
 		}
-		
+
 		if (bSelected)
 		{	//아이템이 선택되었을때 선택표시를 Polygon으로 처리(▶)
 			wxPoint ptSel[3];
@@ -827,7 +827,7 @@ void CListView::DisplayItems(wxDC* pDC)
 			pDC->SetPen(wxNullPen);
 			pDC->SetBrush(wxNullBrush);
 		}
-		
+
 		if (theCommonUtil->Compare(itemData.GetName(), wxT("..")) == 0)
 			pDC->DrawIcon(m_icoUpDir, wxPoint(posInfo.m_iconRect.GetLeft(), posInfo.m_iconRect.GetTop()));
 		else
@@ -854,7 +854,7 @@ void CListView::DisplayItems(wxDC* pDC)
 #else
 #endif
 		}
-			
+
 		nPosIndex++;
 	}
 }
@@ -893,7 +893,7 @@ wxString CListView::FindMaxData(const wxString& a, const wxString& b)
 	wxSize szA = clientDC.GetTextExtent(a);
 	wxSize szB = clientDC.GetTextExtent(b);
 	wxString strMaxData = szA.GetWidth() < szB.GetWidth() ? b : a;
-	
+
 	clientDC.SetFont(wxNullFont);
 	return strMaxData;
 }
@@ -962,9 +962,9 @@ void CListView::OnSize(wxSizeEvent& event)
 	wxSize size = event.GetSize();
 	if ((size.x == 0) || (size.y == 0))
 		return;
-	
+
 	m_bSizeOrColumnChanged = true;
-		
+
 	m_szChagned = size;
 	if(m_pDoubleBuffer)
 		delete m_pDoubleBuffer;
@@ -981,36 +981,36 @@ void CListView::OnChar(wxKeyEvent& event)
 		InitKeyInputTooltip();
 		theCommonUtil->RefreshWindow(this, m_viewRect);
 		event.Skip();
-		
+
 		return;
 	}
-	
+
 	if (theSkipKeyMap->IsExistSkipKey(iKeyCode))
 		return;
-	
+
 	bool bShift = wxIsShiftDown();
 	bool bControl = wxIsCtrlDown();
-	
+
 	if(bControl)
 		return;
-	
+
 	wxString strKeyName(theCommonUtil->GetKeyName(event));
 	//드라이브 체크
-	
+
 	if(bShift)
 	{
 		wxString strTmp(strKeyName);
 		strTmp += wxT(":");
 		strTmp += SLASH;
-		
+
 		if (theJsonConfig->IsShift_IME_KOR_MoveDrive())
 		{
 			if (theDriveInfo->IsExistDrive(strTmp))
 				return;
 		}
 	}
-	
-	
+
+
 	bool bRefresh = false;
 	int iLenKeyInput = 0;
 	if(iKeyCode == WXK_BACK)
@@ -1026,29 +1026,29 @@ void CListView::OnChar(wxKeyEvent& event)
 		m_strKeyInput += strKeyName;
 		iLenKeyInput = m_strKeyInput.Len();
 	}
-	
+
 	if(iLenKeyInput > 0)
 	{
 		DoMatchClear();
-		
+
 		if(!m_strKeyInput.IsEmpty())
 		{
 			wxClientDC dc(this);
 			wxSize sztip = dc.GetTextExtent(m_strKeyInput);
 			wxSize szTooltip;
-			
+
 			wxRect rcWindow =this->GetClientRect();
-			wxPoint ptTooltip(rcWindow.GetRight() / 2 - sztip.GetWidth(), rcWindow.GetHeight() / 2); 
-			
+			wxPoint ptTooltip(rcWindow.GetRight() / 2 - sztip.GetWidth(), rcWindow.GetHeight() / 2);
+
 			szTooltip.SetWidth(sztip.GetWidth() + 10);
 			szTooltip.SetHeight(sztip.GetHeight() + 5);
-			
+
 			m_pMyTooltipKeyInput->SetTooltipText(m_strKeyInput);
 			m_pMyTooltipKeyInput->SetThemeEnabled(true);
 			m_pMyTooltipKeyInput->SetPosition(ptTooltip);
 			m_pMyTooltipKeyInput->SetSize(szTooltip);
 			m_pMyTooltipKeyInput->Show(true);
-			
+
 			FindMatchItems();
 			bRefresh = true;
 		}
@@ -1057,20 +1057,20 @@ void CListView::OnChar(wxKeyEvent& event)
 			InitKeyInputTooltip();
 			//클리어
 			bRefresh = true;
-		//	m_pMyTooltipKeyInput->Show(false);			
+		//	m_pMyTooltipKeyInput->Show(false);
 		}
 	}
 	else
-	{	
+	{
 		InitKeyInputTooltip();
 		//클리어
 	//	DoMatchClear();
 	//	m_pMyTooltipKeyInput->Show(false);
 	}
-	
+
 	if(bRefresh)
 		theCommonUtil->RefreshWindow(this, m_viewRect);
-		
+
 	event.Skip();
 }
 
@@ -1081,17 +1081,17 @@ void CListView::DoMatchClear()
 	{
 		CDirData* pData = (CDirData *)&m_itemList.at(*fIter);
 		pData->SetMatch(false);
-		
+
 		fIter++;
 	}
 
-	m_matchItems.clear();		
+	m_matchItems.clear();
 }
 
 void CListView::InitKeyInputTooltip()
 {
 	DoMatchClear();
-	
+
 	m_pMyTooltipKeyInput->SetTooltipText(wxT(""));
 	m_pMyTooltipKeyInput->Show(false);
 	m_strKeyInput = wxT("");
@@ -1100,7 +1100,7 @@ void CListView::InitKeyInputTooltip()
 void CListView::FindMatchItems()
 {
 	m_matchItems.clear();
-	
+
 	wxString strKeyInput(m_strKeyInput);
 #ifdef __WXMSW__
 	strKeyInput.MakeLower();
@@ -1151,34 +1151,34 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 	bool bShiftDown   = event.ShiftDown();
 
 	wxString strKeyName(theCommonUtil->GetKeyName(event));
-	
+
 	if (bShiftDown)
 	{
-#ifdef __WXMSW__		
+#ifdef __WXMSW__
 		if (theJsonConfig->IsShift_IME_KOR_MoveDrive())
 			theCommonUtil->SetImeModeToEnglish(this);
-		
+
 		wxString strDriveName = strKeyName + wxT(":") + SLASH;
 		if (theDriveInfo->IsExistDrive(strDriveName))
 		{
 			if(CLocalFileSystem::IsCanReadDir(strDriveName))
 			{
-				if(!theCommonUtil->IsSameDrive(strDriveName, m_strCurrentPath))
-				{	
-					wxString strLastVisitDirectory = GetLastVisitDirectory(strDriveName.Left(1));
-					if(strLastVisitDirectory.IsEmpty())
-						strLastVisitDirectory = strDriveName;
-					
-					SetLastVisitDirectory(m_strCurrentPath);
-					if(!wxDirExists(strLastVisitDirectory))
-						strLastVisitDirectory = strDriveName;
-						
-						
-					LoadDir(strLastVisitDirectory);
-					theSplitterManager->ChangeTabPagePathName(strLastVisitDirectory);
-			
-					theCommonUtil->RefreshWindow(this, m_viewRect);
-				}
+			//	if(!theCommonUtil->IsSameDrive(strDriveName, m_strCurrentPath))
+			//	{
+				wxString strLastVisitDirectory = GetLastVisitDirectory(strDriveName.Left(1));
+				if(strLastVisitDirectory.IsEmpty())
+					strLastVisitDirectory = strDriveName;
+
+				SetLastVisitDirectory(m_strCurrentPath);
+				if(!wxDirExists(strLastVisitDirectory))
+					strLastVisitDirectory = strDriveName;
+
+
+				LoadDir(strLastVisitDirectory);
+				theSplitterManager->ChangeTabPagePathName(strLastVisitDirectory);
+
+				theCommonUtil->RefreshWindow(this, m_viewRect);
+			//	}
 			}
 		}
 #endif
@@ -1195,7 +1195,7 @@ void CListView::OnKeyDown(wxKeyEvent& event)
 	{
 		ProcessKeyEvent(iKeyCode);
 	}
-	
+
 	event.Skip();
 }
 
@@ -1206,12 +1206,12 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 		case WXK_F4:
 			ShowFavoriteMenu();
 			break;
-			
+
 		case WXK_REVERSE_SLASH:
 			InitKeyInputTooltip();
 			GotoRoot();
 			break;
-		
+
 
 		case WXK_TAB:
 			theSplitterManager->ChangeActiveTab();
@@ -1220,7 +1220,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 		case WXK_SPACE:
 			if (!SetSelectedItem(WXK_SPACE))
 				return;
-			
+
 			m_nCurrentItemIndex++;
 			MoveRightAndDownKey();
 			break;
@@ -1230,8 +1230,8 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			//최상위 Path
 			if(m_iPathDepth == 1)
 				return;
-			
-			InitKeyInputTooltip();	
+
+			InitKeyInputTooltip();
 			m_nCurrentItemIndex = 0;
 			if (!PressEnterKey())
 				return;
@@ -1244,7 +1244,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 		//	DoMatchClear();
 			if (!PressEnterKey())
 				return;
-		}	
+		}
 			break;
 
 		case WXK_LEFT:
@@ -1309,7 +1309,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 
 			if (m_nStartIndex <= 0)
 				m_nStartIndex = 0;
-			
+
 			if (m_nCurrentItemIndex <= 0)
 				m_nCurrentItemIndex = 0;
 
@@ -1336,7 +1336,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 		default:
 			 return;
 	}
-	
+
 	switch(nKeyCode)
 	{
 		case WXK_SPACE:
@@ -1353,7 +1353,7 @@ void CListView::ProcessKeyEvent(const int nKeyCode)
 			m_bIsDisplayDetailInfo = false;
 			break;
 	}
-	
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -1386,7 +1386,7 @@ bool CListView::PressEnterKey()
 	CDirData pCurData = m_itemList.at(m_nCurrentItemIndex);
 	wxString strName(pCurData.GetName());
 	wxString strSearchDir(wxT(""));
-	
+
 	if (pCurData.IsDir())
 	{
 		if (strName == wxT(".."))
@@ -1433,19 +1433,19 @@ bool CListView::PressEnterKey()
 		if (!CLocalFileSystem::IsCanReadDir(strSearchDir))
 			return false;
 	}
-	
+
 	if(pCurData.IsDir() || pCurData.IsDrive())
 	{
-		if(pCurData.IsDrive())
+	/*	if(pCurData.IsDrive())
 		{
 			if(theCommonUtil->IsSameDrive(strSearchDir, m_strCurrentPath))
 				return false;
 		}
-		
+	*/
 		LoadDir(strSearchDir);
 		theSplitterManager->ChangeTabPagePathName(strSearchDir);
 	}
-		
+
 	return true;
 }
 
@@ -1459,17 +1459,17 @@ void CListView::GotoRoot()
 		wxMessageBox(strMsg, PROGRAM_FULL_NAME, wxOK | wxICON_INFORMATION);
 		return;
 	}
-	
+
 	//이동 루트드라이브 == 현재디렉토리
 	if (m_strVolume.CmpNoCase(m_strCurrentPath) == 0)
 		return;
-	
+
 	_HistoryItem historyItem = m_hashHistory[m_strVolume];
 
 	m_nCurrentItemIndex = historyItem.iCurrentIndex;
 	m_nStartIndex = historyItem.iStartIndex;
-	
-	LoadDir(m_strVolume);	
+
+	LoadDir(m_strVolume);
 	theSplitterManager->ChangeTabPagePathName(m_strVolume);
 #else
 #endif
@@ -1485,7 +1485,7 @@ void CListView::DoMouseProcess(const wxPoint& pt, bool bDblClick)
 			PressEnterKey();
 	//		return;
 	//	}
-		
+
 		m_bMouseClickItemFound = true;
 		theCommonUtil->RefreshWindow(this, m_viewRect);
 	}
@@ -1495,7 +1495,7 @@ bool CListView::FindItemInMousePoint(const wxPoint& pt)
 {
 	bool bFoundOK = false;
 	wxVector<CPositionInfo>::const_iterator fIter = m_posList.begin();
-	
+
 	int iClickPosIndex = 0;
 	while(fIter != m_posList.end())
 	{
@@ -1504,21 +1504,21 @@ bool CListView::FindItemInMousePoint(const wxPoint& pt)
 			bFoundOK = (m_nStartIndex + iClickPosIndex) < m_nTotalItems ? true : false;
 			break;
 		}
-		
+
 		iClickPosIndex++;
 		fIter++;
 	}
-	
+
 	if(bFoundOK)
 		m_nCurrentItemIndex = m_nStartIndex + iClickPosIndex;
-	
+
 	return bFoundOK;
 }
 
 void CListView::OnMouseLBottonDown(wxMouseEvent& event)
 {
 	DoMouseProcess(event.GetPosition());
-	
+
 	if(!m_bSetFocus) theSplitterManager->ChangeActiveTab();
 }
 
@@ -1536,30 +1536,30 @@ void CListView::OnMouseRButtonUp(wxMouseEvent& event)
 {
 	DisplayContextMenu(event.GetPosition());
 }
-	
+
 bool CListView::SetSelectedItem(int iKeyCode)
 {
 	int iTotalItem = m_itemList.size();
 	if(m_nCurrentItemIndex >= iTotalItem - 1)
 		return false;
-		
+
 	wxVector<CDirData>::iterator fIter = m_itemList.begin() + m_nCurrentItemIndex;
-	
+
 	if((theCommonUtil->Compare(fIter->GetName(), wxT("..")) != 0) && !fIter->IsDrive())
-	{	
+	{
 		//선택이 되어 있는 상태면 선택이 안된상태로 변경
-		bool bNewSelected = fIter->IsItemSelected() ? false : true; 
+		bool bNewSelected = fIter->IsItemSelected() ? false : true;
 		fIter->SetItemSelected(bNewSelected);
-		
+
 		if (bNewSelected) //아이템 선택
 		{
 			SELITEM_INFO _Info;
 			_Info.m_iSelIndex = m_nCurrentItemIndex;
 			_Info.m_bFile = fIter->IsFile();
-			
+
 			std::unordered_map<int, SELITEM_INFO>::value_type valsel(m_nCurrentItemIndex, _Info);
 			m_hashSelectedItem.insert(valsel);
-			
+
 			if(fIter->IsFile())
 				m_iSelFileCnt++;
 			else
@@ -1575,16 +1575,16 @@ bool CListView::SetSelectedItem(int iKeyCode)
 					m_iSelFileCnt--;
 				else
 					m_iSelDirCnt--;
-					
+
 				m_hashSelectedItem.erase(m_nCurrentItemIndex);
 			}
 		}
-		
+
 		if(m_hashSelectedItem.size() > 0)
 		{
 			wxString strSelString(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_SELINFO")));
 			wxString strSelItems = strSelString + wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_ITEM_SELECT")), m_iSelDirCnt, m_iSelFileCnt);
-			
+
 			DisplaySelectedItemInfo(strSelItems, 0, 0);
 		}
 		else
@@ -1594,7 +1594,7 @@ bool CListView::SetSelectedItem(int iKeyCode)
 			m_iSelFileCnt = 0;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1633,13 +1633,13 @@ void CListView::MakeCopyOrMoveList(bool bUseClipboard, bool bMove, std::list<wxS
 			if (bUseClipboard)
 			{
 				pItem->SetCut(false);
-				
+
 				if (bMove == true)
 					pItem->SetCut(true);
 			}
 		}
 	}
-	
+
 	if(bUseClipboard)
 		theCommonUtil->RefreshWindow(this, m_viewRect);
 }
@@ -1661,24 +1661,24 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 		CDirData selItem = m_itemList.at(m_nCurrentItemIndex);
 		if (theCommonUtil->Compare(selItem.GetName(), wxT("..")) == 0)
 			return false;
-			
+
 		if (selItem.IsFile())
 			bOpenCheck = CLocalFileSystem::IsCheckedFileOpen(selItem.GetFullPath());
-		
+
 		strMsg = selItem.GetFullPath();
-		
+
 		if (bOpenCheck)
 		{
 			wxMessageBox(strMsg + wxT(" is opened!. you can't delete operation"), wxT("Delete...."), wxICON_ERROR, this);
 			return false;
 		}
-		
+
 		strMsg += wxT("\n");
 		strMsg += bGoTrash ? strGoTrash : strDelComplete;
 
 		wxString strDelItem(selItem.GetFullPath());
 		lstDatas.push_back(strDelItem);
-		
+
 		iRetValue = wxMessageBox(strMsg, wxT("Delete...."), wxYES_NO | wxICON_EXCLAMATION, this);
 	}
 	else
@@ -1696,7 +1696,7 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 
 			SELITEM_INFO _info = iter->second;
 			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
-			
+
 			strItem = itemSel.GetFullPath();
 
 			if (itemSel.IsFile())
@@ -1721,9 +1721,9 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 		strMsg += wxT("\n");
 		strMsg += bGoTrash ? strGoTrash : strDelComplete;
 
-		iRetValue = wxMessageBox(strMsg, wxT("Delete...."), wxYES_NO | wxICON_EXCLAMATION, this);			
+		iRetValue = wxMessageBox(strMsg, wxT("Delete...."), wxYES_NO | wxICON_EXCLAMATION, this);
 	}
-	
+
 	if (iRetValue == wxYES)
 	{
 		if (lstDatas.size() > 0)
@@ -1732,7 +1732,7 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 			m_hashSelectedItem.clear();
 		}
 	}
-	
+
 	return bDel;
 }
 
@@ -1759,18 +1759,18 @@ void CListView::DoSelectedItemsClear()
 	{
 		SELITEM_INFO _Info = iTer->second;
 		CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
-		
+
 		data->SetItemSelected(false);
 		iTer++;
 	}
-	
+
 	m_hashSelectedItem.clear();
 	m_pMyTooltipView->SetTooltipText(wxT(""));
 	m_pMyTooltipView->Show(false);
-	
+
 	m_iSelDirCnt = 0;
 	m_iSelFileCnt = 0;
-	
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -1790,7 +1790,7 @@ void CListView::DoMyEventExecute(wxCommandEvent& event)
 		wxPoint pt(posInfo.m_nameRect.GetRight() / 4, posInfo.m_nameRect.GetTop() + ICON_HEIGHT);
 
 		DisplayContextMenu(pt);
-		
+
 		m_bContextMenuFromMenuEvent = false;
 	}
 	else if(evtType == wxEVT_DIR_FILE_RENAME)
@@ -1823,7 +1823,7 @@ void CListView::DisplayContextMenu(const wxPoint& pt)
 
 			CDirData selItem = m_itemList.at(iSelItem);
 			arrString.Add(selItem.GetFullPath());
-			
+
 			iter++;
 		}
 	}
@@ -1841,10 +1841,10 @@ void CListView::DisplayContextMenu(const wxPoint& pt)
 			strContextPath = item.GetFullPath();
 #endif
 		}
-		
+
 		arrString.Add(strContextPath);
 	}
-	
+
 	CContextMenuHandler cMenu;
 	cMenu.SetObject(arrString);
 	cMenu.ShowContextMenu(this, pt);
@@ -1854,7 +1854,7 @@ void CListView::OnMenuFileEditProcess(wxCommandEvent& event)
 {
 	int iID = event.GetId();
 	int iIndex = iID - EXTERNAL_PROGRAM_START_ID;
-	
+
 	ExecuteExternalProgramForEdit(iIndex);
 }
 
@@ -1866,7 +1866,7 @@ void CListView::ExecFileEditProgram()
 		wxMessageBox(theMsgManager->GetMessage(wxT("MSG_FILE_MENU_EDIT_NOT_SET")), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 		return;
 	}
-	
+
 	int iSelCount = m_hashSelectedItem.size();
 	if(iSelCount == 0)
 	{
@@ -1891,25 +1891,25 @@ void CListView::ExecFileEditProgram()
 				bIncludedDir = true;
 				break;
 			}
-			
+
 			fIter++;
 		}
-		
+
 		if(bIncludedDir)
 		{
 			wxMessageBox(wxT("The directory is included in the selection"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 			return;
 		}
 	}
-	
+
 	if(iExternalPGCount > 1)
 	{
 		int iItemPosition = m_nCurrentItemIndex - m_nStartIndex;//% m_nDisplayItemInView;
 		CPositionInfo posInfo = m_posList.at(iItemPosition);
-		
+
 		wxPoint pt(posInfo.m_nameRect.GetLeft() + 5, posInfo.m_nameRect.GetTop() + ICON_HEIGHT + 5);
 		wxMenu menu;
-		
+
 		for (int i = 0; i < iExternalPGCount; i++)
 		{
 			EXTERNAL_EDIT_PROGRAM extInfo = _gExternalPGList.at(i);
@@ -1935,7 +1935,7 @@ void CListView::ExecFileEditProgram()
 
 			DestroyIcon(hIcon);
 		}
-		
+
 		this->PopupMenu(&menu, pt);
 	}
 	else
@@ -1949,12 +1949,12 @@ wxString CListView::GetDirInfo()
 {
 	wxString strFileSize(wxT(""));
 	wxString strFileSizeType(wxT(""));
-	
+
 	wxColour colorType(wxColour(192, 192, 192));
 	theCommonUtil->GetSizeInfo(m_dblFileSizeInDir, strFileSize, strFileSizeType, colorType);
 	if (strFileSizeType.IsEmpty())
 		strFileSizeType = wxT("Bytes");
-				
+
 	wxString strDirInfo = wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_FORMAT"))
 										, m_iDirCount
 										, m_iFileCount
@@ -1980,19 +1980,19 @@ wxString CListView::GetDetailInfo()
 	}
 	else
 	{
-#endif	
+#endif
 		if(iter->IsFile())
 		{
 			strDetailInfo += theCommonUtil->SetComma(iter->GetSize().ToString());
 			strDetailInfo += wxT(" Bytes");
 			strDetailInfo.append(wxT("  |  "));
 		}
-		
+
 		wxString strAttr = iter->GetAttributeToString();
-	
+
 		strDetailInfo.append(strAttr);
 		strDetailInfo.append(wxT("  |  "));
-		
+
 
 		wxString strTime = iter->GetDateTimeToString();
 		strDetailInfo.append(strTime);
@@ -2025,14 +2025,14 @@ void CListView::ShowFavoriteMenu()
 		wxMessageBox(wxT("Registered bookmark item is nothing"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 		return;
 	}
-	
+
 	int iItemPosition = m_nCurrentItemIndex % m_nDisplayItemInView;
 	CPositionInfo posInfo = m_posList.at(iItemPosition);
 
 	wxRect rcPos(posInfo.m_nameRect);
 	rcPos.SetLeft(posInfo.m_nameRect.GetLeft() + 10);
 	rcPos.SetBottom(posInfo.m_nameRect.GetBottom() + 1);
-	
+
 	int iFavoriteRight = posInfo.m_nameRect.GetRight() + 3;
 	int iViewRight = m_viewRect.GetRight();
 
@@ -2057,7 +2057,7 @@ void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 	m_hashSelectedItem.clear();
 	m_iSelDirCnt = 0;
 	m_iSelFileCnt = 0;
-			
+
 	bool bAllSelect = evtType == wxEVT_ITEM_ALL_SELECT ? true : false;
 	wxVector<CDirData>::iterator fIter = m_itemList.begin();
 	int iIndex = 0;
@@ -2066,57 +2066,57 @@ void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 		if(!fIter->IsDrive() && (fIter->GetName().Cmp(wxT("..")) != 0))
 		{
 			fIter->SetItemSelected(bAllSelect);
-			
+
 			if(bAllSelect)
 			{
 				if(fIter->IsDir())
 					m_iSelDirCnt++;
 				else
 					m_iSelFileCnt++;
-					
+
 				SELITEM_INFO _Info;
 				_Info.m_iSelIndex = iIndex;
 				_Info.m_bFile = fIter->IsFile();
-				
+
 				std::unordered_map<int, SELITEM_INFO>::value_type valsel(iIndex, _Info);
 				m_hashSelectedItem.insert(valsel);
 			}
 		}
-		
+
 		fIter++;
 		iIndex++;
 	}
-	
-	if(bAllSelect) 
+
+	if(bAllSelect)
 	{
 		wxString strSelString(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_SELINFO")));
 		wxString strSelItems = strSelString + wxString::Format(theMsgManager->GetMessage(wxT("MSG_DETAILINFO_VIEW_ITEM_SELECT")), m_iSelDirCnt, m_iSelFileCnt);
-		
+
 		DisplaySelectedItemInfo(strSelItems, 0, 0);
 	}
 	else
 		m_pMyTooltipView->Show(false);
-		
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CListView::ShowCompress()
 {
 	std::vector<wxString> vCompress = theCompress->GetCompressList();
-	
+
 	int iItemPosition = m_nCurrentItemIndex - m_nStartIndex;//% m_nDisplayItemInView;
 	CPositionInfo posInfo = m_posList.at(iItemPosition);
-	
+
 	wxPoint pt(posInfo.m_nameRect.GetLeft() + 5, posInfo.m_nameRect.GetTop() + ICON_HEIGHT + 5);
 	wxMenu menu;
-	
+
 	int iID = 0;
 	for (auto item : vCompress)
 	{
 		menu.Append(COMPRESS_START_ID + iID, item);
 		iID++;
 	}
-	
+
 	this->PopupMenu(&menu, pt);
 }
 
@@ -2124,19 +2124,19 @@ void CListView::OnCompress(wxCommandEvent& event)
 {
 	int iId = event.GetId();
 	int iCompressID = iId - COMPRESS_START_ID;
-	
+
 	std::vector<wxString>::const_iterator iter = theCompress->GetCompressList().begin() + iCompressID;
-	
+
 	wxString strCompressType = *iter;
 	if(theCommonUtil->Compare(strCompressType, wxT("gz")) == 0)
 	{
 		wxMessageBox(strCompressType + wxT(" is not supported!\nPlease wait....for days or months or years?"));
 		return;
 	}
-		
+
 	wxString strCompressedFile(wxT(""));
 	std::vector<wxString> vCompressDatas;
-	
+
 	int iSelCount = m_hashSelectedItem.size();
 	if(iSelCount == 0)
 	{
@@ -2146,10 +2146,10 @@ void CListView::OnCompress(wxCommandEvent& event)
 			wxMessageBox(wxT("The selected item is drive and You cannnot will be compressison"), PROGRAM_FULL_NAME, wxICON_INFORMATION | wxOK);
 			return;
 		}
-		
+
 		vCompressDatas.emplace_back(data.GetFullPath());
 		wxString strTmp = theCommonUtil->GetPathName(data.GetFullPath());
-		
+
 		strCompressedFile = m_iPathDepth == 1 ? m_strCurrentPath + strTmp + wxT(".") + strCompressType : m_strCurrentPath + SLASH + strTmp + wxT(".") + strCompressType;
 	}
 	else
@@ -2159,15 +2159,15 @@ void CListView::OnCompress(wxCommandEvent& event)
 		{
 			SELITEM_INFO _info = fIter->second;
 			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
-			
+
 			vCompressDatas.emplace_back(itemSel.GetFullPath());
 			fIter++;
 		}
-		
+
 		wxString strTmp = theCommonUtil->GetPathName(m_strCurrentPath);
 		strCompressedFile = m_iPathDepth == 1 ? m_strCurrentPath + m_strCurrentPath.Left(1) + wxT(".") + strCompressType : m_strCurrentPath + SLASH + strTmp + wxT(".") + strCompressType;
 	}
-		
+
 	theMenuOPHandler->ExecuteCompress(vCompressDatas, strCompressedFile, strCompressType);
 }
 
@@ -2179,14 +2179,14 @@ void CListView::DoRenameFromMenuPrepare()
 	m_strItemToRename = fIter->GetName();
 	if(fIter->IsDrive() || (theCommonUtil->Compare(wxT(".."), m_strItemToRename) == 0))
 		return;
-	
+
 	DoRenameOn(m_strItemToRename);
 }
 
 void CListView::OnEnterTextCtrl(wxCommandEvent& event)
 {
 	wxString strNewRename = m_pTxtCtrlForRename->GetValue();
-	
+
 	wxString strOldPathName = MakeFullPathName(m_strItemToRename);
 	wxString strNewPathName = MakeFullPathName(strNewRename);
 
@@ -2198,19 +2198,19 @@ void CListView::OnEnterTextCtrl(wxCommandEvent& event)
 		wxMessageBox(strMsg, PROGRAM_FULL_NAME, wxOK | wxICON_INFORMATION);
 		return;
 	}
-	
+
 	if(!theCommonUtil->IsCreatableDirOrFileName(strNewRename))
 	{
 		DoRenameOn(strNewRename);
 		return;
 	}
-	
+
 	DoRenameFromMenu(strOldPathName, strNewPathName);
-	
+
 	m_pTxtCtrlForRename->SetValue(wxT(""));
 	m_pTxtCtrlForRename->Show(false);
 	m_pMyTooltipView->Show(false);
-	
+
 	event.Skip();
 }
 
@@ -2218,7 +2218,7 @@ void CListView::DoRenameOn(const wxString& strRename)
 {
 	int iCurrentPosition = m_nCurrentItemIndex % m_nDisplayItemInView;
 	CPositionInfo posInfo = m_posList.at(iCurrentPosition);
-	
+
 	int iPosX1 = posInfo.m_mainRect.GetLeft();
 	int iPosY1 = posInfo.m_mainRect.GetTop();
 	int iPosX2 = posInfo.m_mainRect.GetWidth();
@@ -2231,14 +2231,14 @@ void CListView::DoRenameOn(const wxString& strRename)
 	{
 		iExtLen += 1;
 		iLength -= iExtLen;
-	}	
-	
+	}
+
 	m_pTxtCtrlForRename->SetSize(wxRect(iPosX1, iPosY1, iPosX2, iPosY2));
 	m_pTxtCtrlForRename->SetLabelText(strRename);
 	m_pTxtCtrlForRename->SetSelection(0, iLength);
 	m_pTxtCtrlForRename->Show(true);
 	m_pTxtCtrlForRename->SetFocus();
-	
+
 	wxString strDontUse(theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE")) + theMsgManager->GetMessage(wxT("MSG_INFO_RENAME_DONTUSE_STRING")));
 	DisplaySelectedItemInfo(strDontUse, iPosX1 + 30, iPosY1 + iPosY2, true);
 }
@@ -2247,7 +2247,7 @@ void CListView::OnKeyDownTextCtrl(wxKeyEvent& event)
 {
 	int iKeyCode = event.GetKeyCode();
 	event.Skip();
-	
+
 	if (iKeyCode == WXK_ESCAPE)
 	{
 		m_pTxtCtrlForRename->SetLabelText(wxT(""));
@@ -2255,11 +2255,11 @@ void CListView::OnKeyDownTextCtrl(wxKeyEvent& event)
 		m_pMyTooltipView->Show(false);
 	}
 }
-	
+
 void CListView::OnKillFocusTxtCtrl(wxFocusEvent& event)
 {
 	event.Skip();
-	
+
 	m_pTxtCtrlForRename->SetLabelText(wxT(""));
 	m_pTxtCtrlForRename->Show(false);
 	m_pMyTooltipView->Show(false);
@@ -2287,20 +2287,20 @@ wxString CListView::GetLastVisitDirectory(const wxString& strDrive)
 void CListView::DisplaySelectedItemInfo(const wxString& strMsg, int xPos, int yPos, bool bDispRenameInfo)
 {
 	m_pMyTooltipView->Show(false);
-			
+
 	wxClientDC dc(this);
 	wxSize sztip = dc.GetTextExtent(strMsg);
 	wxSize szTooltip;
 
 	szTooltip.SetWidth(sztip.GetWidth() + 10);
 	szTooltip.SetHeight(sztip.GetHeight() + 5);
-	
+
 	if(!bDispRenameInfo)
 	{
 		xPos = m_viewRect.GetRight() - szTooltip.GetWidth();
 		yPos = m_viewRect.GetBottom() - szTooltip.GetHeight();
 	}
-	
+
 	m_pMyTooltipView->SetTooltipText(strMsg);
 	m_pMyTooltipView->SetThemeEnabled(true);
 	m_pMyTooltipView->SetPosition(wxPoint(xPos, yPos));

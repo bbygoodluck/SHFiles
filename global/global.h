@@ -29,8 +29,6 @@
 #include <streambuf>
 #include <string>
 
-using namespace std;
-
 #ifdef __WXMSW__
 	#include <wx/msw/private.h>
 	#include <windows.h>

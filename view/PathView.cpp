@@ -512,6 +512,8 @@ void CPathView::OnKeyDownTextCtrl(wxKeyEvent& event)
 	{
 		m_pTxtCtrl->SetLabelText(wxT(""));
 		m_pTxtCtrl->Show(false);
+		
+		m_pViewPanel->SetActivateView();
 	}
 	
 	event.Skip();
