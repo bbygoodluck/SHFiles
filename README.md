@@ -10,9 +10,9 @@
 
 ### 개발환경
 
-- GUI : wxWidgets 3.1.3 Unicode Build
-- IDE : CodeLite 14.0.0
-- Compiler : gcc 10.1.0
+- GUI : wxWidgets 3.1.4 Unicode Build
+- IDE : CodeLite 14.0.0 ▶ CodeBlocks 20.03
+- Compiler : gcc 10.1.0 ▶ gcc 10.2.0
 
 ### wxWidgets Build(gcc Dll Version)
 
