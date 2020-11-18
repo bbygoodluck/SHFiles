@@ -1,0 +1,3 @@
+aaaaaaaa ICON "wxwin.ico"
+wxwin ICON "wxwin.ico"
+#include <wx/msw/wx.rc>

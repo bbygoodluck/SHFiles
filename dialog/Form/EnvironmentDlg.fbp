@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<wxFormBuilder_Project>
+    <FileVersion major="1" minor="15" />
+    <object class="Project" expanded="1">
+        <property name="class_decoration">; </property>
+        <property name="code_generation">C++</property>
+        <property name="disconnect_events">1</property>
+        <property name="disconnect_mode">source_name</property>
+        <property name="disconnect_php_events">0</property>
+        <property name="disconnect_python_events">0</property>
+        <property name="embedded_files_path">res</property>
+        <property name="encoding">UTF-8</property>
+        <property name="event_generation">connect</property>
+        <property name="file" />
+        <property name="first_id">1000</property>
+        <property name="help_provider">none</property>
+        <property name="indent_with_spaces" />
+        <property name="internationalize">0</property>
+        <property name="name">EnvDialog</property>
+        <property name="namespace" />
+        <property name="path">.</property>
+        <property name="precompiled_header" />
+        <property name="relative_path">1</property>
+        <property name="skip_lua_events">1</property>
+        <property name="skip_php_events">1</property>
+        <property name="skip_python_events">1</property>
+        <property name="ui_table">UI</property>
+        <property name="use_enum">0</property>
+        <property name="use_microsoft_bom">0</property>
+        <object class="Dialog" expanded="1">
+            <property name="aui_managed">0</property>
+            <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
+            <property name="bg" />
+            <property name="center">wxBOTH</property>
+            <property name="context_help" />
+            <property name="context_menu">1</property>
+            <property name="enabled">1</property>
+            <property name="event_handler">impl_virtual</property>
+            <property name="extra_style" />
+            <property name="fg" />
+            <property name="font" />
+            <property name="hidden">0</property>
+            <property name="id">wxID_ANY</property>
+            <property name="maximum_size" />
+            <property name="minimum_size" />
+            <property name="name">DlgEnv</property>
+            <property name="pos" />
+            <property name="size">705,707</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="subclass">; ; forward_declare</property>
+            <property name="title">환경설정</property>
+            <property name="tooltip" />
+            <property name="window_extra_style" />
+            <property name="window_name" />
+            <property name="window_style" />
+            <event name="OnActivate" />
+            <event name="OnActivateApp" />
+            <event name="OnAuiPaneActivated" />
+            <event name="OnAuiPaneButton" />
+            <event name="OnAuiPaneClose" />
+            <event name="OnAuiPaneMaximize" />
+            <event name="OnAuiPaneRestore" />
+            <event name="OnAuiRender" />
+            <event name="OnAux1DClick" />
+            <event name="OnAux1Down" />
+            <event name="OnAux1Up" />
+            <event name="OnAux2DClick" />
+            <event name="OnAux2Down" />
+            <event name="OnAux2Up" />
+            <event name="OnChar" />
+            <event name="OnCharHook" />
+            <event name="OnClose" />
+            <event name="OnEnterWindow" />
+            <event name="OnEraseBackground" />
+            <event name="OnHibernate" />
+            <event name="OnIconize" />
+            <event name="OnIdle" />
+            <event name="OnInitDialog" />
+            <event name="OnKeyDown" />
+            <event name="OnKeyUp" />
+            <event name="OnKillFocus" />
+            <event name="OnLeaveWindow" />
+            <event name="OnLeftDClick" />
+            <event name="OnLeftDown" />
+            <event name="OnLeftUp" />
+            <event name="OnMaximize" />
+            <event name="OnMiddleDClick" />
+            <event name="OnMiddleDown" />
+            <event name="OnMiddleUp" />
+            <event name="OnMotion" />
+            <event name="OnMouseEvents" />
+            <event name="OnMouseWheel" />
+            <event name="OnMove" />
+            <event name="OnMoveEnd" />
+            <event name="OnMoveStart" />
+            <event name="OnMoving" />
+            <event name="OnPaint" />
+            <event name="OnRightDClick" />
+            <event name="OnRightDown" />
+            <event name="OnRightUp" />
+            <event name="OnSetFocus" />
+            <event name="OnShow" />
+            <event name="OnSize" />
+            <event name="OnUpdateUI" />
+            <object class="wxBoxSizer" expanded="1">
+                <property name="minimum_size" />
+                <property name="name">bSizer1</property>
+                <property name="orient">wxVERTICAL</property>
+                <property name="permission">none</property>
+                <object class="sizeritem" expanded="1">
+                    <property name="border">5</property>
+                    <property name="flag">wxALL|wxEXPAND</property>
+                    <property name="proportion">1</property>
+                    <object class="wxPropertyGridManager" expanded="1">
+                        <property name="BottomDockable">1</property>
+                        <property name="LeftDockable">1</property>
+                        <property name="RightDockable">1</property>
+                        <property name="TopDockable">1</property>
+                        <property name="aui_layer" />
+                        <property name="aui_name" />
+                        <property name="aui_position" />
+                        <property name="aui_row" />
+                        <property name="best_size" />
+                        <property name="bg" />
+                        <property name="caption" />
+                        <property name="caption_visible">1</property>
+                        <property name="center_pane">0</property>
+                        <property name="close_button">1</property>
+                        <property name="context_help" />
+                        <property name="context_menu">1</property>
+                        <property name="default_pane">0</property>
+                        <property name="dock">Dock</property>
+                        <property name="dock_fixed">0</property>
+                        <property name="docking">Left</property>
+                        <property name="enabled">1</property>
+                        <property name="extra_style">wxPG_EX_MODE_BUTTONS</property>
+                        <property name="fg" />
+                        <property name="floatable">1</property>
+                        <property name="font" />
+                        <property name="gripper">0</property>
+                        <property name="hidden">0</property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="include_advanced">1</property>
+                        <property name="max_size" />
+                        <property name="maximize_button">0</property>
+                        <property name="maximum_size" />
+                        <property name="min_size" />
+                        <property name="minimize_button">0</property>
+                        <property name="minimum_size" />
+                        <property name="moveable">1</property>
+                        <property name="name">m_propertyGridManager</property>
+                        <property name="pane_border">1</property>
+                        <property name="pane_position" />
+                        <property name="pane_size" />
+                        <property name="permission">protected</property>
+                        <property name="pin_button">1</property>
+                        <property name="pos" />
+                        <property name="resize">Resizable</property>
+                        <property name="show">1</property>
+                        <property name="size" />
+                        <property name="style">wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER</property>
+                        <property name="subclass">; ; forward_declare</property>
+                        <property name="toolbar_pane">0</property>
+                        <property name="tooltip" />
+                        <property name="window_extra_style" />
+                        <property name="window_name" />
+                        <property name="window_style" />
+                        <event name="OnAux1DClick" />
+                        <event name="OnAux1Down" />
+                        <event name="OnAux1Up" />
+                        <event name="OnAux2DClick" />
+                        <event name="OnAux2Down" />
+                        <event name="OnAux2Up" />
+                        <event name="OnChar" />
+                        <event name="OnCharHook" />
+                        <event name="OnEnterWindow" />
+                        <event name="OnEraseBackground" />
+                        <event name="OnKeyDown" />
+                        <event name="OnKeyUp" />
+                        <event name="OnKillFocus" />
+                        <event name="OnLeaveWindow" />
+                        <event name="OnLeftDClick" />
+                        <event name="OnLeftDown" />
+                        <event name="OnLeftUp" />
+                        <event name="OnMiddleDClick" />
+                        <event name="OnMiddleDown" />
+                        <event name="OnMiddleUp" />
+                        <event name="OnMotion" />
+                        <event name="OnMouseEvents" />
+                        <event name="OnMouseWheel" />
+                        <event name="OnPaint" />
+                        <event name="OnPropertyGridChanged" />
+                        <event name="OnPropertyGridChanging" />
+                        <event name="OnRightDClick" />
+                        <event name="OnRightDown" />
+                        <event name="OnRightUp" />
+                        <event name="OnSetFocus" />
+                        <event name="OnSize" />
+                        <event name="OnUpdateUI" />
+                        <object class="propGridPage" expanded="1">
+                            <property name="bitmap" />
+                            <property name="label">Page</property>
+                            <property name="name">m_propertyGridPage4</property>
+                            <property name="permission">protected</property>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">기본설정</property>
+                                <property name="name">m_propertyGridDefaultGroup</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Category</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">프로그램 실행 모니터</property>
+                                <property name="name">m_propertyGridItem1_DispMonitor</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">실행시 최대화</property>
+                                <property name="name">m_propertyGridItem_Maxized</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">창 분리</property>
+                                <property name="name">m_propertyGridItem_SplitStyle</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">툴바 보기</property>
+                                <property name="name">m_propertyGridItem_ViewToolbar</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">플로피 디스크 보기</property>
+                                <property name="name">m_propertyGridItem_ViewFloppy</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">시스템파일 보기</property>
+                                <property name="name">m_propertyGridItem_ViewSystemFile</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">숨김파일 보기</property>
+                                <property name="name">m_propertyGridItem_ViewHiddenFile</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">모든파일 보기</property>
+                                <property name="name">m_propertyGridItem_ViewAllFile</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">파일 정보창 보기</property>
+                                <property name="name">m_propertyGridItem_ViewFileInfo</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">폰트</property>
+                                <property name="name">m_propertyGridItem_Font</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Font</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">마지막 세션 저장</property>
+                                <property name="name">m_propertyGridItem_SavelLastSession</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">같은 디렉토리 복사 가능</property>
+                                <property name="name">m_propertyGridItem_CopyMoveSamePath</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">복사(이동)시 윈도우 Shell Extension 사용</property>
+                                <property name="name">m_propertyGridItem_CopyMoveUseWinSell</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">활동 윈도우에서 비활성 윈도우로 복사 가능</property>
+                                <property name="name">m_propertyGridItem_CopyActWintoNonActWin</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">비동기 디렉토리 감시</property>
+                                <property name="name">m_propertyGridItem_DirWatchAsync</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">한글 입력모드에서 드라이브 이동가능</property>
+                                <property name="name">m_propertyGridItem_ShiftIME</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Int</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">편집 프로그램</property>
+                                <property name="name">m_propertyGridItem_EditProgram</property>
+                                <property name="permission">protected</property>
+                                <property name="type">File</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">기본색상</property>
+                                <property name="name">m_propertyGridItem_DefaultColorGroup</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Category</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">기본색상</property>
+                                <property name="name">m_propertyGridItem_DefaultCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">디렉토리</property>
+                                <property name="name">m_propertyGridItem_DirCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">드라이브</property>
+                                <property name="name">m_propertyGridItem_DrvCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">읽기전용</property>
+                                <property name="name">m_propertyGridItem_ReadOnlyCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">선택항목</property>
+                                <property name="name">m_propertyGridItem_SelectItemCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">배경</property>
+                                <property name="name">m_propertyGridItem_BackCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">정보창 배경</property>
+                                <property name="name">m_propertyGridItem_InfoView_BackCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">정보창 전경</property>
+                                <property name="name">m_propertyGridItem_InfoView_TextCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">파일 속성</property>
+                                <property name="name">m_propertyGridItem_AttrCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">컬럼</property>
+                                <property name="name">m_propertyGridItem_ColumnCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">검색 일치항목</property>
+                                <property name="name">m_propertyGridItem_MatchCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Colour</property>
+                            </object>
+                            <object class="propGridItem" expanded="1">
+                                <property name="help" />
+                                <property name="label">확장자별 색상</property>
+                                <property name="name">m_propertyGridItem_ExtCol</property>
+                                <property name="permission">protected</property>
+                                <property name="type">Category</property>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</wxFormBuilder_Project>

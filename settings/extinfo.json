@@ -1,0 +1,11 @@
+{
+    "END": "파일",
+    "DLL": "응용 프로그램 확장",
+    "LOG": "텍스트 문서",
+    "TMP": "TMP 파일",
+    "DOCX": "Microsoft Word 문서",
+    "SQL": "SQL 파일",
+    "TXT": "텍스트 문서",
+    "XLSX": "Microsoft Excel 워크시트",
+    "ZIP": "압축(ZIP) 파일"
+}

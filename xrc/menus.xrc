@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxMenuBar" name="SHCMenu">
+		<label></label>
+		<object class="wxMenu" name="m_menuFile">
+			<label>파일(_F)</label>
+			<object class="wxMenuItem" name="m_fMenu_Execute">
+				<label>실행</label>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_NewTab">
+				<label>새탭</label>
+				<accel>Ctrl+T</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_fMenu_Copy">
+				<label>복사\tAlt+C</label>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_Move">
+				<label>이동\tAlt+M</label>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_fMenu_Rename">
+				<label>이름변경</label>
+				<accel>F2</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_MakeFolder">
+				<label>폴더생성</label>
+				<accel>F7</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_FileEdit">
+				<label>파일편집</label>
+				<accel>F3</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_fMenu_goTrash">
+				<label>휴지통으로...</label>
+				<accel>Del</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_goDel">
+				<label>영구삭제</label>
+				<accel>Shift+Del</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_fMenu_Exit">
+				<label>프로그램종료</label>
+				<accel>Alt+F4</accel>
+				<help></help>
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuEdit">
+			<label>편집(_E)</label>
+			<object class="wxMenuItem" name="m_eMenu_Release">
+				<label>선택해제</label>
+				<accel>Ctrl+R</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_eMenu_SelAll">
+				<label>전체선택</label>
+				<accel>Ctrl+A</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_eMenu_Copy">
+				<label>복사하기</label>
+				<accel>Ctrl+C</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_eMenu_Cut">
+				<label>잘라내기</label>
+				<accel>Ctrl+X</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_eMenu_Paste">
+				<label>붙여넣기</label>
+				<accel>Ctrl+V</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_eMenu_Search">
+				<label>검색하기</label>
+				<accel>Ctrl+F</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_eMenu_Next_Sel">
+				<label>다음선택</label>
+				<accel>Ctrl+N</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_eMenu_ContextMenu">
+				<label>컨택스트메뉴</label>
+				<accel>Ctrl+Alt+X</accel>
+				<help></help>
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuPath">
+			<label>경로(_P)</label>
+			<object class="wxMenuItem" name="m_pMenu_PathMng">
+				<label>디렉토리 매니저</label>
+				<accel>F10</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_pMenu_DrvBox">
+				<label>드라이브상자</label>
+				<accel>Alt+F10</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_pMenu_Refresh">
+				<label>새로고침</label>
+				<accel>F5</accel>
+				<help></help>
+			</object>
+		</object>
+		<!--
+		<object class="wxMenu" name="m_menuComp">
+			<label>압축(_A)</label>
+			<object class="wxMenuItem" name="m_aMenu_View">
+				<label>압축파일 보기</label>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_aMenu_DoComp">
+				<label>압축하기</label>
+				<accel>Ctrl+Z</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_aMenu_CompAndDel">
+				<label>압축후 삭제</label>
+				<accel>Alt+Z</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_aMenu_CompRelease">
+				<label>압축해제</label>
+				<accel>Alt+X</accel>
+				<help></help>
+			</object>
+		</object>
+		-->
+		<object class="wxMenu" name="m_menuView">
+			<object class="wxMenuItem" name="m_viewMenu_FullScr">
+				<label>전체화면보기</label>
+				<accel>F12</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<label>보기(_V)</label>
+			<object class="wxMenu" name="m_viewSubWindow">
+				<label>윈도우</label>
+				<object class="wxMenuItem" name="m_viewMenu_Window_0">
+					<label>단일창</label>
+					<accel>Alt+S</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Window_1">
+					<label>수직창</label>
+					<accel>Alt+V</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Window_2">
+					<label>수평창</label>
+					<accel>Alt+H</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenuItem" name="m_viewMenu_ToolBar">
+				<label>툴바</label>
+				<checkable>1</checkable>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_viewMenu_Favorite">
+				<label>즐겨찾기</label>
+				<checkable>1</checkable>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_viewMenu_ShortCut">
+				<label>단축키표시바</label>
+				<checkable>1</checkable>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenu" name="m_viewSubColumn">
+				<label>열보기</label>
+				<object class="wxMenuItem" name="m_viewMenu_Column_0">
+					<label>자동컬럼</label>
+					<accel>Alt+0</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="m_viewMenu_Column_1">
+					<label>1열로 보기</label>
+					<accel>Alt+1</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_2">
+					<label>2열로 보기</label>
+					<accel>Alt+2</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_3">
+					<label>3열로 보기</label>
+					<accel>Alt+3</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_4">
+					<label>4열로 보기</label>
+					<accel>Alt+4</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_5">
+					<label>5열로 보기</label>
+					<accel>Alt+5</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_6">
+					<label>6열로 보기</label>
+					<accel>Alt+6</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_7">
+					<label>7열로 보기</label>
+					<accel>Alt+7</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_8">
+					<label>8열로 보기</label>
+					<accel>Alt+8</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Column_9">
+					<label>9열로 보기</label>
+					<accel>Alt+9</accel>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="m_viewSubFile">
+				<label>파일보기</label>
+				<object class="wxMenuItem" name="m_viewMenu_DefaultFile">
+					<label>기본파일 보기(Default)</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_HiddenFile">
+					<label>숨김파일 보기</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_SystemFile">
+					<label>시스템파일 보기</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="m_viewMenu_AllFile">
+					<label>모든파일 보기</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<!--
+				<object class="wxMenuItem" name="m_viewMenu_exeFile">
+					<label>프로그램파일만</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_CompFiles">
+					<label>압축파일만</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="m_viewMenu_Custom">
+					<label>사용자정의</label>
+					<checkable>1</checkable>
+					<help></help>
+				</object>
+				-->
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuFavorite">
+			<label>즐겨찾기</label>
+			<object class="wxMenuItem" name="m_favoriteMenu_Add">
+				<label>즐겨찾기 추가</label>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_favoriteMenu_Manager">
+				<label>즐겨찾기 관리</label>
+				<help></help>
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuTool">
+			<label>도구(_T)</label>
+			<object class="wxMenuItem" name="m_toolMenu_ENV">
+				<label>환경설정</label>
+				<accel>Ctrl+F11</accel>
+				<help></help>
+			</object>
+			<object class="wxMenuItem" name="m_toolMenu_CurSave">
+				<label>현재설정 저장</label>
+				<accel>Ctrl+F12</accel>
+				<help></help>
+			</object>
+		</object>
+		<object class="wxMenu" name="m_menuHelp">
+			<label>도움말(_H)</label>
+			<object class="wxMenuItem" name="m_helpMenu_Shortcut">
+				<label>단축키</label>
+				<accel>F11</accel>
+				<help></help>
+			</object>
+			<object class="separator" />
+			<object class="wxMenuItem" name="m_helpMenu_thisProgram">
+				<label>이 프로그램은...</label>
+				<help></help>
+			</object>
+		</object>
+	</object>
+</resource>
