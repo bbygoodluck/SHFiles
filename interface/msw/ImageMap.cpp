@@ -37,17 +37,17 @@ wxThread::ExitCode CImageMap::Entry()
 		m_bReadStart = READ_STOP;
 		WaitForSingleObject(m_hEvent, INFINITE);
 		ResetEvent(m_hEvent);
-		
+
 		if (m_bThreadTerminate)
 			break;
-			
+
 		m_bReadStart = READ_START;
-		
+
 		wxString strCurrPath(m_pListView->m_strCurrentPath);
 		wxString strFullPath(wxT(""));
 		wxString strName(wxT(""));
 		bool bAddSlash = m_pListView->m_iPathDepth > 1 ? true : false;
-		
+
 		wxVector<CDirData>::iterator fIter = m_pListView->m_itemList.begin();
 		//포지션 인덱스
 		int nPosIndex = 0;
@@ -57,20 +57,21 @@ wxThread::ExitCode CImageMap::Entry()
 		int iPrevPage = 0;
 		//이미지 포지션
 		int iTempColumn = 0;
-		
+
 		while(fIter != m_pListView->m_itemList.end())
 		{
 			if (m_bReadStart == READ_STOP)
 				break;
-			
+
 			strName = fIter->GetName();
 			strFullPath = bAddSlash ? strCurrPath + SLASH + strName : strCurrPath + strName;
 			AddIcon(strFullPath, strName);
-			
+
 			fIter++;
+			/*
 			//컬럼계산
 			iTempColumn = nPosIndex / m_pListView->m_nItemCountInColumn;
-			//하나의 아이템 선택영역 계산	
+			//하나의 아이템 선택영역 계산
 			int x1 = 1 + (iTempColumn * m_pListView->m_nDispColumnEndPoint);
 			int iDispIndex = nPosIndex % m_pListView->m_nItemCountInColumn;
 			int y1 = 1 + (m_pListView->m_iCharHeight * iDispIndex);
@@ -99,32 +100,35 @@ wxThread::ExitCode CImageMap::Entry()
 				wxRect rcIcon(iIcon_x1, iIcon_y1, iIcon_x2, iIcon_y2);
 				if(nPosIndex < m_pListView->m_nDisplayItemInView)
 					theCommonUtil->RefreshWindow(m_pListView, rcIcon);
-				
+
 				nPosIndex++;
 			}
+			*/
+
 			//CPositionInfo를 이용할 경우
-		//	if ((m_pListView->m_posList.size()) > 0 && (nPosIndex < m_pListView->m_iTotalPositionCnt))
-		//	{
-		//		CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
-		//		theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
-		//	}
-		
-		
-		//	if(nPosIndex >= m_pListView->m_iTotalPositionCnt - 1)
-		//		nPosIndex = 0;
-			//현재페이지 != 이전페이지
-		//	iCurrentPage = m_pListView->m_nCurrentItemIndex / m_pListView->m_nDisplayItemInView;
-		//	if(iCurrentPage != iPrevPage )
-		//	{
-		//		iPrevPage = iCurrentPage;
-		//		if(m_pListView->m_nCurrentItemIndex > m_pListView->m_nDisplayItemInView)
-		//			nPosIndex = m_pListView->m_nCurrentItemIndex / m_pListView->m_nItemCountInColumn;
-		//	}
+			//페이지계산
+			iCurrentPage = m_pListView->m_nCurrentItemIndex / m_pListView->m_nDisplayItemInView;
+			if(iCurrentPage > iPrevPage)
+			{	//페이지가 변경되었을 경우 아이콘 Refresh 재시작
+				iPrevPage = iCurrentPage;
+				nPosIndex = 0;
+			}
+
+			if ((m_pListView->m_posList.size()) > 0 && (nPosIndex < m_pListView->m_iTotalPositionCnt))
+			{	//Pos 인덱스 < 전체 포지션 - 1
+				if(nPosIndex < m_pListView->m_iTotalPositionCnt - 1)
+				{
+					CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
+					theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
+
+					nPosIndex++;
+				}
+			}
 		}
-		
+
 		Continue();
 	}
-	
+
 	m_bThreadTerminate = false;
 	return (wxThread::ExitCode)0;
 }

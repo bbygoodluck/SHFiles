@@ -336,6 +336,7 @@
 				</object>
 				<object class="wxMenuItem" name="m_viewMenu_HiddenFile">
 					<label>숨김파일 보기</label>
+					<accel>Ctrl+F1</accel>
 					<checkable>1</checkable>
 					<help></help>
 				</object>
@@ -349,6 +350,7 @@
 				<object class="separator" />
 				<object class="wxMenuItem" name="m_viewMenu_AllFile">
 					<label>모든파일 보기</label>
+					<accel>Alt+F1</accel>
 					<checkable>1</checkable>
 					<help></help>
 				</object>

@@ -119,7 +119,7 @@
 			<!--
 			<object class="separator" />
 			<object class="wxMenuItem" name="m_pMenu_DrvBox">
-				<label>드라이브상자</label>
+				<label>DriveBox</label>
 				<accel>Alt+F10</accel>
 				<help></help>
 			</object>
@@ -336,6 +336,7 @@
 				</object>
 				<object class="wxMenuItem" name="m_viewMenu_HiddenFile">
 					<label>Hidden Files</label>
+					<accel>Ctrl+F1</accel>
 					<checkable>1</checkable>
 					<help></help>
 				</object>
@@ -349,6 +350,7 @@
 				<object class="separator" />
 				<object class="wxMenuItem" name="m_viewMenu_AllFile">
 					<label>All Files</label>
+					<accel>Shfit+F1</accel>
 					<checkable>1</checkable>
 					<help></help>
 				</object>

@@ -4,7 +4,7 @@
 CImageMapBase::CImageMapBase(CListView* pListView)
 	: m_pListView(pListView)
 {
-	if (CreateThread() != wxTHREAD_NO_ERROR)
+	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
 	{
 		wxMessageBox(wxT("Could not create the worker thread!"), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
 		return;
@@ -63,7 +63,7 @@ void CImageMapBase::Draw(wxDC* pDC, const wxString& strName, int x, int y, unsig
 #ifdef __WXMSW__
 	int iIconIndex = isDir ? 1 : 0;
 	int iOverlayIndex = -1;
-	
+
 	if (!isDrive)
 	{
 		if (fIter != m_iconMap.end())
@@ -71,7 +71,7 @@ void CImageMapBase::Draw(wxDC* pDC, const wxString& strName, int x, int y, unsig
 			FILE_ICONINFO fInfo = fIter->second;
 			iIconIndex = fInfo.iIconIndex;
 			iOverlayIndex = fInfo.iOverlayIndex;
-		
+
 			flags |= INDEXTOOVERLAYMASK(iOverlayIndex + 1);
 		}
 	}
@@ -84,7 +84,7 @@ void CImageMapBase::Draw(wxDC* pDC, const wxString& strName, int x, int y, unsig
 	}
 #else
 #endif
-	
+
 	DoDraw(pDC, iIconIndex, x, y, flags);
 }
 

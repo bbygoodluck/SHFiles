@@ -23,7 +23,10 @@ CLocalFileListView::~CLocalFileListView()
 
 void CLocalFileListView::OnPaint(wxPaintEvent& event)
 {
-	if (!m_pDoubleBuffer->IsOk() || m_pDoubleBuffer == nullptr)
+	if(m_pDoubleBuffer == nullptr)
+		return;
+
+	if (!m_pDoubleBuffer->IsOk())
 		return;
 
 	m_viewRect = GetClientRect();

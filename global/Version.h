@@ -5,10 +5,10 @@
 	class Name :
 	설      명 : 버전정보 표시
 *********************************************************************************/
-const wxString PROGRAM_NAME			= wxT("SHFiles");
+const wxString PROGRAM_NAME			= wxT("SHW-Files");
 const wxString PROGRAM_MAJOR_VER	= wxT("0");
 const wxString PROGRAM_MINOR_HI_VER = wxT("6");
-const wxString PROGRAM_MINOR_LO_VER = wxT("23");
+const wxString PROGRAM_MINOR_LO_VER = wxT("27");
 const wxString PROGRAM_VERSION		= wxT(" Ver ") + PROGRAM_MAJOR_VER + wxT(".") + PROGRAM_MINOR_HI_VER + wxT(".") + PROGRAM_MINOR_LO_VER;
 const wxString PROGRAM_FULL_NAME	= PROGRAM_NAME + PROGRAM_VERSION;
 

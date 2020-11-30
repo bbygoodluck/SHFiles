@@ -35,3 +35,17 @@ CTabManager* _gTabManager      = nullptr;
 bool _gAppActivated = false;
 //외부편집프로그램 목록
 std::unordered_map<int, EXTERNAL_EDIT_PROGRAM> _gExternalPGList;
+
+const FILE_VIEW_OPTION _gFileViewOPEnum[] = {FILE_VIEW_OP_DEFAULT ,	FILE_VIEW_OP_HIDDEN, FILE_VIEW_OP_ALL};
+const COLUMN_VIEW_OPTION _gColumnViewOPEnum[] = {
+	VIEW_COLUMN_AUTO,
+	VIEW_COLUMN_ONE,
+	VIEW_COLUMN_TWO,
+	VIEW_COLUMN_THREE,
+	VIEW_COLUMN_FOUR,
+	VIEW_COLUMN_FIVE,
+	VIEW_COLUMN_SIX,
+	VIEW_COLUMN_SEVEN,
+	VIEW_COLUMN_EIGHT,
+	VIEW_COLUMN_NINE
+};

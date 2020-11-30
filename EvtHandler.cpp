@@ -291,7 +291,9 @@ void CEvtHandler::menu_view_filelist(int iMenuID)
 	int iViewFileListFirst = XRCID("m_viewMenu_DefaultFile");
 	int iViewFileList = iMenuID - iViewFileListFirst;
 
-	theJsonConfig->SetViewFileKind(iViewFileList);
+	FILE_VIEW_OPTION enumfvo = _gFileViewOPEnum[iViewFileList];
+
+	theJsonConfig->SetViewFileKind(enumfvo);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_VIEW_FILELIST_CHANGE);
 }
 

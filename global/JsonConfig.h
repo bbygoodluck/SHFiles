@@ -92,11 +92,11 @@ public:
 	const int IsMaximized() const { return _jsonDoc["globalsettings"]["Maximized"].GetInt(); }     // m_nMaximized; }
 	const bool IsSaveLastSession() { return _jsonDoc["globalsettings"]["LastSessionSave"].GetInt() ? true : false; }
 
-	void SetViewFileKind(int iViewFileKind);
+	void SetViewFileKind(enum FILE_VIEW_OPTION fvo);//int iViewFileKind);
 	void SetColumnCount(const int iColumnCnt);
 	void SetSplitStyle(const int iViewStyle);
 	const wxColour GetExtColor(const wxString& strExt);
-	
+
 	void SaveConfig();
 
 	void SetChangeGlobalVal(const wxString& strMember, int iVal);
@@ -116,7 +116,7 @@ public:
 private:
 	void SetGlobalConfig();
 	unsigned long ConvertStringToColor(wxString& strColor);
-	
+
 private:
 	static std::unique_ptr<CJsonConfig> m_pInstance;
 //	Document _jsonDoc;

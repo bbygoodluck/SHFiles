@@ -239,9 +239,9 @@ void CJsonConfig::SetSplitStyle(const int iViewStyle)
 	m_nSplitWindowStyle = iViewStyle;
 }
 
-void CJsonConfig::SetViewFileKind(int iViewFileKind)
+void CJsonConfig::SetViewFileKind(enum FILE_VIEW_OPTION fvo)
 {
-	if (iViewFileKind == 0)
+	if (fvo == FILE_VIEW_OP_DEFAULT)
 	{
 		m_nDispAllFile = 0;
 		m_nDispHiddenFile = 0;
@@ -251,7 +251,7 @@ void CJsonConfig::SetViewFileKind(int iViewFileKind)
 		_jsonDoc["globalsettings"]["DispSystemFile"] = m_nDispSystemFile;
 		_jsonDoc["globalsettings"]["DispAllFile"] = m_nDispAllFile;
 	}
-	else if (iViewFileKind == 1)
+	else if (fvo == FILE_VIEW_OP_HIDDEN)
 	{
 		m_nDispAllFile = 0;
 		m_nDispHiddenFile = m_nDispHiddenFile ? 0 : 1;
@@ -259,15 +259,7 @@ void CJsonConfig::SetViewFileKind(int iViewFileKind)
 		_jsonDoc["globalsettings"]["DispHiddenFile"] = m_nDispHiddenFile;
 		_jsonDoc["globalsettings"]["DispAllFile"] = m_nDispAllFile;
 	}
-	else if (iViewFileKind == 2)
-	{
-		m_nDispAllFile = 0;
-		m_nDispSystemFile = m_nDispSystemFile ? 0 : 1;
-
-		_jsonDoc["globalsettings"]["DispSystemFile"] = m_nDispSystemFile;
-		_jsonDoc["globalsettings"]["DispAllFile"] = m_nDispAllFile;
-	}
-	else if (iViewFileKind == 3)
+	else if (fvo == FILE_VIEW_OP_ALL)
 	{
 		m_nDispAllFile = m_nDispAllFile ? 0 : 1;
 

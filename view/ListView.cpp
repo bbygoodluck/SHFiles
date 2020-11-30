@@ -30,6 +30,7 @@ wxEND_EVENT_TABLE()
 CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 	: wxWindow(parent, nID, wxDefaultPosition, sz, FILELISTVIEW_STYLE)
 	, m_pViewPanel((CViewPanel *)parent)
+	, m_enumColumnViewOption(VIEW_COLUMN_MAX)
 {
 	//상위폴더 이동 이미지
 	m_icoUpDir = wxArtProvider::GetIcon(wxART_GO_DIR_UP, wxART_OTHER, wxSize(16, 16));
@@ -65,6 +66,8 @@ CListView::CListView(wxWindow* parent, const int nID, const wxSize& sz)
 	m_pMyTooltipKeyInput->SetSize(60, 20);
 	m_pMyTooltipKeyInput->Show(false);
 
+	m_posList.reserve(450);
+	m_ptList.reserve(10);
 }
 
 CListView::~CListView()
@@ -113,12 +116,8 @@ void CListView::AllClear()
 void CListView::Clear()
 {
 	int iItemCnt = m_itemList.size();
-	int iptItemCnt = m_ptList.size();
-	int iposItemCnt = m_posList.size();
 	int imatchItemCnt = m_matchItems.size();
 
-	m_posList.clear();
-	m_ptList.clear();
 	m_itemList.clear();
 	m_dispNameInfoMap.clear();
 	m_hashSelectedItem.clear();
@@ -126,14 +125,8 @@ void CListView::Clear()
 	if(iItemCnt == 0 || iItemCnt > 300)
 		m_itemList.reserve(300);
 
-	if(iptItemCnt == 0 || iptItemCnt > 300)
-		m_ptList.reserve(300);
-
-	if(iposItemCnt == 0 || iposItemCnt > 200)
-		m_posList.reserve(200);
-
 	if(imatchItemCnt == 0 || imatchItemCnt > 100)
-		m_matchItems.reserve(0);
+		m_matchItems.reserve(50);
 }
 
 void CListView::Initialize()
@@ -147,14 +140,14 @@ void CListView::Initialize()
 
 	Clear();
 
-	wxVector<CPositionInfo>().swap(m_posList);
-	m_posList.reserve(450);
+//	wxVector<CPositionInfo>().swap(m_posList);
+//	m_posList.reserve(450);
 
-	wxVector<CColumnPoint>().swap(m_ptList);
-	m_ptList.reserve(250);
+//	wxVector<CColumnPoint>().swap(m_ptList);
+//	m_ptList.reserve(10);
 
-	wxVector<CDirData>().swap(m_itemList);
-	m_itemList.reserve(300);
+//	wxVector<CDirData>().swap(m_itemList);
+//	m_itemList.reserve(300);
 
 	//디렉토리 수
 	m_iDirCount = 0;
@@ -217,66 +210,6 @@ void CListView::ReadIconThreadTerminate()
 	}
 }
 
-void CListView::CalcColumn(wxDC* pDC)
-{
-	if (m_nTotalItems <= 0)
-		return;
-
-	if(!m_bSizeOrColumnChanged && !m_bDirLoaded)
-		return;
-
-	m_dispNameInfoMap.clear();
-
-	int nRight = m_viewRect.GetRight();
-	int nBottom = m_viewRect.GetBottom();
-
-	m_iCharHeight = pDC->GetCharHeight() + 2;
-
-	m_nItemCountInColumn = (m_viewRect.GetHeight() / m_iCharHeight);
-	if (m_nItemCountInColumn == 0)
-		return;
-
-	if(m_bSizeOrColumnChanged)
-		m_ptList.clear();
-
-	m_nDispColumn = theJsonConfig->GetColumnCount();
-	if (m_nDispColumn == 0)
-	{
-		//자동컬럼인경우
-		if (!CalcAutoColumn(pDC, m_viewRect))
-			return;
-	}
-	//화면안에 표시될 아이템 수
-	m_nDisplayItemInView = m_nItemCountInColumn * m_nDispColumn;
-
-	int nDispWidth = static_cast<int>(nRight / m_nDispColumn);
-	if (m_nDispColumn > 1)
-	{
-		//컬럼구분선 좌표
-		wxPoint pt1(0, 0);
-		wxPoint pt2(0, 0);
-		//컬럼 좌표 설정
-		for (int nColumnCount = 0; nColumnCount < (m_nDispColumn - 1); nColumnCount++)
-		{
-			CColumnPoint colPoint;
-			colPoint.pt1.x = nDispWidth * (nColumnCount + 1);
-			colPoint.pt1.y = 0;
-
-			colPoint.pt2.x = nDispWidth * (nColumnCount + 1);
-			colPoint.pt2.y = nBottom;
-
-			m_ptList.push_back(colPoint);
-		}
-	}
-
-	m_nDispColumnEndPoint = nDispWidth;
-	if(m_bDirLoaded)
-		ReadIconThreadStart();
-
-	//아이템 표시좌표 계산
-	CalcPosition(pDC);
-}
-
 bool CListView::CalcAutoColumn(wxDC* pDC, const wxRect& viewRect)
 {
 	//전체건수 / 컬럼당 아이템수 <= 0 이면 컬럼은 1
@@ -329,8 +262,83 @@ bool CListView::CalcAutoColumn(wxDC* pDC, const wxRect& viewRect)
 	return true;
 }
 
+void CListView::CalcColumn(wxDC* pDC)
+{
+	if (m_nTotalItems <= 0)
+		return;
+
+	if(!m_bSizeOrColumnChanged && !m_bDirLoaded)
+		return;
+
+	bool bPosReset = false;
+	m_nDispColumn = theJsonConfig->GetColumnCount();
+	COLUMN_VIEW_OPTION enumColumnView = _gColumnViewOPEnum[m_nDispColumn];
+	if(m_enumColumnViewOption != enumColumnView)
+	{
+		m_enumColumnViewOption = enumColumnView;
+		bPosReset = true;
+	}
+
+	if(m_bSizeOrColumnChanged)
+		bPosReset = true;
+
+	m_iCharHeight = pDC->GetCharHeight() + 2;
+
+	m_nItemCountInColumn = (m_viewRect.GetHeight() / m_iCharHeight);
+	if (m_nItemCountInColumn == 0)
+		return;
+
+	if(m_enumColumnViewOption == VIEW_COLUMN_AUTO)
+	{
+		bPosReset = true;
+		//자동컬럼인경우
+		if (!CalcAutoColumn(pDC, m_viewRect))
+			return;
+	}
+	//화면안에 표시될 아이템 수
+	m_nDisplayItemInView = m_nItemCountInColumn * m_nDispColumn;
+
+	int nWidth = m_viewRect.GetWidth();//.GetRight();
+	int nBottom = m_viewRect.GetBottom();
+	if(bPosReset)
+	{
+		m_ptList.clear();
+		int nDispWidth = static_cast<int>(nWidth / m_nDispColumn);
+		if (m_nDispColumn > 1)
+		{
+			//컬럼구분선 좌표
+			wxPoint pt1(0, 0);
+			wxPoint pt2(0, 0);
+			//컬럼 좌표 설정
+			for (int nColumnCount = 0; nColumnCount < (m_nDispColumn - 1); nColumnCount++)
+			{
+				CColumnPoint colPoint;
+				colPoint.pt1.x = nDispWidth * (nColumnCount + 1);
+				colPoint.pt1.y = 0;
+
+				colPoint.pt2.x = nDispWidth * (nColumnCount + 1);
+				colPoint.pt2.y = nBottom;
+
+				m_ptList.push_back(colPoint);
+			}
+		}
+
+		m_nDispColumnEndPoint = nDispWidth;
+	}
+
+	//아이템 표시좌표 계산
+	CalcPosition(pDC);
+	//아이콘 읽기
+	if(m_bDirLoaded)
+		ReadIconThreadStart();
+}
+
 void CListView::CalcPosition(wxDC* pDC)
 {
+	size_t iposItemCnt = m_posList.size();
+	if(iposItemCnt == 0 || iposItemCnt > 200)
+		m_posList.reserve(200);
+
 	m_posList.clear();
 
 	m_bDispFlag[0] = false;

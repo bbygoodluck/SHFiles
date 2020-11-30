@@ -33,13 +33,13 @@ protected:
 		int m_iSelIndex;
 		bool m_bFile;
 	} SELITEM_INFO;
-	
+
 	const int ICON_WIDTH              = 16;
 	const int ICON_HEIGHT             = 16;
 	const int ICON_SELECTED_WIDTH_GAP = 10;
 	const int GAP_WIDTH               = 2;
 	const int GAP_HEIGHT              = 2;
-	
+
 	wxIcon   m_icoUpDir;
 	wxColour m_colDefault;
 	wxColour m_colDrive;
@@ -49,7 +49,7 @@ protected:
 	wxColour m_colAttr;
 	wxColour m_colType;
 	wxColour m_colMatch;
-	
+
 protected:
 	class CColumnPoint
 	{
@@ -57,14 +57,14 @@ protected:
 		wxPoint pt1;
 		wxPoint pt2;
 	};
-	
+
 public:
 	explicit CListView(wxWindow* parent, const int nID, const wxSize& sz);
 	virtual ~CListView();
 
 	wxString GetCurrentPath() {	return m_strCurrentPath; }
 	wxString GetCurrentItem();
-	
+
 	void DoSelectedItemsClear();
 	//FileSystemWatcher 함수들..
 	virtual void DoCreate(const wxString& strName) = 0;
@@ -72,10 +72,10 @@ public:
 	virtual void DoDelete(const wxString& strName) = 0;
 	virtual void DoRename(const wxString& strOldName, const wxString& strNewName) = 0;
 	void DoMyEventExecute(wxCommandEvent& event);
-	
+
 	wxString GetDetailInfo();
 	wxString GetDirInfo();
-	
+
 	//생성/수정/삭제시 디렉토리 정보 변경
 	void UpdateModificationTimeOfDir();
 	void ShowCompress();
@@ -101,23 +101,23 @@ protected:
 	//이름변경
 	void DoRenameFromMenuPrepare();
 	void DoRenameOn(const wxString& strRename);
-	
+
 	void DisplayItems(wxDC* pDC);
 	void CalcColumn(wxDC* pDC);
 	bool CalcAutoColumn(wxDC* pDC, const wxRect& viewRect);
 	void DrawColumn(wxDC* pDC);
 	void CalcPosition(wxDC* pDC);
-	
+
 	wxString CalcDispStr(wxDC* pDC, const wxString& strSourceSave, const wxString& strSource, bool isDrive);
 	wxString FindMaxData(const wxVector<wxString>& vecData);
 	wxString FindMaxData(const wxString& a, const wxString& b);
-	
+
 	void MoveLeftAndUpKey();
 	void MoveRightAndDownKey();
-	
+
 	void GotoRoot();
 	bool PressEnterKey();
-	
+
 	//아이템존재여부 확인
 	wxVector<CDirData>::iterator GetItemExist(const wxString& strName, bool& bExist);
 	//아이콘 읽기
@@ -127,25 +127,25 @@ protected:
 	//마우스이벤트 처리
 	void DoMouseProcess(const wxPoint& pt, bool bDblClick = false);
 	bool FindItemInMousePoint(const wxPoint& pt);
-	
+
 	//선택아이템 처리
 	bool SetSelectedItem(int iKeyCode);
 	//복사, 이동
 	void MakeCopyOrMoveList(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems);
 	//삭제(휴지통, 완전삭제)
 	bool MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash);
-	int GetItemDistance(wxVector<CDirData>::iterator it) 
+	int GetItemDistance(wxVector<CDirData>::iterator it)
 	{
 		return std::distance(m_itemList.begin(), it);
 	}
-	
+
 	CViewPanel* GetParentPanel() { return m_pViewPanel; }
 	wxString MakeFullPathName(const wxString& strName);
 	void DoSelectAllOrRelease(const wxEventType& evtType);
 	void FindMatchItems();
 	void DoMatchClear();
 	void InitKeyInputTooltip();
-	
+
 #ifdef __WXMSW__
 	void SetLastVisitDirectory(const wxString& strPath);
 	wxString GetLastVisitDirectory(const wxString& strDrive);
@@ -154,7 +154,7 @@ private:
 	void AllClear();
 	void ShowFavoriteMenu();
 	void DisplaySelectedItemInfo(const wxString& strMsg, int xPos, int yPos, bool bDispRenameInfo = false);
-	
+
 protected:
 	// 화면 버퍼(더블버퍼링 이용)
 	wxBitmap* m_pDoubleBuffer = nullptr;
@@ -186,7 +186,7 @@ protected:
 	wxVector<CDirData> m_itemList;
 	//디렉토리방문이력
 	_HISTORY m_hashHistory;
-	
+
 	// 문자 높이
 	int m_iCharHeight         = 0;
 	// 컬럼당 표시가능한 아이템수
@@ -242,14 +242,17 @@ protected:
 	CViewPanel* m_pViewPanel;
 	//선택 아이템
 	std::unordered_map<int, SELITEM_INFO> m_hashSelectedItem;
-	
+
 	// 이름변경 텍스트컨트롤
 	std::unique_ptr<wxTextCtrl> m_pTxtCtrlForRename = nullptr;
-	//tooltip window	
+	//tooltip window
 	CMyTooltipView* m_pMyTooltipView;
 	CMyTooltipView* m_pMyTooltipKeyInput;
 	//Match 아이템 정보
 	wxVector<int> m_matchItems;
+
+	//2020.11.27 Add
+	COLUMN_VIEW_OPTION m_enumColumnViewOption;
 protected:
 	void OnSetFocus(wxFocusEvent& event);
 	void OnKillFocus(wxFocusEvent& event);
@@ -261,7 +264,7 @@ protected:
 	void OnMouseLButtonDBClick(wxMouseEvent& event);
 	void OnMouseRButtonDown(wxMouseEvent& event);
 	void OnMouseRButtonUp(wxMouseEvent& event);
-	
+
 	//파일편집(외부편집프로그램이 여러개인경우)
 	void OnMenuFileEditProcess(wxCommandEvent& event);
 	//압축 실행

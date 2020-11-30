@@ -45,4 +45,6 @@ extern bool _gAppActivated;
 //외부편집프로그램 목록
 extern std::unordered_map<int, EXTERNAL_EDIT_PROGRAM> _gExternalPGList;
 
+extern const FILE_VIEW_OPTION _gFileViewOPEnum[];
+extern const COLUMN_VIEW_OPTION _gColumnViewOPEnum[];
 #endif
