@@ -88,6 +88,16 @@ void CImageMapBase::Draw(wxDC* pDC, const wxString& strName, int x, int y, unsig
 	DoDraw(pDC, iIconIndex, x, y, flags);
 }
 
+bool CImageMapBase::IsExistIcon(const wxString& strName) const
+{
+	ICON_MAP::const_iterator fIter = m_iconMap.find(strName);
+	if(fIter != m_iconMap.end())
+		return true;
+
+	return false;
+}
+
+
 void CImageMapBase::DoDraw(wxDC* pDC, int iIconIndex, int x, int y, unsigned int flags)
 {
 #ifdef __WXMSW__

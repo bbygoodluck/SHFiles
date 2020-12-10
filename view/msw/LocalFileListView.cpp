@@ -235,91 +235,128 @@ bool CLocalFileListView::ReadDirectory()
 
 void CLocalFileListView::DoCreate(const wxString& strName)
 {
+	m_bCreatedWatch = true;
+	m_bCreateItemAttribute = false;
+#if !defined(NDEBUG)
+	#ifdef _UNICODE
+		std::wcout << wxT("DoCreate : ") << strName << std::endl;
+	#else
+		std::cout << "DoCreate : " << strName << std::endl;
+	#endif
+#endif // NDEBUG
+
+	wxString strFullName = MakeFullPathName(strName);
+	bool isDir = false;
+	unsigned long lattr = 0;
+	wxLongLong llSize(0);
+	wxDateTime dt(0.0);
+
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullName, isDir, lattr, &llSize, &dt);
+	if(!bGetAttribute)
+		return;
+
+	wxString strExt(wxT(""));
+	wxString strDesc(wxT(""));
+
 	bool bExist = false;
 	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
 
 	if (bExist)
 		return;
 
-	wxString strFullName = MakeFullPathName(strName);
-	wxString strExt(wxT(""));
-	wxString strDesc(wxT(""));
+	m_bCreateItemAttribute = true;
+
+	if (!theJsonConfig->IsViewAllFile())
+	{
+		if (!theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
+		{
+			if ( (lattr & ATTR_HIDDEN) || (lattr & ATTR_SYSTEM) )
+				return;
+		}
+	}
+
+	if (theJsonConfig->IsViewHiddenFile())
+	{
+		if((lattr & ATTR_SYSTEM) && !theJsonConfig->IsViewSystemFile())
+			return;
+	}
+
+	CDirData dirItem;
+	dirItem.SetName(strName);
+
+	strDesc = wxT("");
+	strExt = wxT("");
+
+	if (isDir)
+	{
+		m_iDirCount++;
+		dirItem.SetType(CDirData::item_type::dir);
+		strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
+	}
+
+	else
+	{
+		m_iFileCount++;
+		dirItem.SetType(CDirData::item_type::file);
+
+		m_dblFileSizeInDir += llSize.ToDouble();
+
+		strExt = theCommonUtil->GetExt(strName);
+		strDesc = theExtInfo->GetExtInfo(strExt, strFullName);
+	}
+
+	dirItem.SetAttribute(lattr);
+	dirItem.SetSize(llSize);
+	dirItem.SetDateTime(dt);
+	dirItem.SetPath(m_strCurrentPath);
+	dirItem.SetExt(strExt);
+	dirItem.SetTypeName(strDesc);
+
+	m_itemList.push_back(dirItem);
+
+	m_strMaxName = FindMaxData(strName, m_strMaxName);
+	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
+
+	m_nTotalItems = m_itemList.size();
+	DoSortStart();
+
+	m_pImageMap->AddIcon(strFullName, strName);
+
+	m_bSizeOrColumnChanged = true;
+	m_bIsDisplayDetailInfo = false;
+
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+}
+
+void CLocalFileListView::DoModify(const wxString& strName)
+{
+#if !defined(NDEBUG)
+	#ifdef _UNICODE
+		std::wcout << wxT("DoModify : ") << strName << std::endl;
+	#else
+		std::cout << "DoCreate : " << strName << std::endl;
+	#endif
+#endif // NDEBUG
+
+	//파일생성 && !파일속성
+	if(m_bCreatedWatch)
+	{
+		m_bCreatedWatch = false;
+		if(!m_bCreateItemAttribute)
+			return;
+	}
 
 	bool isDir = false;
 	unsigned long lattr = 0;
 	wxLongLong llSize(0);
 	wxDateTime dt(0.0);
 
-	if(CLocalFileSystem::GetAttributeInfo(strFullName, isDir, lattr, &llSize, &dt))
-	{
-		if (!theJsonConfig->IsViewAllFile())
-		{
-			if (!theJsonConfig->IsViewHiddenFile() && !theJsonConfig->IsViewSystemFile())
-			{
-				if ( (lattr & ATTR_HIDDEN) || (lattr & ATTR_SYSTEM) )
-					return;
-			}
-		}
-
-		if (theJsonConfig->IsViewHiddenFile())
-		{
-			if((lattr & ATTR_SYSTEM) && !theJsonConfig->IsViewSystemFile())
-				return;
-		}
-
-		CDirData dirItem;
-		dirItem.SetName(strName);
-
-		strDesc = wxT("");
-		strExt = wxT("");
-
-		if (isDir)
-		{
-			m_iDirCount++;
-			dirItem.SetType(CDirData::item_type::dir);
-			strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
-		}
-
-		else
-		{
-			m_iFileCount++;
-			dirItem.SetType(CDirData::item_type::file);
-
-			m_dblFileSizeInDir += llSize.ToDouble();
-
-			strExt = theCommonUtil->GetExt(strName);
-			strDesc = theExtInfo->GetExtInfo(strExt, strFullName);
-		}
-
-		dirItem.SetAttribute(lattr);
-		dirItem.SetSize(llSize);
-		dirItem.SetDateTime(dt);
-		dirItem.SetPath(m_strCurrentPath);
-		dirItem.SetExt(strExt);
-		dirItem.SetTypeName(strDesc);
-
-		m_itemList.push_back(dirItem);
-
-		m_strMaxName = FindMaxData(strName, m_strMaxName);
-		m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
-
-		m_nTotalItems = m_itemList.size();
-		DoSortStart();
-
-		m_pImageMap->AddIcon(strFullName, strName);
-
-		m_bSizeOrColumnChanged = true;
-		m_bIsDisplayDetailInfo = false;
-
-		m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-		theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-	//	theCommonUtil->RefreshWindow(this, m_viewRect);
-	}
-}
-
-void CLocalFileListView::DoModify(const wxString& strName)
-{
 	wxString strFullPathName = MakeFullPathName(strName);
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	if(!bGetAttribute)
+		return;
+
 	bool bExist = false;
 	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
 
@@ -332,29 +369,20 @@ void CLocalFileListView::DoModify(const wxString& strName)
 		m_dblFileSizeInDir -= iter->GetSize().ToDouble();
 	}
 
-	bool isDir = false;
-	unsigned long lattr = 0;
-	wxLongLong llSize(0);
-	wxDateTime dt(0.0);
-
-	if(CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt))
+	if(!isDir)
 	{
-		if(!isDir)
-		{
-			//수정후의 사이즈를 다시 더한다.
-			m_dblFileSizeInDir += llSize.ToDouble();
-		}
-
-		iter->SetAttribute(lattr);
-		iter->SetSize(llSize);
-		iter->SetDateTime(dt);
-
-		m_bIsDisplayDetailInfo = false;
-
-		m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-		theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-	//	theCommonUtil->RefreshWindow(this, m_viewRect);
+		//수정후의 사이즈를 다시 더한다.
+		m_dblFileSizeInDir += llSize.ToDouble();
 	}
+
+	iter->SetAttribute(lattr);
+	iter->SetSize(llSize);
+	iter->SetDateTime(dt);
+
+	m_bIsDisplayDetailInfo = false;
+
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
 }
 
 void CLocalFileListView::DoDelete(const wxString& strName)
@@ -399,7 +427,6 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-//	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& strNewName)
@@ -466,7 +493,6 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
-
 
 void CLocalFileListView::ExecuteExternalProgramForEdit(int iIndex)
 {

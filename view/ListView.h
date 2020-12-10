@@ -237,6 +237,10 @@ protected:
 	bool m_bMouseClickItemFound = false;
 	bool m_bContextMenuFromMenuEvent = false;
 	bool m_bIsDisplayDetailInfo = false;
+	//2020.12.09 Added
+	//파일 생성(FileWatcher)
+	bool m_bCreatedWatch = false;
+	bool m_bCreateItemAttribute = false;
 	//파일/폴더 이미지리스트
 	CImageMap* m_pImageMap = nullptr;
 	CViewPanel* m_pViewPanel;

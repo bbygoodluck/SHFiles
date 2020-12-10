@@ -57,7 +57,8 @@ wxThread::ExitCode CImageMap::Entry()
 		int iPrevPage = 0;
 		//이미지 포지션
 		int iTempColumn = 0;
-
+		//포지션 사이즈
+		int iPosTotalCount = m_pListView->m_posList.size();
 		while(fIter != m_pListView->m_itemList.end())
 		{
 			if (m_bReadStart == READ_STOP)
@@ -70,6 +71,8 @@ wxThread::ExitCode CImageMap::Entry()
 			fIter++;
 			/*
 			//컬럼계산
+			//아이콘 영역 계산을 직접 수행하면
+			//좌표 계산이 중복되어 아래 CPositionInfo(각 영역별 좌표) 클래스를 이용하여 처리하도록 수정
 			iTempColumn = nPosIndex / m_pListView->m_nItemCountInColumn;
 			//하나의 아이템 선택영역 계산
 			int x1 = 1 + (iTempColumn * m_pListView->m_nDispColumnEndPoint);
@@ -114,15 +117,17 @@ wxThread::ExitCode CImageMap::Entry()
 				nPosIndex = 0;
 			}
 
-			if ((m_pListView->m_posList.size()) > 0 && (nPosIndex < m_pListView->m_iTotalPositionCnt))
+			if (iPosTotalCount > 0)
 			{	//Pos 인덱스 < 전체 포지션 - 1
-				if(nPosIndex < m_pListView->m_iTotalPositionCnt - 1)
+				if(nPosIndex < (iPosTotalCount - 1))
 				{
 					CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
 					theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
 
 					nPosIndex++;
 				}
+				else
+					nPosIndex = 0;
 			}
 		}
 

@@ -358,7 +358,10 @@ bool CLocalFileSystem::GetAttributeInfo(const wxString& strName, bool& isDir, un
 	if (!result)
 		return false;
 
-	if (!result && (dwErr != 0x0000)) //작업을 완료했습니다.
+//	if (!result && (dwErr != 0x0000)) //작업을 완료했습니다.
+//		return false;
+
+	if(dwErr == INVALID_FILE_ATTRIBUTES)
 		return false;
 
 	isDir = (attributes.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;

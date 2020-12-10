@@ -61,6 +61,7 @@ bool CSHFiles::OnInit()
 	pMainFrame->Show();
 
 	this->SetTopWindow(pMainFrame);
+
 	return true;
 }
 
@@ -197,8 +198,11 @@ void CSHFiles::OnActiveApp(wxActivateEvent& event)
 {
 	if(theSplitterManager && !_gAppActivated && !m_bFirstExec)
 	{
-		theSplitterManager->SetActivatePage();
-		_gAppActivated = true;
+		if(event.GetActive())
+		{
+			theSplitterManager->SetActivatePage();
+			_gAppActivated = true;
+		}
 	}
 
 	if(m_bFirstExec)

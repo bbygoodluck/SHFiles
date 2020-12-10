@@ -13,8 +13,8 @@ public:
 	explicit CSHFiles();
 	virtual ~CSHFiles();
 
-	virtual bool OnInit() wxOVERRIDE;
-	virtual int OnExit() wxOVERRIDE;
+	bool OnInit() override;
+	int OnExit() override;
 
 private:
 	bool Initialize();
@@ -23,9 +23,10 @@ private:
 private:
 #ifdef NDEBUG
 	wxSingleInstanceChecker* m_pSingleInstance;
-#endif	
+#endif
 	bool m_bAddFontRC;
 	bool m_bFirstExec = true;
+
 private:
 	void OnActiveApp(wxActivateEvent& event);
 	wxDECLARE_EVENT_TABLE();
