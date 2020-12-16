@@ -79,6 +79,11 @@ public:
 	wxString GetFileName(const wxString& strFullPath, bool IsAppendExt = true);
 	bool IsCreatableDirOrFileName(const wxString& strDir);
 
+#ifndef NDEBUG
+	void LogDisplay(const wxString& strMsg);
+#endif
+
+
 private:
 	void SetWorkingDirectory();
 

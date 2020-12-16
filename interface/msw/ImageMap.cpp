@@ -117,17 +117,18 @@ wxThread::ExitCode CImageMap::Entry()
 				nPosIndex = 0;
 			}
 
-			if (iPosTotalCount > 0)
-			{	//Pos 인덱스 < 전체 포지션 - 1
-				if(nPosIndex < (iPosTotalCount - 1))
-				{
-					CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
-					theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
+			int iItemStartIndex = m_pListView->m_nStartIndex;
+			wxString strItemName = m_pListView->m_itemList.at(iItemStartIndex).GetName();
 
-					nPosIndex++;
-				}
-				else
-					nPosIndex = 0;
+			if(!IsExistIcon(strItemName))
+				continue;
+
+			if (iPosTotalCount > 0 && (nPosIndex < (iPosTotalCount - 1)))
+			{	//Pos 인덱스 < 전체 포지션 - 1
+				CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
+				theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
+
+				nPosIndex++;
 			}
 		}
 

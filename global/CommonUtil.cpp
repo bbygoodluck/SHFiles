@@ -639,3 +639,14 @@ bool CCommonUtil::IsCreatableDirOrFileName(const wxString& strDir)
 
 	return true;
 }
+
+#ifndef NDEBUG
+void CCommonUtil::LogDisplay(const wxString& strMsg)
+{
+#if defined(_UNICODE) || defined(UNICODE)
+	std::wcout << strMsg << std::endl;
+#else
+	std::cout << strMsg << std::endl;
+#endif
+}
+#endif

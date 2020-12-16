@@ -43,7 +43,6 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_FILE_PASTE_CLIPBOARD:
 			DoCopyMove(_menuType);
 			break;
-
 		//이름변경
 		case _MENU_FILE_RENAME:
 			DoRename();
@@ -52,6 +51,7 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_FILE_EDIT:
 			DoFileEdit();
 			break;
+		//Command창 실행
 		case _MENU_FILE_CMD_EXEC:
 			DoCMDExecute();
 			break;
@@ -64,11 +64,12 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_FILE_DEL_COMP:
 			DoDeleteTrash(_menuType);
 			break;
-
+		//전체선택/해제
 		case _MENU_EDIT_ALL_RELEASE:
 		case _MENU_EDIT_ALL_SELECT:
 			DoAllSelectOrRelease(_menuType);
 			break;
+		//찾기
 		case _MENU_EDIT_FIND:
 			DoFileFind();
 			break;
@@ -84,6 +85,7 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_PATH_GOTO_DIR_DIRECTLY:
 			DoGotoDirDirectly();
 			break;
+		//디렉토리Manager
 		case _MENU_PATH_DIR_MANAGER:
 			DoDirectoryManager();
 			break;
@@ -95,19 +97,19 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_VIEW_COLUMN_CHANGE:
 			DoChageViewColumn();
 			break;
-
+		//환경설정
 		case _MENU_TOOL_ENVIRONMENT:
 			DoSettings();
 			break;
-
+		//파일리스트보기
 		case _MENU_VIEW_FILELIST_CHANGE:
 			DoChangeFileList();
 			break;
-
+		//압축
 		case _MENU_COMPRESS:
 			DoCompress();
 			break;
-
+		//압축해제
 		case _MENU_DECOMPRESS:
 		case _MENU_DECOMPRESS_MK_FOLDER:
 		case _MENU_DECOMPRESS_SEL_DIR:
@@ -117,12 +119,12 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_TOOL_SAVECONFIG:
 			DoSaveConfig();
 			break;
-
+		//즐겨찾기
 		case _MENU_FAVORITE_ITEM_ADD:
 		case _MENU_FAVORITE_MANAGER:
 			DoFavorite(_menuType);
 			break;
-
+		//즐겨찾기선택
 		case _MENU_FAVORITE_ITEM_SELECTED:
 			DoFavoriteItemSelected();
 			break;
@@ -134,14 +136,13 @@ void CMenuOperationHandler::ExecuteMenuOperation(_MENU_EVENT_TYPE _menuType, con
 		case _MENU_ETC_ADD_DRIVE:
 			DoAddDriveAndRemove();
 			break;
-
+		//디스크용량갱신
 		case _MENU_DISK_SPACE_UPDATE:
 			DoDiskspaceUpdate(strInfo);
 			break;
 #endif
 		default:
 			break;
-
 	}
 }
 
@@ -226,7 +227,6 @@ void CMenuOperationHandler::DoCopyMove(_MENU_EVENT_TYPE _menuType)
 			strTargetPath = GetTargetDirectory();
 			if(strTargetPath.IsEmpty())
 				return;
-
 		}
 
 		if(!theSplitterManager->GetActiveTab()->GetActiveViewPanel()->GetSelectedItemForCopyOrMove(bUseClipboard, bMove, lstSrcList))
@@ -364,7 +364,6 @@ void CMenuOperationHandler::DoDeleteTrash(_MENU_EVENT_TYPE _menuType)
 	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
 }
 
-
 void CMenuOperationHandler::DoCMDExecute()
 {
 #ifdef __WXMSW__
@@ -399,7 +398,6 @@ void CMenuOperationHandler::DoFileFind()
 	findDlg.setSearchDir(strCurrentPath);
 	findDlg.ShowModal();
 	findDlg.Destroy();
-
 }
 
 void CMenuOperationHandler::DoDispContextMenu()

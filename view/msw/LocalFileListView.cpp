@@ -235,8 +235,6 @@ bool CLocalFileListView::ReadDirectory()
 
 void CLocalFileListView::DoCreate(const wxString& strName)
 {
-	m_bCreatedWatch = true;
-	m_bCreateItemAttribute = false;
 #if !defined(NDEBUG)
 	#ifdef _UNICODE
 		std::wcout << wxT("DoCreate : ") << strName << std::endl;
@@ -245,6 +243,7 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 	#endif
 #endif // NDEBUG
 
+	m_bCreatedWatch = true;
 	wxString strFullName = MakeFullPathName(strName);
 	bool isDir = false;
 	unsigned long lattr = 0;
@@ -252,8 +251,6 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 	wxDateTime dt(0.0);
 
 	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullName, isDir, lattr, &llSize, &dt);
-	if(!bGetAttribute)
-		return;
 
 	wxString strExt(wxT(""));
 	wxString strDesc(wxT(""));
@@ -263,8 +260,6 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 
 	if (bExist)
 		return;
-
-	m_bCreateItemAttribute = true;
 
 	if (!theJsonConfig->IsViewAllFile())
 	{
@@ -299,7 +294,8 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 		m_iFileCount++;
 		dirItem.SetType(CDirData::item_type::file);
 
-		m_dblFileSizeInDir += llSize.ToDouble();
+	//	if(bGetAttribute)
+	//		m_dblFileSizeInDir += llSize.ToDouble();
 
 		strExt = theCommonUtil->GetExt(strName);
 		strDesc = theExtInfo->GetExtInfo(strExt, strFullName);
@@ -307,6 +303,10 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 
 	dirItem.SetAttribute(lattr);
 	dirItem.SetSize(llSize);
+
+	if(!bGetAttribute)
+		dt = wxDateTime::Now();
+
 	dirItem.SetDateTime(dt);
 	dirItem.SetPath(m_strCurrentPath);
 	dirItem.SetExt(strExt);
@@ -335,17 +335,9 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	#ifdef _UNICODE
 		std::wcout << wxT("DoModify : ") << strName << std::endl;
 	#else
-		std::cout << "DoCreate : " << strName << std::endl;
+		std::cout << "DoModify : " << strName << std::endl;
 	#endif
 #endif // NDEBUG
-
-	//파일생성 && !파일속성
-	if(m_bCreatedWatch)
-	{
-		m_bCreatedWatch = false;
-		if(!m_bCreateItemAttribute)
-			return;
-	}
 
 	bool isDir = false;
 	unsigned long lattr = 0;
@@ -354,8 +346,6 @@ void CLocalFileListView::DoModify(const wxString& strName)
 
 	wxString strFullPathName = MakeFullPathName(strName);
 	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
-	if(!bGetAttribute)
-		return;
 
 	bool bExist = false;
 	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
@@ -363,30 +353,51 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	if (!bExist)
 		return;
 
-	if(iter->IsFile())
+	//속성이 정상적으로 Load된 경우만 처리함
+	if(bGetAttribute)
 	{
-		// 수정전의 사이즈를 뺀다.
-		m_dblFileSizeInDir -= iter->GetSize().ToDouble();
+		if(!m_bCreatedWatch)
+		{
+			if(iter->IsFile())
+			{
+				// 수정전의 사이즈를 뺀다.
+				m_dblFileSizeInDir -= iter->GetSize().ToDouble();
+			}
+		}
+
+		if(!isDir)
+		{
+			//수정후의 사이즈를 다시 더한다.
+			m_dblFileSizeInDir += llSize.ToDouble();
+		}
+
+		iter->SetAttribute(lattr);
+		iter->SetSize(llSize);
 	}
 
-	if(!isDir)
-	{
-		//수정후의 사이즈를 다시 더한다.
-		m_dblFileSizeInDir += llSize.ToDouble();
-	}
+	if(!bGetAttribute)
+		dt = wxDateTime::Now();
 
-	iter->SetAttribute(lattr);
-	iter->SetSize(llSize);
 	iter->SetDateTime(dt);
 
 	m_bIsDisplayDetailInfo = false;
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+
+	m_bCreatedWatch = false;
 }
 
 void CLocalFileListView::DoDelete(const wxString& strName)
 {
+#if !defined(NDEBUG)
+	#ifdef _UNICODE
+		std::wcout << wxT("DoDelete : ") << strName << std::endl;
+	#else
+		std::cout << "DoDelete : " << strName << std::endl;
+	#endif
+#endif // NDEBUG
+
 	bool bExist = false;
 	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
 
@@ -394,9 +405,9 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 		return;
 
 	wxString strFullPathName = MakeFullPathName(strName);
-	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
-	if(bRealExist)
-		return;
+//	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
+//	if(bRealExist)
+//		return;
 
 	wxString strDesc = iter->GetTypeName();
 
@@ -431,6 +442,14 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 
 void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& strNewName)
 {
+#if !defined(NDEBUG)
+	#ifdef _UNICODE
+		std::wcout << wxT("DoRename : ") << strOldName << wxT(" to ") << strNewName << std::endl;
+	#else
+		std::cout << wxT("DoRename : ") << strOldName << wxT(" to ") << strNewName << std::endl;
+	#endif
+#endif // NDEBUG
+
 	wxString strFullPathName = MakeFullPathName(strNewName);
 
 	bool isDir = false;
@@ -438,51 +457,51 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	wxLongLong llSize(0);
 	wxDateTime dt(0.0);
 	wxDateTime dtNow(0.0);
-
+	//이름변경의 경우 기존 데이터를 삭제하고 새로운 아이템을 다시 등록하는것으로 처리함
 	bool bOldExist = false;
 	wxVector<CDirData>::iterator iterOld = GetItemExist(strOldName, bOldExist);
 
-	if(bOldExist)
-		iterOld->SetName(strNewName);
+	if(!bOldExist)
+		return;
 
-	bool bAttr = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	m_itemList.erase(iterOld);
+
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	CDirData dirItem;
+	dirItem.SetName(strNewName);
+	wxString strDesc(wxT(""));
 
 	if(!isDir)
 	{
 		wxString strExt = theCommonUtil->GetExt(strNewName);
-		wxString strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 
-		if(bOldExist)
-		{
-			iterOld->SetExt(strExt);
-			iterOld->SetTypeName(strDesc);
-		}
-		else
-		{
-			CDirData dirItem;
-			dirItem.SetName(strNewName);
+		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 
-			m_iFileCount++;
-			dirItem.SetType(CDirData::item_type::file);
-
-			m_dblFileSizeInDir += llSize.ToDouble();
-
-			dirItem.SetAttribute(lattr);
-			dirItem.SetSize(llSize);
-			dirItem.SetDateTime(dt);
-			dirItem.SetPath(m_strCurrentPath);
-			dirItem.SetExt(strExt);
-			dirItem.SetTypeName(strDesc);
-
-			m_itemList.push_back(dirItem);
-
-			m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-			theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-		}
-
-		m_strMaxName = FindMaxData(strNewName, m_strMaxName);
-		m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
+		dirItem.SetType(CDirData::item_type::file);
+		dirItem.SetExt(strExt);
 	}
+	else
+	{
+		dirItem.SetType(CDirData::item_type::dir);
+		strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
+	}
+
+	dirItem.SetAttribute(lattr);
+	dirItem.SetSize(llSize);
+	dirItem.SetDateTime(dt);
+	dirItem.SetPath(m_strCurrentPath);
+
+	dirItem.SetTypeName(strDesc);
+
+	m_itemList.push_back(dirItem);
+
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+	//	}
+
+	m_strMaxName = FindMaxData(strNewName, m_strMaxName);
+	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
+//	}
 
 	m_pImageMap->AddIcon(strFullPathName, strNewName);
 
