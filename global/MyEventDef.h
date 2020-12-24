@@ -23,5 +23,7 @@ wxDECLARE_EVENT(wxEVT_DRIVE_ADD_REMOVE, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_DISK_SPACE_UPDATE, wxCommandEvent);
 //
 wxDECLARE_EVENT(wxEVT_DECOMPRESS_DUP_CHECK, wxCommandEvent);
+//FileSystemWatcher
+wxDECLARE_EVENT(wxEVT_FILE_SYSTEM_WATCH, wxCommandEvent);
 #endif
 #endif

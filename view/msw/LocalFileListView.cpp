@@ -109,12 +109,12 @@ void CLocalFileListView::LoadDir(const wxString& strPath)
 		return;
 	}
 
-	m_pWatcherHandler->AddWatchDir(strPath);
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_TO_PATHVIEW, strPath);
 
 	Initialize();
-	m_strCurrentPath = strPath;
 
+	m_strCurrentPath = strPath;
+	m_pWatcherHandler->AddWatchDir(strPath);
 	//Get Path Depth
 	m_iPathDepth = theCommonUtil->GetPathDepth(strPath);
 	if (!ReadDirectory())
@@ -244,13 +244,20 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 #endif // NDEBUG
 
 	m_bCreatedWatch = true;
-	wxString strFullName = MakeFullPathName(strName);
+	wxString strFullPathName = MakeFullPathName(strName);
 	bool isDir = false;
 	unsigned long lattr = 0;
 	wxLongLong llSize(0);
 	wxDateTime dt(0.0);
 
-	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullName, isDir, lattr, &llSize, &dt);
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	bool IsOpen = false;
+	//읽기권한 체크
+	if(!isDir)
+		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+
+	if(!bGetAttribute && !IsOpen)
+		return;
 
 	wxString strExt(wxT(""));
 	wxString strDesc(wxT(""));
@@ -276,6 +283,8 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 			return;
 	}
 
+	m_pImageMap->AddIcon(strFullPathName, strName);
+
 	CDirData dirItem;
 	dirItem.SetName(strName);
 
@@ -288,17 +297,13 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 		dirItem.SetType(CDirData::item_type::dir);
 		strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
 	}
-
 	else
 	{
 		m_iFileCount++;
 		dirItem.SetType(CDirData::item_type::file);
 
-	//	if(bGetAttribute)
-	//		m_dblFileSizeInDir += llSize.ToDouble();
-
 		strExt = theCommonUtil->GetExt(strName);
-		strDesc = theExtInfo->GetExtInfo(strExt, strFullName);
+		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 	}
 
 	dirItem.SetAttribute(lattr);
@@ -314,19 +319,18 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 
 	m_itemList.push_back(dirItem);
 
-	m_strMaxName = FindMaxData(strName, m_strMaxName);
-	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
-
-	m_nTotalItems = m_itemList.size();
-	DoSortStart();
-
-	m_pImageMap->AddIcon(strFullName, strName);
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 
 	m_bSizeOrColumnChanged = true;
 	m_bIsDisplayDetailInfo = false;
 
-	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+	m_strMaxName = FindMaxData(strName, m_strMaxName);
+	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
+
+	m_nTotalItems = wx_static_cast(int, m_itemList.size());
+	DoSortStart();
+
+	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CLocalFileListView::DoModify(const wxString& strName)
@@ -346,6 +350,13 @@ void CLocalFileListView::DoModify(const wxString& strName)
 
 	wxString strFullPathName = MakeFullPathName(strName);
 	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	bool IsOpen = false;
+	//읽기권한 체크
+	if(!isDir)
+		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+
+	if(!bGetAttribute && !IsOpen)
+		return;
 
 	bool bExist = false;
 	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
@@ -354,26 +365,19 @@ void CLocalFileListView::DoModify(const wxString& strName)
 		return;
 
 	//속성이 정상적으로 Load된 경우만 처리함
-	if(bGetAttribute)
+	if(!m_bCreatedWatch)
 	{
-		if(!m_bCreatedWatch)
-		{
-			if(iter->IsFile())
-			{
-				// 수정전의 사이즈를 뺀다.
-				m_dblFileSizeInDir -= iter->GetSize().ToDouble();
-			}
-		}
-
-		if(!isDir)
-		{
-			//수정후의 사이즈를 다시 더한다.
-			m_dblFileSizeInDir += llSize.ToDouble();
-		}
-
-		iter->SetAttribute(lattr);
-		iter->SetSize(llSize);
+		// 수정전의 사이즈를 뺀다.
+		if(iter->IsFile())
+			m_dblFileSizeInDir -= iter->GetSize().ToDouble();
 	}
+
+	//수정후의 사이즈를 다시 더한다.
+	if(!isDir)
+		m_dblFileSizeInDir += llSize.ToDouble();
+
+	iter->SetAttribute(lattr);
+	iter->SetSize(llSize);
 
 	if(!bGetAttribute)
 		dt = wxDateTime::Now();
@@ -385,6 +389,7 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
 
+	theCommonUtil->RefreshWindow(this, m_viewRect);
 	m_bCreatedWatch = false;
 }
 
@@ -404,10 +409,11 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 	if (!bExist)
 		return;
 
+	//삭제가 실패하여 실제로 데이터가 남아 있을경우는 항목제거 처리를 하지 않음
 	wxString strFullPathName = MakeFullPathName(strName);
-//	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
-//	if(bRealExist)
-//		return;
+	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
+	if(bRealExist)
+		return;
 
 	wxString strDesc = iter->GetTypeName();
 
@@ -438,6 +444,8 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
+
+	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& strNewName)
@@ -450,23 +458,53 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	#endif
 #endif // NDEBUG
 
-	wxString strFullPathName = MakeFullPathName(strNewName);
-
 	bool isDir = false;
 	unsigned long lattr = 0;
 	wxLongLong llSize(0);
 	wxDateTime dt(0.0);
 	wxDateTime dtNow(0.0);
-	//이름변경의 경우 기존 데이터를 삭제하고 새로운 아이템을 다시 등록하는것으로 처리함
-	bool bOldExist = false;
-	wxVector<CDirData>::iterator iterOld = GetItemExist(strOldName, bOldExist);
 
-	if(!bOldExist)
+	wxString strFullPathName = MakeFullPathName(strNewName);
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	bool IsOpen = false;
+	//읽기권한 체크
+	if(!isDir)
+		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+
+	if(!bGetAttribute && !IsOpen)
 		return;
 
-	m_itemList.erase(iterOld);
+	//이름변경의 경우 기존 데이터를 삭제하고 새로운 아이템을 다시 등록하는것으로 처리함
+	bool bOldExist = false;
+	bool bNewExist = false;
+	wxVector<CDirData>::iterator iterOld = GetItemExist(strOldName, bOldExist);
+	wxVector<CDirData>::iterator iterNew = GetItemExist(strNewName, bNewExist);
 
-	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+	if(bNewExist)
+	{
+		if(iterNew->IsFile())
+			m_dblFileSizeInDir -= iterNew->GetSize().ToDouble();
+
+		m_itemList.erase(iterNew);
+	}
+
+	if(!bOldExist)
+	{
+		if(!IsOpen)
+			return;
+	}
+	else
+	{
+		bool bOldIsFile = iterOld->IsFile();
+
+		if(bOldIsFile)
+			m_dblFileSizeInDir -= iterOld->GetSize().ToDouble();
+
+		m_itemList.erase(iterOld);
+	}
+
+	m_pImageMap->AddIcon(strFullPathName, strNewName);
+
 	CDirData dirItem;
 	dirItem.SetName(strNewName);
 	wxString strDesc(wxT(""));
@@ -479,6 +517,8 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 
 		dirItem.SetType(CDirData::item_type::file);
 		dirItem.SetExt(strExt);
+
+		m_dblFileSizeInDir += llSize.ToDouble();
 	}
 	else
 	{
@@ -495,16 +535,13 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 
 	m_itemList.push_back(dirItem);
 
-	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
-	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-	//	}
-
 	m_strMaxName = FindMaxData(strNewName, m_strMaxName);
 	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
-//	}
 
-	m_pImageMap->AddIcon(strFullPathName, strNewName);
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
 
+	m_nTotalItems = wx_static_cast(int, m_itemList.size());
 	DoSortStart();
 
 	m_bSizeOrColumnChanged = true;
@@ -571,11 +608,14 @@ void CLocalFileListView::DoUpdateModificationTimeOfDir()
 	CDirData* pFirst = (CDirData *)&m_itemList.at(0);
 	if (CLocalFileSystem::GetAttributeInfo(m_strCurrentPath, isDir, lattr, &llSize, &dt))
 	{
-		CPositionInfo pos = m_posList.at(0);
-		pFirst->SetDateTime(dt);
+		if(m_posList.size() > 0)
+		{
+			CPositionInfo pos = m_posList.at(0);
+			pFirst->SetDateTime(dt);
 
-		if(m_nCurrentItemIndex < m_nDisplayItemInView)
-			theCommonUtil->RefreshWindow(this, pos.m_mainRect);
+			if(m_nCurrentItemIndex < m_nDisplayItemInView)
+				theCommonUtil->RefreshWindow(this, pos.m_mainRect);
+		}
 	}
 }
 
@@ -627,7 +667,6 @@ void CLocalFileListView::OnUpdateDriveSpace(wxCommandEvent& event)
 				pData->SetName(strName);
 			}
 
-			theCommonUtil->RefreshWindow(this, m_viewRect);
 			break;
 		}
 	}

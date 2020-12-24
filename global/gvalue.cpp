@@ -49,3 +49,5 @@ const COLUMN_VIEW_OPTION _gColumnViewOPEnum[] = {
 	VIEW_COLUMN_EIGHT,
 	VIEW_COLUMN_NINE
 };
+
+wxMutex _gMutexInstanceForWatcher;

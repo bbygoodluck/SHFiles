@@ -5,7 +5,7 @@
 #include "LocalFileSystemWatcher.h"
 
 class CLocalWatcherMonitorHandler : public CWatcherMonitorHandler
-{	
+{
 protected:
 	enum {
 		TIMER_ID = 5000
@@ -15,13 +15,14 @@ public:
 	virtual ~CLocalWatcherMonitorHandler();
 
 	virtual void AddWatchDir(const wxString& strPath) override;
-	
+
 private:
 	std::unique_ptr<CLocalFileSystemWatcher> m_pLCWatcher;
 	int m_iTimerID;
-	
+
 private:
-	void OnTimer(wxTimerEvent& event);
+//	void OnTimer(wxTimerEvent& event);
+	void OnFileSystemWatchEvent(wxCommandEvent& event) override;
 	wxDECLARE_EVENT_TABLE();
 };
 #endif

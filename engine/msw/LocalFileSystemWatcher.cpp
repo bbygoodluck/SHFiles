@@ -190,9 +190,23 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 				SecureZeroMemory(&m_watchDir.PollingOverlap, sizeof(OVERLAPPED));
 			else
 				ResetEvent(m_watchDir.PollingOverlap.hEvent);
+
+			wxCommandEvent evt(wxEVT_FILE_SYSTEM_WATCH);
+			wxPostEvent(m_evtHandler, evt);
+
+			Lock();
 		}
 	}
 
 	return (wxThread::ExitCode)0;
 }
 
+void CLocalFileSystemWatcher::Lock()
+{
+	m_lock.getCondition()->Wait();
+}
+
+void CLocalFileSystemWatcher::UnLock()
+{
+	m_lock.getCondition()->Signal();
+}

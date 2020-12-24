@@ -47,4 +47,10 @@ extern std::unordered_map<int, EXTERNAL_EDIT_PROGRAM> _gExternalPGList;
 
 extern const FILE_VIEW_OPTION _gFileViewOPEnum[];
 extern const COLUMN_VIEW_OPTION _gColumnViewOPEnum[];
+
+/*
+ * 2020.12.18
+ *    - Add MutextLocker for filesystem watcher
+ */
+extern wxMutex _gMutexInstanceForWatcher;
 #endif

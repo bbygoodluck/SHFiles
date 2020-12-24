@@ -389,14 +389,22 @@ wxString CCommonUtil::GetParentPath(const wxString& strFullPath)
 
 wxString CCommonUtil::GetPathName(const wxString& strFullPath)
 {
-	wxString _strVolume;
+/*	wxString _strVolume;
 	wxString _strPath;
 	wxString _strName;
 	wxString _strExt;
 
 	wxFileName::SplitPath(strFullPath, &_strVolume, &_strPath, &_strName, &_strExt);
+	if(!_strExt.IsEmpty())
+		_strName += _strExt;
 
 	return (_strName.IsEmpty() ? strFullPath : _strName);
+*/
+	if(strFullPath.Len() == 3)
+		return strFullPath;
+
+	int iSlashPos = strFullPath.rfind(SLASH);
+	return (strFullPath.Mid(iSlashPos + 1, strFullPath.Len()));
 }
 
 wxString CCommonUtil::GetFileName(const wxString& strFullPath, bool IsAppendExt)
@@ -437,6 +445,18 @@ void CCommonUtil::LaunchAndExec(const wxString& strExecProgram, const wxString& 
 		return;
 	}
 
+	SHELLEXECUTEINFO execInfo;
+	wxZeroMemory(execInfo);
+
+	execInfo.cbSize = sizeof(execInfo);
+	execInfo.lpFile = strExecProgram.t_str();
+	execInfo.lpVerb = wxT("open");
+	execInfo.fMask = SEE_MASK_FLAG_NO_UI;
+	execInfo.lpDirectory = strPath.t_str();
+	execInfo.nShow = SW_SHOWDEFAULT;
+
+	ShellExecuteEx(&execInfo);
+/*
 	if(Compare(strExt.MakeLower(), wxT("exe")) == 0)
 	{
 		SHELLEXECUTEINFO execInfo;
@@ -453,6 +473,7 @@ void CCommonUtil::LaunchAndExec(const wxString& strExecProgram, const wxString& 
 	}
 	else
 		wxLaunchDefaultApplication(strExecProgram);
+*/
 #else
 	wxExecute(strExecProgram, wxEXEC_ASYNC);
 #endif
@@ -650,3 +671,18 @@ void CCommonUtil::LogDisplay(const wxString& strMsg)
 #endif
 }
 #endif
+
+bool CCommonUtil::IsFileOpenSuccess(const wxString& strFullPathName)
+{
+/*	std::ifstream ifs;
+
+	wxString strFileName(strFullPathName);
+	ifs.open(strFileName.char_str());
+	bool IsOpen = ifs.is_open();
+	ifs.close();
+
+	return IsOpen;
+*/
+	wxFileName fn(strFullPathName);
+	return fn.IsFileReadable();
+}

@@ -6,14 +6,14 @@
 class CWatcherDir
 {
 public:
-	CWatcherDir() 
-		: bSubTree(false), m_strDir(wxT("")) 
+	CWatcherDir()
+		: bSubTree(false), m_strDir(wxT(""))
 	{
 		wxZeroMemory(m_Buffer);
 	}
-	
+
 	~CWatcherDir() {}
-	
+
 	enum
 	{
 		BUFFER_SIZE = 4096
@@ -50,7 +50,7 @@ public:
 public:
 	CFileSystemWatcherBase();
 	virtual ~CFileSystemWatcherBase();
-	
+
 public:
 	int GetQueueSize() { return m_queue.size(); }
 	bool IsQueueEmpty() { return m_queue.empty(); }
@@ -59,15 +59,18 @@ public:
 	}
 
 	void QueuePop() { m_queue.pop(); }
-	
+	void SetOwner(wxEvtHandler* evtHandler) { m_evtHandler = evtHandler; }
+
 protected:
 	virtual wxThread::ExitCode Entry() = 0;
 	virtual void Clear() = 0;
 	virtual int AddPath(const wxString& strPath, unsigned long ulNotifyFilter, bool bSubTree) = 0;
-	
+
 	void DoWatchDirectory();
 	int Native2WatcherFlags(int flags);
-	
+	CLock m_lock;
+
+	wxEvtHandler* m_evtHandler;
 protected:
 	std::queue<WATCHDIR_INFO> m_queue;
 };

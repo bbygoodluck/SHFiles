@@ -23,6 +23,8 @@ public:
 	CLocalFileSystemWatcher();
 	virtual ~CLocalFileSystemWatcher();
 
+	void Lock();
+	void UnLock();
 protected:
 	virtual wxThread::ExitCode Entry() override;
 	virtual void Clear() override;

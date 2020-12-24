@@ -1764,10 +1764,17 @@ wxVector<CDirData>::iterator CListView::GetItemExist(const wxString& strName, bo
 {
 	bExist = false;
 	auto it = std::find_if(m_itemList.begin(), m_itemList.end(), [&strName](const CDirData& data) {
-		int iCmp = -1;
-		iCmp = data.GetName().Cmp(strName);
+		wxString strTgt(data.GetName());
+		strTgt = strTgt.Trim();
 
-		return (iCmp == 0);
+		wxString strSrc(strName);
+		strSrc = strSrc.Trim();
+
+#ifdef __WXMSW__
+		return (strSrc.CmpNoCase(strTgt) == 0);
+#else
+		return (strSrc.Cmp(strTgt) == 0);
+#endif
 	});
 
 	if (it != m_itemList.end())
@@ -1778,24 +1785,28 @@ wxVector<CDirData>::iterator CListView::GetItemExist(const wxString& strName, bo
 
 void CListView::DoSelectedItemsClear()
 {
-	std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
-	while(iTer != m_hashSelectedItem.end())
+	size_t iSelectedCount = m_hashSelectedItem.size();
+	if(iSelectedCount > 0)
 	{
-		SELITEM_INFO _Info = iTer->second;
-		CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
+		std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
+		while(iTer != m_hashSelectedItem.end())
+		{
+			SELITEM_INFO _Info = iTer->second;
+			CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
 
-		data->SetItemSelected(false);
-		iTer++;
+			data->SetItemSelected(false);
+			iTer++;
+		}
+
+		m_hashSelectedItem.clear();
+		m_pMyTooltipView->SetTooltipText(wxT(""));
+		m_pMyTooltipView->Show(false);
+
+		m_iSelDirCnt = 0;
+		m_iSelFileCnt = 0;
+
+		theCommonUtil->RefreshWindow(this, m_viewRect);
 	}
-
-	m_hashSelectedItem.clear();
-	m_pMyTooltipView->SetTooltipText(wxT(""));
-	m_pMyTooltipView->Show(false);
-
-	m_iSelDirCnt = 0;
-	m_iSelFileCnt = 0;
-
-	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CListView::DoMyEventExecute(wxCommandEvent& event)

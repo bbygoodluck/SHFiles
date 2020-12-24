@@ -20,7 +20,7 @@ CViewPanel::CViewPanel(wxWindow* parent, int iID, const wxString& strPath)
 
 CViewPanel::~CViewPanel()
 {
-	
+
 }
 
 void CViewPanel::Init(const wxString& strPath, bool bRemote)
@@ -40,12 +40,12 @@ void CViewPanel::Init(const wxString& strPath, bool bRemote)
 	m_Mainsizer->Add(m_pDirInfoView.get(), 0, wxEXPAND, 0);
 	m_Mainsizer->Add(m_pFileListView.get(), wxSizerFlags(1).Expand().Border(wxALL, 0));
 	m_Mainsizer->Add(m_pDetailInfoView.get(), 0, wxEXPAND, 0);
-	
+
 	if (!wxDirExists(_strPath))
 		_strPath = wxT("C:\\");
-	
+
 	m_pFileListView->LoadDir(_strPath);
-	
+
 	SetSizer(m_Mainsizer);
 	m_Mainsizer->SetSizeHints(this);
 }
@@ -71,7 +71,7 @@ bool CViewPanel::GetSelectedItemForCopyOrMove(bool bUseClipboard, bool bMove, st
 	m_pFileListView->MakeCopyOrMoveList(bUseClipboard, bMove, lstItems);
 	if(lstItems.size() == 0)
 		return false;
-	
+
 	if(bUseClipboard)
 	{
 		theClipboard->Clear();
@@ -79,7 +79,7 @@ bool CViewPanel::GetSelectedItemForCopyOrMove(bool bUseClipboard, bool bMove, st
 		theClipboard->AddData(lstItems);
 		theClipboard->CopyToClipboard();
 	}
-	
+
 	return true;
 }
 
@@ -87,10 +87,10 @@ bool CViewPanel::GetDeleteItems(std::list<wxString>& lstDatas, bool bTrash)
 {
 	if(!m_pFileListView->MakeTrashOrDeleteData(lstDatas, bTrash))
 		return false;
-		
+
 	if(lstDatas.size() == 0)
 		return false;
-		
+
 	return true;
 }
 
@@ -113,7 +113,7 @@ void CViewPanel::TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxSt
 		case TRANSFER_LISTVIEW_TO_PATHVIEW:
 			m_pPathView->AddPath(strInfo);
 			break;
-			
+
 		case TRANSFER_PATH_VIEW_TO_LISTVIEW:
 		{
 			theSplitterManager->ChangeTabPagePathName(strInfo);
@@ -121,17 +121,16 @@ void CViewPanel::TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxSt
 			SetActivateView();
 		}
 			break;
-		
+
 		case TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW:
 			m_pDirInfoView->SetDirInfo(m_pFileListView->GetDirInfo());
 			break;
-			
+
 		case TRANSFER_LISTVIEW_DETAILINFO_TO_DETAILVIEW:
 			m_pDetailInfoView->SetDetailInfo(strInfo);
 			break;
-			
+
 		default:
-		
 			break;
 	}
 }
@@ -146,7 +145,7 @@ void CViewPanel::ReloadPathOfView(const wxString& strPathInfo)
 {
 	wxString strCurrentPath = strPathInfo.IsEmpty() ? m_pFileListView->GetCurrentPath() : strPathInfo;
 	m_pFileListView->LoadDir(strCurrentPath);
-	
+
 	theCommonUtil->RefreshWindow(m_pFileListView.get(), m_pFileListView->m_viewRect);
 }
 
