@@ -191,10 +191,10 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 			else
 				ResetEvent(m_watchDir.PollingOverlap.hEvent);
 
-			wxCommandEvent evt(wxEVT_FILE_SYSTEM_WATCH);
-			wxPostEvent(m_evtHandler, evt);
+		//	wxCommandEvent evt(wxEVT_FILE_SYSTEM_WATCH);
+		//	wxPostEvent(m_evtHandler, evt);
 
-			Lock();
+		//	Lock();
 		}
 	}
 

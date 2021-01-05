@@ -589,3 +589,18 @@ enum CLocalFileSystem::local_filetype CLocalFileSystem::GetFileType(const wxStri
 	return file;
 #endif
 }
+
+bool CLocalFileSystem::IsFileReadablePrivileges(const wxString& strFullPathName)
+{
+/*	std::ifstream ifs;
+
+	wxString strFileName(strFullPathName);
+	ifs.open(strFileName.char_str());
+	bool IsOpen = ifs.is_open();
+	ifs.close();
+
+	return IsOpen;
+*/
+	wxFileName fn(strFullPathName);
+	return fn.IsFileReadable();
+}

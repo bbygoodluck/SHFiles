@@ -32,6 +32,10 @@ public:
 	static bool RecursiveDelete(const wxString& path, wxWindow* parent, bool bGoTrash, int& iRet);
 	static bool RecursiveDelete(const std::list<wxString>& dirsToVisit, wxWindow* parent, bool bGoTrash, int& iRet);
 	static enum local_filetype GetFileType(const wxString& path);
+
+	//2020.12.29 Added
+	// CCommonUtil::IsFileOpenSuccess move to CLocalFileSystem function
+	static bool IsFileReadablePrivileges(const wxString& strFullPathName);
 private:
 	bool m_bDirs_only;
 

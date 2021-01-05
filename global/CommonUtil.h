@@ -78,7 +78,6 @@ public:
 	wxString ChangeName(const wxString& strName);
 	wxString GetFileName(const wxString& strFullPath, bool IsAppendExt = true);
 	bool IsCreatableDirOrFileName(const wxString& strDir);
-	bool IsFileOpenSuccess(const wxString& strFullPathName);
 
 #ifndef NDEBUG
 	void LogDisplay(const wxString& strMsg);

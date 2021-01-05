@@ -1786,27 +1786,22 @@ wxVector<CDirData>::iterator CListView::GetItemExist(const wxString& strName, bo
 void CListView::DoSelectedItemsClear()
 {
 	size_t iSelectedCount = m_hashSelectedItem.size();
-	if(iSelectedCount > 0)
+	std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
+	while(iTer != m_hashSelectedItem.end())
 	{
-		std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
-		while(iTer != m_hashSelectedItem.end())
-		{
-			SELITEM_INFO _Info = iTer->second;
-			CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
+		SELITEM_INFO _Info = iTer->second;
+		CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
 
-			data->SetItemSelected(false);
-			iTer++;
-		}
-
-		m_hashSelectedItem.clear();
-		m_pMyTooltipView->SetTooltipText(wxT(""));
-		m_pMyTooltipView->Show(false);
-
-		m_iSelDirCnt = 0;
-		m_iSelFileCnt = 0;
-
-		theCommonUtil->RefreshWindow(this, m_viewRect);
+		data->SetItemSelected(false);
+		iTer++;
 	}
+
+	m_hashSelectedItem.clear();
+	m_pMyTooltipView->SetTooltipText(wxT(""));
+	m_pMyTooltipView->Show(false);
+
+	m_iSelDirCnt = 0;
+	m_iSelFileCnt = 0;
 }
 
 void CListView::DoMyEventExecute(wxCommandEvent& event)

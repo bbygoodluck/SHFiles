@@ -254,7 +254,7 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 	bool IsOpen = false;
 	//읽기권한 체크
 	if(!isDir)
-		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
 
 	if(!bGetAttribute && !IsOpen)
 		return;
@@ -353,7 +353,7 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	bool IsOpen = false;
 	//읽기권한 체크
 	if(!isDir)
-		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
 
 	if(!bGetAttribute && !IsOpen)
 		return;
@@ -469,7 +469,7 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	bool IsOpen = false;
 	//읽기권한 체크
 	if(!isDir)
-		IsOpen = theCommonUtil->IsFileOpenSuccess(strFullPathName);
+		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
 
 	if(!bGetAttribute && !IsOpen)
 		return;

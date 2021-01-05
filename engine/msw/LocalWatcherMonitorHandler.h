@@ -21,7 +21,10 @@ private:
 	int m_iTimerID;
 
 private:
-//	void OnTimer(wxTimerEvent& event);
+	void DoWatchProcess(bool bSetTimer);
+
+private:
+	void OnTimer(wxTimerEvent& event);
 	void OnFileSystemWatchEvent(wxCommandEvent& event) override;
 	wxDECLARE_EVENT_TABLE();
 };
