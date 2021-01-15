@@ -445,18 +445,18 @@ void CCommonUtil::LaunchAndExec(const wxString& strExecProgram, const wxString& 
 		return;
 	}
 
-	SHELLEXECUTEINFO execInfo;
-	wxZeroMemory(execInfo);
+//	SHELLEXECUTEINFO execInfo;
+//	wxZeroMemory(execInfo);
+//
+//	execInfo.cbSize = sizeof(execInfo);
+//	execInfo.lpFile = strExecProgram.t_str();
+//	execInfo.lpVerb = wxT("open");
+//	execInfo.fMask = SEE_MASK_FLAG_NO_UI;
+//	execInfo.lpDirectory = strPath.t_str();
+//	execInfo.nShow = SW_SHOWDEFAULT;
+//
+//	ShellExecuteEx(&execInfo);
 
-	execInfo.cbSize = sizeof(execInfo);
-	execInfo.lpFile = strExecProgram.t_str();
-	execInfo.lpVerb = wxT("open");
-	execInfo.fMask = SEE_MASK_FLAG_NO_UI;
-	execInfo.lpDirectory = strPath.t_str();
-	execInfo.nShow = SW_SHOWDEFAULT;
-
-	ShellExecuteEx(&execInfo);
-/*
 	if(Compare(strExt.MakeLower(), wxT("exe")) == 0)
 	{
 		SHELLEXECUTEINFO execInfo;
@@ -473,7 +473,7 @@ void CCommonUtil::LaunchAndExec(const wxString& strExecProgram, const wxString& 
 	}
 	else
 		wxLaunchDefaultApplication(strExecProgram);
-*/
+
 #else
 	wxExecute(strExecProgram, wxEXEC_ASYNC);
 #endif
@@ -609,7 +609,7 @@ wxString CCommonUtil::ChangeName(const wxString& strName)
 		sNewName = sName + wxT("_Copy") + wxString(ext);
 	else
 	{
-		if(theCommonUtil->Compare(sName.Right(1), wxT(")")) != 0)
+		if(Compare(sName.Right(1), wxT(")")) != 0)
 		{
 			sNewName = sName;
 			sNewName.Replace(wxT("_Copy"), wxT(""));

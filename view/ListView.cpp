@@ -149,6 +149,10 @@ void CListView::Initialize()
 //	wxVector<CDirData>().swap(m_itemList);
 //	m_itemList.reserve(300);
 
+	//선택 파일수
+	m_iSelFileCnt = 0;
+	//선택 디렉토리 수
+	m_iSelDirCnt = 0;
 	//디렉토리 수
 	m_iDirCount = 0;
 	//파일수
@@ -1044,6 +1048,11 @@ void CListView::OnChar(wxKeyEvent& event)
 			iLenKeyInput = m_strKeyInput.Len();
 			m_strKeyInput = m_strKeyInput.Left(iLenKeyInput - 1);
 		}
+		else
+		{
+			ProcessKeyEvent(wxKEY_DOT);
+			return;
+		}
 	}
 	else
 	{
@@ -1578,8 +1587,10 @@ bool CListView::SetSelectedItem(int iKeyCode)
 		if (bNewSelected) //아이템 선택
 		{
 			SELITEM_INFO _Info;
+
 			_Info.m_iSelIndex = m_nCurrentItemIndex;
 			_Info.m_bFile = fIter->IsFile();
+			_Info.m_strFullPath = fIter->GetFullPath();
 
 			std::unordered_map<int, SELITEM_INFO>::value_type valsel(m_nCurrentItemIndex, _Info);
 			m_hashSelectedItem.insert(valsel);
@@ -1631,9 +1642,9 @@ void CListView::MakeCopyOrMoveList(bool bUseClipboard, bool bMove, std::list<wxS
 		for (iter = m_hashSelectedItem.begin(); iter != m_hashSelectedItem.end(); ++iter)
 		{
 			SELITEM_INFO selItem = iter->second;
-			CDirData* pItem = (CDirData *)&m_itemList.at(selItem.m_iSelIndex);
-			lstItems.push_back(pItem->GetFullPath());
+			lstItems.push_back(selItem.m_strFullPath);//pItem->GetFullPath());
 
+			CDirData* pItem = (CDirData *)&m_itemList.at(selItem.m_iSelIndex);
 			if (bUseClipboard)
 			{
 				pItem->SetCut(false);
@@ -1680,6 +1691,7 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 	bool bGoTrash = bTrash;
 	int iRetValue = 0;
 	bool bOpenCheck = false;
+
 	if (iSelectedItems == 0)
 	{
 		CDirData selItem = m_itemList.at(m_nCurrentItemIndex);
@@ -1707,6 +1719,8 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 	}
 	else
 	{
+		int iDelItemCounts = 0;
+
 		std::unordered_map<int, SELITEM_INFO>::const_iterator iter = m_hashSelectedItem.begin();
 		strMsg = wxT("");
 		strMsg += wxString::Format(wxT("%d "), iSelectedItems);
@@ -1719,33 +1733,38 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 			bOpenCheck = false;
 
 			SELITEM_INFO _info = iter->second;
-			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
+		//	CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
 
-			strItem = itemSel.GetFullPath();
+			strItem = _info.m_strFullPath;//itemSel.GetFullPath();
+			bool bFile = _info.m_bFile;
 
-			if (itemSel.IsFile())
+			if (bFile)//itemSel.IsFile())
 			{
 				bOpenCheck = CLocalFileSystem::IsCheckedFileOpen(strItem);
 				if (bOpenCheck)
 				{
 					int iRet = wxMessageBox(strItem + wxT(" is opend another program!. this file to be skipped! \n Continue?"), wxT("Delete...."), wxYES_NO | wxICON_ERROR, this);
 					if (iRet == wxYES)
+					{
+						CDirData* data = (CDirData *)&m_itemList.at(_info.m_iSelIndex);
+						data->SetItemSelected(false);
 						continue;
+					}
 					else
 						return false;
 				}
 			}
 
 			lstDatas.push_back(strItem);
-
+			iDelItemCounts++;
 			strMsg += strItem;
 			strMsg += wxT("\n");
 		}
 
 		strMsg += wxT("\n");
 		strMsg += bGoTrash ? strGoTrash : strDelComplete;
-
-		iRetValue = wxMessageBox(strMsg, wxT("Delete...."), wxYES_NO | wxICON_EXCLAMATION, this);
+		if(iDelItemCounts > 0)
+			iRetValue = wxMessageBox(strMsg, wxT("Delete...."), wxYES_NO | wxICON_EXCLAMATION, this);
 	}
 
 	if (iRetValue == wxYES)
@@ -1753,7 +1772,7 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 		if (lstDatas.size() > 0)
 		{
 			bDel = true;
-			m_hashSelectedItem.clear();
+		//	m_hashSelectedItem.clear();
 		}
 	}
 
@@ -1783,17 +1802,19 @@ wxVector<CDirData>::iterator CListView::GetItemExist(const wxString& strName, bo
 	return it;
 }
 
-void CListView::DoSelectedItemsClear()
+void CListView::DoSelectedItemsClear(bool bDeleted)
 {
-	size_t iSelectedCount = m_hashSelectedItem.size();
-	std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
-	while(iTer != m_hashSelectedItem.end())
+	if(!bDeleted)
 	{
-		SELITEM_INFO _Info = iTer->second;
-		CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
+		std::unordered_map<int, SELITEM_INFO>::iterator iTer = m_hashSelectedItem.begin();
+		while(iTer != m_hashSelectedItem.end())
+		{
+			SELITEM_INFO _Info = iTer->second;
+			CDirData* data = (CDirData *)&m_itemList.at(_Info.m_iSelIndex);
 
-		data->SetItemSelected(false);
-		iTer++;
+			data->SetItemSelected(false);
+			iTer++;
+		}
 	}
 
 	m_hashSelectedItem.clear();
@@ -1849,10 +1870,10 @@ void CListView::DisplayContextMenu(const wxPoint& pt)
 		while(iter != m_hashSelectedItem.end())
 		{
 			SELITEM_INFO _ItemInfo = iter->second;
-			int iSelItem = _ItemInfo.m_iSelIndex;
+		//	int iSelItem = _ItemInfo.m_iSelIndex;
 
-			CDirData selItem = m_itemList.at(iSelItem);
-			arrString.Add(selItem.GetFullPath());
+		//	CDirData selItem = m_itemList.at(iSelItem);
+			arrString.Add(_ItemInfo.m_strFullPath);//selItem.GetFullPath());
 
 			iter++;
 		}
@@ -1915,8 +1936,8 @@ void CListView::ExecFileEditProgram()
 		while(fIter != m_hashSelectedItem.end())
 		{
 			SELITEM_INFO _info = fIter->second;
-			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
-			if(itemSel.IsDir())
+		//	CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
+			if(!_info.m_bFile)//itemSel.IsDir())
 			{
 				bIncludedDir = true;
 				break;
@@ -2107,6 +2128,7 @@ void CListView::DoSelectAllOrRelease(const wxEventType& evtType)
 				SELITEM_INFO _Info;
 				_Info.m_iSelIndex = iIndex;
 				_Info.m_bFile = fIter->IsFile();
+				_Info.m_strFullPath = fIter->GetFullPath();
 
 				std::unordered_map<int, SELITEM_INFO>::value_type valsel(iIndex, _Info);
 				m_hashSelectedItem.insert(valsel);
@@ -2188,9 +2210,9 @@ void CListView::OnCompress(wxCommandEvent& event)
 		while(fIter != m_hashSelectedItem.end())
 		{
 			SELITEM_INFO _info = fIter->second;
-			CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
+		//	CDirData itemSel = m_itemList.at(_info.m_iSelIndex);
 
-			vCompressDatas.emplace_back(itemSel.GetFullPath());
+			vCompressDatas.emplace_back(_info.m_strFullPath);//itemSel.GetFullPath());
 			fIter++;
 		}
 

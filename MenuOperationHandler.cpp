@@ -361,7 +361,7 @@ void CMenuOperationHandler::DoDeleteTrash(_MENU_EVENT_TYPE _menuType)
 		return;
 	}
 
-	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems();
+	theSplitterManager->GetActiveTab()->GetActiveViewPanel()->ClearSelectedItems(true);
 }
 
 void CMenuOperationHandler::DoCMDExecute()

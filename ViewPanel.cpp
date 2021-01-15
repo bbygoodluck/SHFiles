@@ -130,14 +130,19 @@ void CViewPanel::TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxSt
 			m_pDetailInfoView->SetDetailInfo(strInfo);
 			break;
 
+		case TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_SET:
+		case TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_UPDATE:
+			m_pDetailInfoView->DisplayDiskSpaceInfo(strInfo, (_transferType == TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_UPDATE ? true : false));
+			break;
+
 		default:
 			break;
 	}
 }
 
-void CViewPanel::ClearSelectedItems()
+void CViewPanel::ClearSelectedItems(bool bDeleted)
 {
-	m_pFileListView->DoSelectedItemsClear();
+	m_pFileListView->DoSelectedItemsClear(bDeleted);
 	theCommonUtil->RefreshWindow(m_pFileListView.get(), m_pFileListView->m_viewRect);
 }
 

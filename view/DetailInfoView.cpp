@@ -5,13 +5,12 @@ const int COUNT_GAP = 12;
 const int POS_TOP	= 3;
 const int DISKSPACE_START = 150;
 
-BEGIN_EVENT_TABLE(CDetailInfoView, wxWindow)
+wxBEGIN_EVENT_TABLE(CDetailInfoView, wxWindow)
 	EVT_PAINT(CDetailInfoView::OnPaint)
 	EVT_SIZE(CDetailInfoView::OnSize)
 	EVT_ERASE_BACKGROUND(CDetailInfoView::OnErase)
 	EVT_MOTION(CDetailInfoView::OnMouseMove)
-//	EVT_MY_CUSTOM_COMMAND(wxEVT_DISPLAY_DISKSPACE_ON_DETAILVIEW,     wxID_ANY, CDetailInfoView::OnDiskSpaceDisplay)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 CDetailInfoView::CDetailInfoView()
 	: m_viewRect(0, 0, 0, 0)
@@ -119,100 +118,59 @@ void CDetailInfoView::OnErase(wxEraseEvent& event)
 }
 
 void CDetailInfoView::Display(wxDC* pDC)
-{	
+{
+	int iDispWidth = 0;
 	pDC->DrawIcon(m_icoInfo, 5, POS_TOP);
+	iDispWidth += 40;
 
-	wxRect rcFillRect(m_viewRect);
-
-	if(!m_strSelectedItemInfo.IsEmpty())
-	{
-		wxSize szSelItem = pDC->GetTextExtent(m_strSelectedItemInfo);
-
-		rcFillRect.SetLeft(m_viewRect.GetRight() - (szSelItem.GetWidth() + 10 + DISKSPACE_START));
-		rcFillRect.SetTop(m_viewRect.GetTop() + 2);
-		rcFillRect.SetRight(m_viewRect.GetRight() - (2 + DISKSPACE_START));
-		rcFillRect.SetBottom(m_viewRect.GetBottom() - 2);
-
-	//	pDC->SetTextForeground(*wxBLACK);
-		pDC->SetTextForeground(wxColour(0, 64, 128));
-		pDC->DrawLabel(m_strSelectedItemInfo, rcFillRect, wxALIGN_LEFT);
-	}
-
-	wxRect rcSelItem(m_viewRect);
-	rcSelItem.SetLeft(30);
-
-	if (!m_strSelectedItemInfo.IsEmpty())
-		rcSelItem.SetRight(rcFillRect.GetLeft() - 5);
-	else
-		rcSelItem.SetRight(m_viewRect.GetRight() - (2 + DISKSPACE_START));
-
-	m_strSelItemDisp = CalcDispStr(pDC, m_strItemInfo, m_strItemInfo, rcSelItem.GetWidth());
-	/*
-	std::map<wxString, wxString>::const_iterator fIter = m_dispNameInfoMap.find(m_strItemInfo);
-	if (fIter != m_dispNameInfoMap.end())
-		m_strSelItemDisp = fIter->second;
-	else
-	{
-		m_strSelItemDisp = theCommonUtil->GetEllipseString(pDC, m_strItemInfo, rcSelItem.GetWidth());
-	}
-
-//	wxString strSelItemDisp = theCommonUtil->GetEllipseString(pDC, m_strItemInfo, rcSelItem.GetWidth());
-*/
-	pDC->SetTextForeground(*wxBLACK);//_gAppConfig.getInfoViewTextColor());
-	pDC->DrawText(m_strSelItemDisp, 30, POS_TOP);
-	/*
 	if (m_dblFreeSpace != 0.0)
 	{
-		wxPen pen(wxColour(128, 128, 128));
-		wxBrush brush(wxColour(128, 128, 128));
+		wxPen pen(wxColour(100, 100, 100));
+		wxBrush brush(wxColour(192, 192, 192));
 
-		wxRect rcDiskSpace(m_viewRect);
-		rcDiskSpace.SetLeft(m_viewRect.GetRight() - DISKSPACE_START);
-		rcDiskSpace.SetTop(m_viewRect.GetTop() + 2);
-		rcDiskSpace.SetRight(m_viewRect.GetRight() - 2);
-		rcDiskSpace.SetBottom(m_viewRect.GetBottom() - 2);
-
-		m_DiskSpaceRect = rcDiskSpace;
-
+		wxRect rcDiskSpace(m_viewRect.GetLeft() + 25, POS_TOP, m_nDiskspaceWidth, m_viewRect.GetHeight() - (POS_TOP * 2));
 		pDC->SetPen(pen);
 		pDC->SetBrush(brush);
 		pDC->DrawRectangle(rcDiskSpace);
 
 		double dblTotalWidth = rcDiskSpace.GetWidth() * 1.0;
 		double dblUsed = m_dblTotalSpace - m_dblFreeSpace;
-		
-	//	double dblFreeWidth = (m_dblFreeSpace * dblTotalWidth) / m_dblTotalSpace;
-		double dblUsedWidth = (dblUsed * dblTotalWidth) / m_dblTotalSpace;
 
-		wxPen penFree(wxColour(128, 128, 128));
-		wxBrush brushFree(*wxBLUE);// wxColour(0, 128, 128));
+		int iUsedWidth = (int)((dblUsed * dblTotalWidth) / m_dblTotalSpace);
 
-		wxRect rcFreeSpace(m_viewRect);
-		rcFreeSpace.SetLeft(m_viewRect.GetRight() - DISKSPACE_START);
-		rcFreeSpace.SetTop(m_viewRect.GetTop() + 2);
-		rcFreeSpace.SetRight(rcFreeSpace.GetLeft() + (int)dblUsedWidth);
-		rcFreeSpace.SetBottom(m_viewRect.GetBottom() - 2);
+		wxPen penUsed(wxColour(100, 100, 100));
+		wxBrush brushUsed(wxColour(100, 100, 100));
+		wxRect rcDiskSpaceUsed(m_viewRect.GetLeft() + 25, POS_TOP, iUsedWidth, m_viewRect.GetHeight() - ((POS_TOP * 2) + 1));
 
-		pDC->SetPen(penFree);
-		pDC->SetBrush(brushFree);
-		pDC->DrawRectangle(rcFreeSpace);
+		pDC->SetPen(penUsed);
+		pDC->SetBrush(brushUsed);
+		pDC->DrawRectangle(rcDiskSpaceUsed);
 
-		wxString strUsedSpace = wxString::Format(wxT("%04.1f GB"), (dblUsed / GIGABYTE));
+		wxPen penLine(wxColour(255, 255, 255));
+		pDC->SetPen(penLine);
 
-		m_pToolTip->SetTip(strUsedSpace + wxT(" ") + theMsgManager->GetMessage(wxT("MSG_DISK_USED")));
-		
-		pDC->SetTextForeground(wxColour(220, 220, 220));//_gAppConfig.getInfoViewTextColor());
-		pDC->DrawLabel(m_strDispDiskSpace, rcDiskSpace, wxALIGN_CENTER);
+		pDC->DrawLine(rcDiskSpace.GetLeft(), rcDiskSpace.GetBottom(), rcDiskSpace.GetRight() + 1, rcDiskSpace.GetBottom());
+		pDC->DrawLine(rcDiskSpace.GetRight(), rcDiskSpace.GetTop(), rcDiskSpace.GetRight(), rcDiskSpace.GetBottom());
+
+		pDC->SetTextForeground(wxColour(0, 0 ,0));
+		pDC->DrawText(m_strDispDiskSpace, rcDiskSpace.GetRight() + 5, POS_TOP);
+
+		iDispWidth += rcDiskSpace.GetWidth();
+		wxSize szDiskSpace = pDC->GetTextExtent(m_strDispDiskSpace);
+
+		iDispWidth += szDiskSpace.GetWidth();
 	}
-	*/
+
+	if(!m_strItemInfo.IsEmpty())
+	{
+		wxRect rcFillRect(m_viewRect.GetLeft() + iDispWidth, POS_TOP, m_viewRect.GetWidth() - iDispWidth, m_viewRect.GetHeight());
+		pDC->SetTextForeground(wxColour(0, 0, 0));
+		wxString strDispDetail = theCommonUtil->GetEllipseString(pDC, m_strItemInfo, rcFillRect.GetWidth());
+
+		pDC->DrawLabel(strDispDetail, rcFillRect, wxALIGN_LEFT);
+	}
 }
 
-/*
-void CDetailInfoView::OnErase(wxEraseEvent& event)
-{
-
-}
-*/
 void CDetailInfoView::OnSize(wxSizeEvent& event)
 {
 	m_bSizeChanged = true;
@@ -230,50 +188,6 @@ void CDetailInfoView::OnSize(wxSizeEvent& event)
 		m_pDoubleBuffer = new wxBitmap(m_szChagned.x, m_szChagned.y);
 	}
 
-	theCommonUtil->RefreshWindow(this, m_viewRect);
-}
-
-void CDetailInfoView::OnDetailInfoView(wxCommandEvent& event)
-{
-	m_strItemInfo = event.GetString();
-	theCommonUtil->RefreshWindow(this, m_viewRect);
-}
-
-void CDetailInfoView::OnSelectedItemDisplay(wxCommandEvent& event)
-{
-	m_strSelectedItemInfo = event.GetString();
-	theCommonUtil->RefreshWindow(this, m_viewRect);
-}
-
-void CDetailInfoView::OnDiskSpaceDisplay(wxCommandEvent& event)
-{
-	m_dblFreeSpace = 0.0;
-	m_dblTotalSpace = 0.0;
-
-	m_strCurrentDrive = event.GetString();
-	if (wxIsReadable(m_strCurrentDrive))
-	{
-		int iDriveType = theDriveInfo->GetDriveType(m_strCurrentDrive);
-
-		if (//(iDriveType != wxFS_VOL_FLOPPY) &&
-			(iDriveType != wxFS_VOL_CDROM) &&
-			(iDriveType != wxFS_VOL_DVDROM))
-		{
-			wxString strTotalSpace(wxT(""));
-			wxString strFreeSpace(wxT(""));
-
-			theDriveInfo->GetDiskSpace(m_strCurrentDrive, m_dblTotalSpace, m_dblFreeSpace);
-
-			m_strTotalSpace = wxString::Format(wxT("%04.1f GB"), (m_dblTotalSpace / GIGABYTE));
-			m_strFreeSpace = wxString::Format(wxT("%04.1f GB"), (m_dblFreeSpace / GIGABYTE));
-
-			m_strDispDiskSpace = m_strFreeSpace + wxT(" ") + theMsgManager->GetMessage(wxT("MSG_DISK_FREE")) + wxT(" / ") + m_strTotalSpace;
-		}
-		else
-			m_strDispDiskSpace = wxT("0.0 GB / 0.0 GB");
-	}
-
-//	RefreshWindow();
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -298,5 +212,55 @@ void CDetailInfoView::SetSelectedItemInfo(const wxString& strSelectedItemInfo)
 void CDetailInfoView::SetDetailInfo(const wxString& strDetailInfo)
 {
 	m_strItemInfo = strDetailInfo;
+	theCommonUtil->RefreshWindow(this, m_viewRect);
+}
+
+void CDetailInfoView::DisplayDiskSpaceInfo(const wxString& strDrive, bool bUpdate)
+{
+	bool _bUpdate = bUpdate;
+	if(!bUpdate)
+	{
+		if(m_strCurrentDrive.IsEmpty() || theCommonUtil->Compare(m_strCurrentDrive, strDrive) != 0)
+		{
+			m_strCurrentDrive = strDrive;
+			_bUpdate = true;
+		}
+	}
+
+	if(!_bUpdate)
+		return;
+
+	if (wxIsReadable(m_strCurrentDrive))
+	{
+		int iDriveType = theDriveInfo->GetDriveType(m_strCurrentDrive);
+
+		if ((iDriveType != wxFS_VOL_CDROM) &&
+			(iDriveType != wxFS_VOL_DVDROM))
+		{
+			wxString strTotalSpace(wxT(""));
+			wxString strFreeSpace(wxT(""));
+
+			theDriveInfo->GetDiskSpace(m_strCurrentDrive, m_dblTotalSpace, m_dblFreeSpace);
+
+			double dblFreePrecent = m_dblFreeSpace * 100.0 / m_dblTotalSpace;
+
+			m_strTotalSpace = wxString::Format(wxT("%04.2f GB"), (m_dblTotalSpace / GIGABYTE));
+			m_strFreeSpace = wxString::Format(wxT("%04.2f GB"), (m_dblFreeSpace / GIGABYTE));
+
+			m_strDispDiskSpace = m_strCurrentDrive;
+			m_strDispDiskSpace += wxT(" ");
+			m_strDispDiskSpace += m_strFreeSpace;
+			m_strDispDiskSpace += wxString::Format(wxT("(%.2f%) "), dblFreePrecent);
+			m_strDispDiskSpace += theMsgManager->GetMessage(wxT("MSG_DISK_FREE"));
+			m_strDispDiskSpace += wxT(" (");
+			m_strDispDiskSpace += theMsgManager->GetMessage(wxT("MSG_DISK_TOTAL"));
+			m_strDispDiskSpace += wxT(" ");
+			m_strDispDiskSpace += m_strTotalSpace;
+			m_strDispDiskSpace += wxT(")");
+		}
+		else
+			m_strDispDiskSpace = wxT("");
+	}
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }

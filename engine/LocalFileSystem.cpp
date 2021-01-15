@@ -389,7 +389,7 @@ bool CLocalFileSystem::IsCheckedFileOpen(const wxString& strFullPathName)
 
 #ifdef __WXMSW__
 	HANDLE hFile = CreateFile(CONVSTR(strFullPathName)
-						, 0x10000 //DELETE
+						, 0x10000//FILE_READ_ATTRIBUTES //0x10000 //DELETE
 						, FILE_SHARE_DELETE
 						, NULL
 						, OPEN_EXISTING

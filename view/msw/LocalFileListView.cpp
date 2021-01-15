@@ -140,6 +140,8 @@ void CLocalFileListView::LoadDir(const wxString& strPath)
 
 	m_iHistoryIndex = 0;
 	m_iHistoryStartIndex = 0;
+
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_SET, m_strVolume);
 }
 
 bool CLocalFileListView::ReadDirectory()
@@ -387,6 +389,7 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	m_bIsDisplayDetailInfo = false;
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_UPDATE, m_strVolume);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
 
 	theCommonUtil->RefreshWindow(this, m_viewRect);
@@ -443,6 +446,7 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 	m_bIsDisplayDetailInfo = false;
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
+	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DISK_SIZE_TO_DETAILVIEW_UPDATE, m_strVolume);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
 
 	theCommonUtil->RefreshWindow(this, m_viewRect);

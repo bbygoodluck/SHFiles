@@ -225,6 +225,7 @@
 	"MSG_DLG_COPY_MOVE_ANOTHER_OPTION"         : "다른창으로 복사(또는 이동)",
 	"MSG_DLG_COPY_MOVE_CANCEL"                 : "취소시에는 복사(또는 이동) 프로세스가 취소됩니다.",
 	"MSG_DLG_COPY_MOVE_USE_ANOTHER_PG"         : "%s 는(은) 다른 프로세스가 사용중이므로 복사(또는 이동) 할수 없습니다.!!\n복사(또는 이동)을 종료하시겠습니까?\n\n(아니오 선택시 해당파일만 제외되고 계속 진행됩니다.!)",
+	"MSG_DISK_TOTAL"                           : "전체",
 	"MSG_DISK_FREE"                            : "남음",
 	"MSG_DISK_USED"                            : "가 사용중입니다.",
 	"MSG_DLG_SCD_REFRESH_ALL"                  : "새로고침(F5)",

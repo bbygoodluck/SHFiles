@@ -119,7 +119,6 @@ wxThread::ExitCode CImageMap::Entry()
 
 			int iItemStartIndex = m_pListView->m_nStartIndex;
 			wxString strItemName = m_pListView->m_itemList.at(iItemStartIndex).GetName();
-
 			if(!IsExistIcon(strItemName))
 				continue;
 

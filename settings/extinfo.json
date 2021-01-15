@@ -186,5 +186,21 @@
     "32801000": "파일",
     "67901000": "파일",
     "891B2100": "파일",
-    "8E4F2100": "파일"
+    "8E4F2100": "파일",
+    "NEW 11": "파일",
+    "JPG": "JPG 파일",
+    "PREFS": "PREFS 파일",
+    "HTML": "HTML 문서",
+    "ORA": "ORA 파일",
+    "ADI": "ADI 파일",
+    "NPJ": "NPJ 파일",
+    "KNT": "KNT 파일",
+    "DEF": "DEF 파일",
+    "EPF": "EPF 파일",
+    "KEY": "KEY 파일",
+    "TDL": "Tasklist",
+    "ML": "ML 파일",
+    "TREEDB": "TREEDB 파일",
+    "PST": "Outlook 데이터 파일",
+    "권한": "파일"
 }

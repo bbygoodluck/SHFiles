@@ -2,7 +2,7 @@
 #define _INFO_DISPLAY_VIEW_H
 /********************************************************************************
 // class Name : CInfoDisplayView
-// ¼³      ¸í : ¼±ÅÃÇÑ ÆÄÀÏ(¶Ç´Â Æú´õ)ÀÇ »ó¼¼ Á¤º¸ º¸±â
+// 설      명 : 선택한 파일(또는 폴더)의 상세 정보 보기
 *********************************************************************************/
 #include <wx/tooltip.h>
 class CDetailInfoView : public wxWindow
@@ -15,6 +15,7 @@ public:
 public:
 	void SetDetailInfo(const wxString& strDetailInfo);
 	void SetSelectedItemInfo(const wxString& strSelectedItemInfo);
+	void DisplayDiskSpaceInfo(const wxString& strDrive, bool bUpdate = false);
 
 private:
 	wxFont m_font;
@@ -44,6 +45,7 @@ private:
 	bool m_bSizeChanged;
 	wxSize m_szChagned;
 
+	int m_nDiskspaceWidth = 70;
 private:
 	void Display(wxDC* pDC);
 	wxString CalcDispStr(wxDC* pDC, const wxString& strSourceSave, const wxString& strSource, int iDispWidth);
@@ -53,10 +55,7 @@ private:
 	void OnSize(wxSizeEvent& event);
 	void OnErase(wxEraseEvent& event);
 	void OnMouseMove(wxMouseEvent& event);
-	void OnDetailInfoView(wxCommandEvent& event);
-	void OnSelectedItemDisplay(wxCommandEvent& event);
-	void OnDiskSpaceDisplay(wxCommandEvent& event);
 
-	DECLARE_EVENT_TABLE()
+	wxDECLARE_EVENT_TABLE();
 };
 #endif

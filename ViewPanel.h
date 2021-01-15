@@ -17,27 +17,27 @@ public:
 	void Init(const wxString& strPath, bool bRemote = false);
 	void SetActivateView();
 	void SetActivateColumnChanged();
-	
+
 	wxString GetCurrentViewPath() { return m_pFileListView->m_strCurrentPath; }
 	wxString GetCurrentItem();
-	
-	void ClearSelectedItems();
+
+	void ClearSelectedItems(bool bDeleted = false);
 	int GetSelectedItemCount()
 	{
 		int iSelectedCount = m_pFileListView->m_hashSelectedItem.size();
 		return iSelectedCount == 0 ? 1 : iSelectedCount;
 	}
-		
+
 	bool GetSelectedItemForCopyOrMove(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems);
 	bool GetDeleteItems(std::list<wxString>& lstDatas, bool bTrash);
-	
+
 	CListView* GetListView() { return m_pFileListView.get(); }
-	
+
 	void DoMyEventExecuteToView(wxEventType evtType, const wxString& strInfo = wxT(""));
 	void TransferInfomation(TRANSFER_PATH_TYPE _transferType, const wxString& strInfo = wxT(""));
 	void ReloadPathOfView(const wxString& strPathInfo = wxT(""));
 	void ShowCompressMenu();
-	
+
 private:
 	wxBoxSizer* m_Mainsizer;
 	wxString	m_strPath;

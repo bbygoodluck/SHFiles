@@ -31,6 +31,7 @@ class CListView : public wxWindow
 protected:
 	typedef struct _SELITEM_INFO {
 		int m_iSelIndex;
+		wxString m_strFullPath;
 		bool m_bFile;
 	} SELITEM_INFO;
 
@@ -65,7 +66,7 @@ public:
 	wxString GetCurrentPath() {	return m_strCurrentPath; }
 	wxString GetCurrentItem();
 
-	void DoSelectedItemsClear();
+	void DoSelectedItemsClear(bool bDeleted = false);
 	//FileSystemWatcher 함수들..
 	virtual void DoCreate(const wxString& strName) = 0;
 	virtual void DoModify(const wxString& strName) = 0;
