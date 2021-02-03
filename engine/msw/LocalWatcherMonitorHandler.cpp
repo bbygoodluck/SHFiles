@@ -57,6 +57,9 @@ void CLocalWatcherMonitorHandler::OnFileSystemWatchEvent(wxCommandEvent& event)
 
 void CLocalWatcherMonitorHandler::DoWatchProcess(bool bSetTimer)
 {
+	if(m_pLCWatcher->IsQueueEmpty())
+		return;
+
 	while (!m_pLCWatcher->IsQueueEmpty())
 	{
 		CFileSystemWatcherBase::WATCHDIR_INFO info = m_pLCWatcher->GetWatchItem();

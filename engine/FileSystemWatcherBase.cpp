@@ -3,17 +3,17 @@
 
 CFileSystemWatcherBase::CFileSystemWatcherBase()
 {
-	
+
 }
 
 CFileSystemWatcherBase::~CFileSystemWatcherBase()
 {
-	
+
 }
 
 void CFileSystemWatcherBase::DoWatchDirectory()
 {
-	
+
 	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
 	{
 		wxMessageBox(wxT("Could not create the worker thread!"), PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
@@ -41,3 +41,30 @@ int CFileSystemWatcherBase::Native2WatcherFlags(int flags)
 
 	return -1;
 }
+
+#if !defined(NDEBUG)
+void CFileSystemWatcherBase::DoDisplayWatchLog(int iAction, const wxString& strOldName, const wxString& strNewName)
+{
+	switch(iAction)
+	{
+		case FILE_ACTION_ADDED:
+			theCommonUtil->LogDisplay(wxT("FILE_ACTION_ADDED : ") + strNewName);
+			break;
+
+		case FILE_ACTION_REMOVED:
+			theCommonUtil->LogDisplay(wxT("FILE_ACTION_REMOVED : ") + strNewName);
+			break;
+
+		case FILE_ACTION_MODIFIED:
+			theCommonUtil->LogDisplay(wxT("FILE_ACTION_MODIFIED : ") + strNewName);
+			break;
+
+		case FILE_ACTION_RENAMED_NEW_NAME:
+			theCommonUtil->LogDisplay(wxT("FILE_ACTION_RENAMED_NEW_NAME : ") + strOldName + wxT(" -> ") + strNewName);
+			break;
+
+		default:
+			break;
+	}
+}
+#endif

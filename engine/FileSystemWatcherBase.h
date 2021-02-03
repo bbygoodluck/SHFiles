@@ -61,6 +61,10 @@ public:
 	void QueuePop() { m_queue.pop(); }
 	void SetOwner(wxEvtHandler* evtHandler) { m_evtHandler = evtHandler; }
 
+#if !defined(NDEBUG)
+protected:
+	void DoDisplayWatchLog(int iAction, const wxString& strOldName, const wxString& strNewName);
+#endif
 protected:
 	virtual wxThread::ExitCode Entry() = 0;
 	virtual void Clear() = 0;

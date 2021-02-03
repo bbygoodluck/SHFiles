@@ -242,6 +242,8 @@ protected:
 	//파일 생성(FileWatcher)
 	bool m_bCreatedWatch = false;
 	bool m_bItemAttributeOnWatchCreated = false;
+	//2021.01.22 Added
+	bool m_bClipboardMove = false;
 	//파일/폴더 이미지리스트
 	CImageMap* m_pImageMap = nullptr;
 	CViewPanel* m_pViewPanel;

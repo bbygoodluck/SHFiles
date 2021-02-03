@@ -306,6 +306,12 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 
 		strExt = theCommonUtil->GetExt(strName);
 		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
+
+		if(m_bClipboardMove)
+		{
+			m_dblFileSizeInDir += llSize.ToDouble();
+			m_bClipboardMove = false;
+		}
 	}
 
 	dirItem.SetAttribute(lattr);

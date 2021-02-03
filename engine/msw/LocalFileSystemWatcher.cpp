@@ -100,7 +100,7 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 	BOOL bResult = TRUE;
 
 	const int bufferSize = MAX_PATH * 4;
-	TCHAR buf[bufferSize] = { 0 };
+	TCHAR buf[bufferSize] = { 0, };
 
 	BOOL bResultQ = FALSE;
 	BOOL bResultR = FALSE;
@@ -142,36 +142,24 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 		if (bResultR && bResultQ)
 		{
 			wxString strOldName(wxT(""));
-			wxString strNewName(wxT(""));
-
 			PFILE_NOTIFY_INFORMATION pNotify = (PFILE_NOTIFY_INFORMATION)m_watchDir.m_Buffer;
-			bool bCanRead = true;
-			if ((ULONG_PTR)pNotify - (ULONG_PTR)m_watchDir.m_Buffer > bufferSize)
-				bCanRead = false;
-
-			if (!bCanRead)
-				continue;
-
-			DWORD dwOffset = pNotify->NextEntryOffset;
-
+			DWORD dwOffset;
 			do
 			{
 				dwOffset = pNotify->NextEntryOffset;
+
 				SecureZeroMemory(buf, bufferSize * sizeof(TCHAR));
 				errno_t err = wcsncat_s(buf, bufferSize, pNotify->FileName, std::min(bufferSize, int(pNotify->FileNameLength / sizeof(TCHAR))));
-				if (err == STRUNCATE)
-				{
-					pNotify = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pNotify + dwOffset);
-					continue;
-				}
-
-				buf[std::min((decltype((pNotify->FileNameLength / sizeof(WCHAR))))bufferSize - 1, (pNotify->FileNameLength / sizeof(WCHAR)))] = L'\0';
 				wxString strFileName(buf);
 				wxString strFullPath = m_watchDir.m_strDir[m_watchDir.m_strDir.Len() - 1] == SLASH[0] ? m_watchDir.m_strDir + strFileName : m_watchDir.m_strDir + SLASH + strFileName;
 
 				int iAction = Native2WatcherFlags(pNotify->Action);
 				if (pNotify->Action == FILE_ACTION_RENAMED_OLD_NAME)
 					strOldName = strFileName;
+
+			#if !defined(NDEBUG)
+				DoDisplayWatchLog(pNotify->Action, strOldName, strFileName);
+			#endif // NDEBUG
 
 				if ((iAction != -1) && (pNotify->Action != FILE_ACTION_RENAMED_OLD_NAME))
 				{
@@ -180,9 +168,6 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 				}
 
 				pNotify = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pNotify + dwOffset);
-				if ((ULONG_PTR)pNotify - (ULONG_PTR)m_watchDir.m_Buffer > bufferSize)
-					break;
-
 			} while (dwOffset);
 
 			SecureZeroMemory(m_watchDir.m_Buffer, sizeof(m_watchDir.m_Buffer));
@@ -195,6 +180,7 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 		//	wxPostEvent(m_evtHandler, evt);
 
 		//	Lock();
+
 		}
 	}
 

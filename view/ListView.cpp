@@ -1635,6 +1635,9 @@ bool CListView::SetSelectedItem(int iKeyCode)
 
 void CListView::MakeCopyOrMoveList(bool bUseClipboard, bool bMove, std::list<wxString>& lstItems)
 {
+	if(bUseClipboard && bMove)
+		m_bClipboardMove = true;
+
 	int iSelectedItems = m_hashSelectedItem.size();
 	if (iSelectedItems != 0)
 	{
@@ -1815,6 +1818,8 @@ void CListView::DoSelectedItemsClear(bool bDeleted)
 			data->SetItemSelected(false);
 			iTer++;
 		}
+
+		theCommonUtil->RefreshWindow(this, m_viewRect);
 	}
 
 	m_hashSelectedItem.clear();

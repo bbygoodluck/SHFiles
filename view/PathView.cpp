@@ -18,7 +18,7 @@ wxEND_EVENT_TABLE()
 
 CPathView::CPathView()
 {
-	
+
 }
 
 CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const wxSize& sz, long lStyle)
@@ -27,12 +27,12 @@ CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const w
 {
 	wxBitmap bmpDrive = wxArtProvider::GetBitmap(wxART_FLOPPY, wxART_OTHER, wxSize(16, 16));
 	m_icoDrive.CopyFromBitmap(bmpDrive);
-	
+
 	m_bitmapNext = wxBitmap(path_next, wxBITMAP_TYPE_XPM);
 	m_bitmapNext.SetMask(new wxMask(m_bitmapNext, *wxLIGHT_GREY));
 
 	m_bitmapNextDisable = m_bitmapNext.ConvertToDisabled(230);
-	
+
 	m_pToolTip = new wxToolTip(wxT(""));
 	this->SetToolTip(m_pToolTip);
 
@@ -41,17 +41,17 @@ CPathView::CPathView(wxWindow* parent, const int nID, const wxPoint& pt, const w
 #else
 	m_font = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
 #endif
-	
+
 	m_pTxtCtrl = std::make_unique<wxTextCtrl>(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxBORDER_THEME);
 	m_pTxtCtrl->SetBackgroundColour(wxColour(240, 240, 220));
 	m_pTxtCtrl->SetBackgroundStyle(wxBG_STYLE_PAINT);
 	m_pTxtCtrl->SetFont(m_font);
 	m_pTxtCtrl->Show(false);
-	
+
 	m_pTxtCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CPathView::OnKeyDownTextCtrl), NULL, this);
 	m_pTxtCtrl->Connect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CPathView::OnEnterTextCtrl), NULL, this);
 	m_pTxtCtrl->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CPathView::OnKillFocusTxtCtrl), NULL, this);
-	
+
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	Init();
 }
@@ -61,12 +61,12 @@ CPathView::~CPathView()
 	ClearPathItems();
 	wxVector<CPathItemData>().swap(m_vecPathDatas);
 	m_vecPathDatas.reserve(0);
-	
+
 	if (m_pDoubleBuffer)
 		delete m_pDoubleBuffer;
-		
+
 	m_pDoubleBuffer = nullptr;
-	
+
 	m_pTxtCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(CPathView::OnKeyDownTextCtrl), NULL, this);
 	m_pTxtCtrl->Disconnect(wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler(CPathView::OnEnterTextCtrl), NULL, this);
 	m_pTxtCtrl->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(CPathView::OnKillFocusTxtCtrl), NULL, this);
@@ -85,11 +85,11 @@ void CPathView::Init()
 #ifdef __WXMSW__
 	AddDriveItem();
 #endif
-	
+
 	m_iRED   = 208;
 	m_iGREEN = 208;
 	m_iBLUE  = 232;
-	
+
 	m_iPrevItemIndex = -1;
 }
 
@@ -101,19 +101,19 @@ void CPathView::AddDriveItem()
 	pItem.m_rcDisp = wxRect(1, 0, 25, 20);
 	pItem.m_ptPolygon[0].x = 1;
 	pItem.m_ptPolygon[0].y = 0;
-	
+
 	pItem.m_ptPolygon[1].x = 20;
 	pItem.m_ptPolygon[1].y = 0;
-	
+
 	pItem.m_ptPolygon[2].x = 25;
 	pItem.m_ptPolygon[2].y = 10;
-	
+
 	pItem.m_ptPolygon[3].x = 20;
 	pItem.m_ptPolygon[3].y = 20;
-	
+
 	pItem.m_ptPolygon[4].x = 1;
 	pItem.m_ptPolygon[4].y = 20;
-	
+
 	pItem.m_ptPolygon[5].x = 1;
 	pItem.m_ptPolygon[5].y = 0;
 
@@ -123,7 +123,7 @@ void CPathView::AddDriveItem()
 
 void CPathView::OnErase(wxEraseEvent& event)
 {
-	
+
 }
 
 void CPathView::OnPaint(wxPaintEvent& event)
@@ -162,9 +162,9 @@ void CPathView::Renderer(wxDC* pDC)
 	pDC->DrawLine(wxPoint(m_viewRect.GetLeft(), m_viewRect.GetTop()), wxPoint(m_viewRect.GetLeft(), m_viewRect.GetBottom() + 1));
 	pDC->DrawLine(wxPoint(m_viewRect.GetRight(), m_viewRect.GetTop()), wxPoint(m_viewRect.GetRight(), m_viewRect.GetBottom() + 1));
 
-	if(m_bChangedPath) 
+	if(m_bChangedPath)
 		CalcPathPolygon(pDC);
-	
+
 	DisplayPathItem(pDC);
 
 	pDC->SetFont(wxNullFont);
@@ -183,7 +183,7 @@ void CPathView::Renderer(wxDC* pDC)
 		pDC->DrawBitmap(m_bitmapNext, m_bmpRect.GetLeft(), m_bmpRect.GetTop(), true);
 
 	}
-	
+
 	m_bChangedPath = false;
 }
 
@@ -260,7 +260,7 @@ void CPathView::AddPathPolygon(wxDC* pDC, const wxString& strPath, int iPrevInde
 	{
 		if (!m_bNextPath)
 			m_bNextPath = true;
-	
+
 		m_iDepthCount++;
 	}
 	else
@@ -278,7 +278,7 @@ void CPathView::DisplayPathItem(wxDC* pDC)
 
 	int xPos = 0;
 	int yPos = 0;
-	
+
 	m_iDispWidth = 0;
 	int iDispWidth = 0;
 
@@ -290,7 +290,7 @@ void CPathView::DisplayPathItem(wxDC* pDC)
 
 		wxPen pen(wxColour(0, 0, 0));
 		wxBrush brush;
-		
+
 		pDC->SetTextForeground(wxColour(0, 0, 0));
 
 		if (m_iMouseOverIndex == iIndex)
@@ -326,13 +326,13 @@ void CPathView::DisplayPathItem(wxDC* pDC)
 		}
 	}
 }
-	
+
 void CPathView::OnSize(wxSizeEvent& event)
 {
 	wxSize size = event.GetSize();
 	if ((size.x == 0) || (size.y == 0))
 		return;
-		
+
 	if (m_szChagned.x != size.x)
 	{
 		m_szChagned = size;
@@ -341,7 +341,7 @@ void CPathView::OnSize(wxSizeEvent& event)
 
 		m_pDoubleBuffer = new wxBitmap(m_szChagned.x, m_szChagned.y);
 	}
-	
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -355,7 +355,7 @@ void CPathView::OnMouseMove(wxMouseEvent& event)
 #else
 	m_iMouseOverIndex = -1;
 #endif
-	
+
 	wxPoint ptMouse = event.GetPosition();
 	wxString strToolTipPath(wxT(""));
 
@@ -372,7 +372,7 @@ void CPathView::OnMouseMove(wxMouseEvent& event)
 				strToolTipPath = strToolTipPath.Cmp(wxT("")) == 0 ? pItem.m_strName + SLASH : strToolTipPath + pItem.m_strName;
 				m_pToolTip->SetTip(strToolTipPath);
 			}
-			
+
 			break;
 		}
 		else
@@ -381,7 +381,7 @@ void CPathView::OnMouseMove(wxMouseEvent& event)
 		if (pItem.m_strName.Cmp(wxT("")) != 0)
 			strToolTipPath += pItem.m_strName + SLASH;
 	}
-	
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
@@ -404,18 +404,18 @@ void CPathView::OnMouseLButtonClick(wxMouseEvent& event)
 			if(iIndex != m_iMouseOverIndex)
 				strNewPath += SLASH;
 		}
-		
+
 		if(!strNewPath.IsEmpty())
 		{
 			m_pViewPanel->TransferInfomation(TRANSFER_PATH_VIEW_TO_LISTVIEW, strNewPath);
 			return;
 		}
-		
+
 	#ifdef __WXMSW__
 		if(m_iMouseOverIndex == 0)
 		{
 			wxWindow* pWnd = static_cast<wxWindow *>(event.GetEventObject());
-			
+
 			//popup메뉴
 			wxMenu menuPopup;
 			wxBitmap bmp = wxArtProvider::GetBitmap(wxART_HARDDISK, wxART_OTHER, wxSize(16,16));
@@ -435,7 +435,7 @@ void CPathView::OnMouseLButtonClick(wxMouseEvent& event)
 
 			wxPoint pt = pWnd->ClientToScreen(m_rcClick.GetBottomLeft());
 			pt = ScreenToClient(pt);
-		
+
 			PopupMenu(&menuPopup, pt);
 		}
 	#endif
@@ -455,14 +455,14 @@ void CPathView::OnLeaveWindow(wxMouseEvent& event)
 {
 	m_bMouseOver = false;
 	m_iMouseOverIndex = -1;
-	
+
 	theCommonUtil->RefreshWindow(this, m_viewRect);
 }
 
 void CPathView::AddPath(const wxString& strPath)
 {
 	Init();
-	
+
 	m_bChangedPath = true;
 	m_strPath = strPath;
 	theCommonUtil->RefreshWindow(this, m_viewRect);
@@ -500,7 +500,10 @@ void CPathView::OnEnterTextCtrl(wxCommandEvent& event)
 		wxMessageBox(theMsgManager->GetMessage(wxT("MSG_READABLE_DIR_FALSE")), PROGRAM_FULL_NAME, wxICON_ERROR | wxOK);
 		return;
 	}
-	
+
+	if(theCommonUtil->Compare(strNewPath.Right(1), SLASH) == 0)
+		strNewPath = strNewPath.Left(strNewPath.Len() - 1);
+
 	m_pViewPanel->TransferInfomation(TRANSFER_PATH_VIEW_TO_LISTVIEW, strNewPath);
 	event.Skip();
 }
@@ -512,10 +515,10 @@ void CPathView::OnKeyDownTextCtrl(wxKeyEvent& event)
 	{
 		m_pTxtCtrl->SetLabelText(wxT(""));
 		m_pTxtCtrl->Show(false);
-		
+
 		m_pViewPanel->SetActivateView();
 	}
-	
+
 	event.Skip();
 }
 
@@ -523,6 +526,6 @@ void CPathView::OnKillFocusTxtCtrl(wxFocusEvent& event)
 {
 	m_pTxtCtrl->SetLabelText(wxT(""));
 	m_pTxtCtrl->Show(false);
-	
+
 	event.Skip();
 }
