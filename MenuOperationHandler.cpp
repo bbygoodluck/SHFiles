@@ -590,7 +590,10 @@ void CMenuOperationHandler::DoThisProgramIs()
 	// Set application version
 	dlg->SetVersion(PROGRAM_MAJOR_VER + wxT(".") + PROGRAM_MINOR_HI_VER + wxT(".") + PROGRAM_MINOR_LO_VER);
 	// Set copyright message
-	dlg->SetCopyright(theMsgManager->GetMessage(wxT("MSG_PROGRAMM_COPYRIGHT")));
+	wxDateTime dt = wxDateTime::Now();
+	int iYear = dt.GetYear();
+	wxString strCopyRight = wxString::Format(theMsgManager->GetMessage(wxT("MSG_PROGRAMM_COPYRIGHT")), iYear);
+	dlg->SetCopyright(strCopyRight);
 	// Set header bitmap
 	//	dlg->SetHeaderBitmap(wxGetBitmapFromMemory(header_png, sizeof(header_png)));
 

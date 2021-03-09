@@ -1708,7 +1708,7 @@ bool CListView::MakeTrashOrDeleteData(std::list<wxString>& lstDatas, bool bTrash
 
 		if (bOpenCheck)
 		{
-			wxMessageBox(strMsg + wxT(" is opened!. you can't delete operation"), wxT("Delete...."), wxICON_ERROR, this);
+			wxMessageBox(strMsg + wxT(" is opened!. you can't delete operation!"), wxT("Delete...."), wxICON_ERROR, this);
 			return false;
 		}
 

@@ -142,14 +142,30 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 		if (bResultR && bResultQ)
 		{
 			wxString strOldName(wxT(""));
+			wxString strNewName(wxT(""));
+
 			PFILE_NOTIFY_INFORMATION pNotify = (PFILE_NOTIFY_INFORMATION)m_watchDir.m_Buffer;
-			DWORD dwOffset;
+			bool bCanRead = true;
+			if ((ULONG_PTR)pNotify - (ULONG_PTR)m_watchDir.m_Buffer > bufferSize)
+				bCanRead = false;
+
+			if (!bCanRead)
+				continue;
+
+			DWORD dwOffset = pNotify->NextEntryOffset;
+
 			do
 			{
 				dwOffset = pNotify->NextEntryOffset;
-
 				SecureZeroMemory(buf, bufferSize * sizeof(TCHAR));
 				errno_t err = wcsncat_s(buf, bufferSize, pNotify->FileName, std::min(bufferSize, int(pNotify->FileNameLength / sizeof(TCHAR))));
+				if (err == STRUNCATE)
+				{
+					pNotify = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pNotify + dwOffset);
+					continue;
+				}
+
+				buf[std::min((decltype((pNotify->FileNameLength / sizeof(WCHAR))))bufferSize - 1, (pNotify->FileNameLength / sizeof(WCHAR)))] = L'\0';
 				wxString strFileName(buf);
 				wxString strFullPath = m_watchDir.m_strDir[m_watchDir.m_strDir.Len() - 1] == SLASH[0] ? m_watchDir.m_strDir + strFileName : m_watchDir.m_strDir + SLASH + strFileName;
 
@@ -163,11 +179,14 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 
 				if ((iAction != -1) && (pNotify->Action != FILE_ACTION_RENAMED_OLD_NAME))
 				{
-					WATCHDIR_INFO watchItem(iAction, strOldName, strFileName, strFullPath);
+					WatchingData watchItem(iAction, strOldName, strFileName, strFullPath);
 					m_queue.push(watchItem);
 				}
 
 				pNotify = (PFILE_NOTIFY_INFORMATION)((LPBYTE)pNotify + dwOffset);
+				if ((ULONG_PTR)pNotify - (ULONG_PTR)m_watchDir.m_Buffer > bufferSize)
+					break;
+
 			} while (dwOffset);
 
 			SecureZeroMemory(m_watchDir.m_Buffer, sizeof(m_watchDir.m_Buffer));
@@ -175,12 +194,6 @@ wxThread::ExitCode CLocalFileSystemWatcher::Entry()
 				SecureZeroMemory(&m_watchDir.PollingOverlap, sizeof(OVERLAPPED));
 			else
 				ResetEvent(m_watchDir.PollingOverlap.hEvent);
-
-		//	wxCommandEvent evt(wxEVT_FILE_SYSTEM_WATCH);
-		//	wxPostEvent(m_evtHandler, evt);
-
-		//	Lock();
-
 		}
 	}
 

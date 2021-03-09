@@ -1,6 +1,6 @@
 {
 	"MSG_PROGRAMM_DEVELOPER"                   : "배병용",
-	"MSG_PROGRAMM_COPYRIGHT"                   : "(C) 2014 - 2020",
+	"MSG_PROGRAMM_COPYRIGHT"                   : "(C) 2014 - %d",
 	"MSG_SETTING_INIT"                         : "초기화 진행중.....",
 	"MSG_ALREADY_EXEC_PROCESS"                 : "이미 프로그램이 실행중입니다.",
 	"MSG_XRC_MENU_LOAD_FAILED"                 : "메뉴읽기를 실패하였습니다.",

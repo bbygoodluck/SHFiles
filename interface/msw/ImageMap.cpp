@@ -124,8 +124,12 @@ wxThread::ExitCode CImageMap::Entry()
 
 			if (iPosTotalCount > 0 && (nPosIndex < (iPosTotalCount - 1)))
 			{	//Pos 인덱스 < 전체 포지션 - 1
-				CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
-				theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
+				int iPosSize = m_pListView->m_posList.size();
+				if((iPosSize >= 0) && (nPosIndex < iPosSize))
+				{
+					CPositionInfo posInfo = m_pListView->m_posList.at(nPosIndex);
+					theCommonUtil->RefreshWindow(m_pListView, posInfo.m_iconRect);
+				}
 
 				nPosIndex++;
 			}

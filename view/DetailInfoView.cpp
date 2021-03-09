@@ -139,7 +139,7 @@ void CDetailInfoView::Display(wxDC* pDC)
 		int iUsedWidth = (int)((dblUsed * dblTotalWidth) / m_dblTotalSpace);
 
 		wxPen penUsed(wxColour(100, 100, 100));
-		wxBrush brushUsed(wxColour(100, 100, 100));
+		wxBrush brushUsed(wxColour(44, 184, 65));
 		wxRect rcDiskSpaceUsed(m_viewRect.GetLeft() + 25, POS_TOP, iUsedWidth, m_viewRect.GetHeight() - ((POS_TOP * 2) + 1));
 
 		pDC->SetPen(penUsed);

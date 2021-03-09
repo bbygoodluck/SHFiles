@@ -1,6 +1,6 @@
 {
 	"MSG_PROGRAMM_DEVELOPER"                   : "BaeByoungYong",
-	"MSG_PROGRAMM_COPYRIGHT"                   : "(C) 2014 - 2020",
+	"MSG_PROGRAMM_COPYRIGHT"                   : "(C) 2014 - %d",
 	"MSG_SETTING_INIT"                         : "Process Initializing.....",
 	"MSG_ALREADY_EXEC_PROCESS"                 : "The program is already running...",
 	"MSG_XRC_MENU_LOAD_FAILED"                 : "Failed to menu read",

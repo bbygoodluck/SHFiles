@@ -253,14 +253,6 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 	wxDateTime dt(0.0);
 
 	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
-	bool IsOpen = false;
-	//읽기권한 체크
-	if(!isDir)
-		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
-
-	if(!bGetAttribute && !IsOpen)
-		return;
-
 	wxString strExt(wxT(""));
 	wxString strDesc(wxT(""));
 
@@ -307,11 +299,7 @@ void CLocalFileListView::DoCreate(const wxString& strName)
 		strExt = theCommonUtil->GetExt(strName);
 		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 
-		if(m_bClipboardMove)
-		{
-			m_dblFileSizeInDir += llSize.ToDouble();
-			m_bClipboardMove = false;
-		}
+		m_dblFileSizeInDir += llSize.ToDouble();
 	}
 
 	dirItem.SetAttribute(lattr);
@@ -351,6 +339,13 @@ void CLocalFileListView::DoModify(const wxString& strName)
 	#endif
 #endif // NDEBUG
 
+	//아이템이 존재하는지 체크
+	bool bExist = false;
+	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
+	//존재하지 않으면 return
+	if (!bExist)
+		return;
+
 	bool isDir = false;
 	unsigned long lattr = 0;
 	wxLongLong llSize(0);
@@ -358,31 +353,20 @@ void CLocalFileListView::DoModify(const wxString& strName)
 
 	wxString strFullPathName = MakeFullPathName(strName);
 	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
-	bool IsOpen = false;
+//	bool IsOpen = false;
 	//읽기권한 체크
-	if(!isDir)
-		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
+//	if(!isDir)
+//		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
 
-	if(!bGetAttribute && !IsOpen)
-		return;
+//	if(!bGetAttribute && !IsOpen)
+//		return;
 
-	bool bExist = false;
-	wxVector<CDirData>::iterator iter = GetItemExist(strName, bExist);
-
-	if (!bExist)
-		return;
-
-	//속성이 정상적으로 Load된 경우만 처리함
-	if(!m_bCreatedWatch)
+	// 수정전의 사이즈를 뺀다.
+	if(iter->IsFile())
 	{
-		// 수정전의 사이즈를 뺀다.
-		if(iter->IsFile())
-			m_dblFileSizeInDir -= iter->GetSize().ToDouble();
-	}
-
-	//수정후의 사이즈를 다시 더한다.
-	if(!isDir)
+		m_dblFileSizeInDir -= iter->GetSize().ToDouble();
 		m_dblFileSizeInDir += llSize.ToDouble();
+	}
 
 	iter->SetAttribute(lattr);
 	iter->SetSize(llSize);
@@ -433,6 +417,8 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 		m_iDirCount--;
 	else
 	{
+	//	bool IsRead = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
+	//	if(IsRead)
 		m_dblFileSizeInDir -= iter->GetSize().ToDouble();
 		m_iFileCount--;
 	}
@@ -474,46 +460,26 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	wxDateTime dt(0.0);
 	wxDateTime dtNow(0.0);
 
-	wxString strFullPathName = MakeFullPathName(strNewName);
-	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
-	bool IsOpen = false;
-	//읽기권한 체크
-	if(!isDir)
-		IsOpen = CLocalFileSystem::IsFileReadablePrivileges(strFullPathName);
-
-	if(!bGetAttribute && !IsOpen)
-		return;
-
-	//이름변경의 경우 기존 데이터를 삭제하고 새로운 아이템을 다시 등록하는것으로 처리함
 	bool bOldExist = false;
-	bool bNewExist = false;
+	bool bNewExist = true;
+
 	wxVector<CDirData>::iterator iterOld = GetItemExist(strOldName, bOldExist);
 	wxVector<CDirData>::iterator iterNew = GetItemExist(strNewName, bNewExist);
 
-	if(bNewExist)
+	if(bOldExist)
 	{
-		if(iterNew->IsFile())
-			m_dblFileSizeInDir -= iterNew->GetSize().ToDouble();
-
-		m_itemList.erase(iterNew);
-	}
-
-	if(!bOldExist)
-	{
-		if(!IsOpen)
-			return;
-	}
-	else
-	{
-		bool bOldIsFile = iterOld->IsFile();
-
-		if(bOldIsFile)
-			m_dblFileSizeInDir -= iterOld->GetSize().ToDouble();
-
+		m_dblFileSizeInDir -= iterOld->GetSize().ToDouble();
 		m_itemList.erase(iterOld);
 	}
 
-	m_pImageMap->AddIcon(strFullPathName, strNewName);
+	wxString strFullPathName = MakeFullPathName(strNewName);
+	bool bGetAttribute = CLocalFileSystem::GetAttributeInfo(strFullPathName, isDir, lattr, &llSize, &dt);
+
+	if(!bGetAttribute)
+		dt = wxDateTime::Now();
+
+	if(!bNewExist)
+		m_pImageMap->AddIcon(strFullPathName, strNewName);
 
 	CDirData dirItem;
 	dirItem.SetName(strNewName);
@@ -522,7 +488,6 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 	if(!isDir)
 	{
 		wxString strExt = theCommonUtil->GetExt(strNewName);
-
 		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 
 		dirItem.SetType(CDirData::item_type::file);

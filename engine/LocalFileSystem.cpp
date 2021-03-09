@@ -422,7 +422,6 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 {
 	bool bRet = true;
 #ifdef __WXMSW__
-
 	size_t len = 1; // String list terminated by empty string
 
 	for (auto const& dirItem : dirsToVisit)
@@ -475,8 +474,7 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 	}
 
 	delete[] pBuffer;
-
-	/*
+/*
 	HRESULT hr;
 	IFileOperation* pfo;
 
@@ -488,7 +486,10 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 
 	hr = CoCreateInstance(__uuidof(FileOperation), NULL, CLSCTX_ALL, IID_PPV_ARGS(&pfo));
 	if (FAILED(hr))
+	{
+		CoUninitialize();
 		return false;
+	}
 
 	for (auto const& item : dirsToVisit)
 	{
@@ -534,7 +535,8 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 				if (FAILED(hr))
 				{
 					wxMessageBox(wxT("Delete failed : ") + dir, wxT("Delete - ") + PROGRAM_FULL_NAME, wxOK | wxICON_ERROR);
-					return false;
+					bRet = false;
+				//	return false;
 				}
 			}
 		}
@@ -545,8 +547,8 @@ bool CLocalFileSystem::RecursiveDelete(const std::list<wxString>& dirsToVisit, w
 		delete[] paIDs;
 		CoUninitialize();
 	}
-	*/
-	return true;
+*/
+	return bRet;
 #else
 #endif
 }
