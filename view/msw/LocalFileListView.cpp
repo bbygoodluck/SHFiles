@@ -403,10 +403,10 @@ void CLocalFileListView::DoDelete(const wxString& strName)
 		return;
 
 	//삭제가 실패하여 실제로 데이터가 남아 있을경우는 항목제거 처리를 하지 않음
-	wxString strFullPathName = MakeFullPathName(strName);
-	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
-	if(bRealExist)
-		return;
+//	wxString strFullPathName = MakeFullPathName(strName);
+//	bool bRealExist = iter->IsDir() ? wxDirExists(strFullPathName) : wxFileExists(strFullPathName);
+//	if(bRealExist)
+//		return;
 
 	wxString strDesc = iter->GetTypeName();
 
@@ -479,45 +479,53 @@ void CLocalFileListView::DoRename(const wxString& strOldName, const wxString& st
 		dt = wxDateTime::Now();
 
 	if(!bNewExist)
+	{
 		m_pImageMap->AddIcon(strFullPathName, strNewName);
 
-	CDirData dirItem;
-	dirItem.SetName(strNewName);
-	wxString strDesc(wxT(""));
+		CDirData dirItem;
+		dirItem.SetName(strNewName);
+		wxString strDesc(wxT(""));
 
-	if(!isDir)
-	{
-		wxString strExt = theCommonUtil->GetExt(strNewName);
-		strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
+		if(!isDir)
+		{
+			wxString strExt = theCommonUtil->GetExt(strNewName);
+			strDesc = theExtInfo->GetExtInfo(strExt, strFullPathName);
 
-		dirItem.SetType(CDirData::item_type::file);
-		dirItem.SetExt(strExt);
+			dirItem.SetType(CDirData::item_type::file);
+			dirItem.SetExt(strExt);
+		}
+		else
+		{
+			dirItem.SetType(CDirData::item_type::dir);
+			strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
+		}
 
-		m_dblFileSizeInDir += llSize.ToDouble();
+		dirItem.SetAttribute(lattr);
+		dirItem.SetSize(llSize);
+		dirItem.SetDateTime(dt);
+		dirItem.SetPath(m_strCurrentPath);
+
+		dirItem.SetTypeName(strDesc);
+
+		m_itemList.push_back(dirItem);
+
+		m_strMaxName = FindMaxData(strNewName, m_strMaxName);
+		m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
 	}
 	else
 	{
-		dirItem.SetType(CDirData::item_type::dir);
-		strDesc = theMsgManager->GetMessage(wxT("MSG_DIR_DESCRIPTION"));
+		iterNew->SetAttribute(lattr);
+		iterNew->SetSize(llSize);
+		iterNew->SetDateTime(dt);
+		iterNew->SetPath(m_strCurrentPath);
 	}
 
-	dirItem.SetAttribute(lattr);
-	dirItem.SetSize(llSize);
-	dirItem.SetDateTime(dt);
-	dirItem.SetPath(m_strCurrentPath);
-
-	dirItem.SetTypeName(strDesc);
-
-	m_itemList.push_back(dirItem);
-
-	m_strMaxName = FindMaxData(strNewName, m_strMaxName);
-	m_strMaxTypeName = FindMaxData(strDesc, m_strMaxTypeName);
+	m_dblFileSizeInDir += llSize.ToDouble();
+	m_nTotalItems = wx_static_cast(int, m_itemList.size());
+	DoSortStart();
 
 	m_pViewPanel->TransferInfomation(TRANSFER_LISTVIEW_DIRINFO_TO_DIRINFOVIEW);
 	theMenuOPHandler->ExecuteMenuOperation(_MENU_DISK_SPACE_UPDATE, m_strVolume);
-
-	m_nTotalItems = wx_static_cast(int, m_itemList.size());
-	DoSortStart();
 
 	m_bSizeOrColumnChanged = true;
 	m_bIsDisplayDetailInfo = false;
